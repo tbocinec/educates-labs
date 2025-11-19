@@ -1,0 +1,41 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: "kafka-ui"
+spec:
+  title: "Kafka a Kafka UI Workshop ver2"
+  description: "Naučte sa základy práce s Apache Kafka a Kafka UI - od inštalácie po posielanie správ."
+  publish:
+    image: "$(image_repository)/kafka-ui-files:$(workshop_version)"
+  workshop:
+    files:
+    - image:
+        url: "$(image_repository)/kafka-ui-files:$(workshop_version)"
+      includePaths:
+      - /workshop/**
+      - /exercises/**
+      - /README.md
+      - /docker-compose.yml
+  session:
+    namespaces:
+      budget: x-large
+    applications:
+      terminal:
+        enabled: true
+        layout: split
+      editor:
+        enabled: true
+      console:
+        enabled: false
+      docker:
+        enabled: true
+      registry:
+        enabled: false
+      vcluster:
+        enabled: false
+    ingresses:
+    - name: kafka-ui
+      port: 8080
+    dashboards:
+    - name: kafka-ui
+      url: "$(ingress_protocol)://$(session_namespace)-kafka-ui.$(ingress_domain)"

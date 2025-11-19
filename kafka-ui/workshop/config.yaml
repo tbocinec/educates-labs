@@ -1,0 +1,31 @@
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Kafka a Kafka UI Workshop"
+
+      steps:
+      - 00-workshop-overview
+      - 01-kafka-installation
+      - 02-kafka-ui-setup
+      - 03-create-topic
+      - 04-send-messages
+      - 05-explore-ui
+      - 99-workshop-summary
+
+modules:
+- name: 00-workshop-overview
+  title: Úvod do workshopu
+- name: 01-kafka-installation
+  title: Inštalácia Apache Kafka
+- name: 02-kafka-ui-setup
+  title: Nastavenie Kafka UI
+- name: 03-create-topic
+  title: Vytvorenie topicu
+- name: 04-send-messages
+  title: Poslanie správ
+- name: 05-explore-ui
+  title: Preskúmanie Kafka UI
+- name: 99-workshop-summary
+  title: Zhrnutie workshopu

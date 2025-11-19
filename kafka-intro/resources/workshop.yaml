@@ -1,0 +1,31 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: kafka-intro
+spec:
+  title: "Kafka Intro with Docker"
+  description: "Jednoduchý workshop: spustenie Apache Kafka cez Docker Compose, vytvorenie topicu a posielanie/čítanie správ."
+  publish:
+    image: "$(image_repository)/kafka-intro-files:$(workshop_version)"
+
+  workshop:
+    files:
+      - image:
+          url: "$(image_repository)/kafka-intro-files:$(workshop_version)"
+        includePaths:
+          - /workshop/**
+          - /README.md
+
+  session:
+    namespaces:
+      budget: medium
+
+    applications:
+      terminal:
+        enabled: true
+      editor:
+        enabled: true
+      docker:
+        enabled: true
+        socket:
+          enabled: true

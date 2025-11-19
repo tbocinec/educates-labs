@@ -1,0 +1,57 @@
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Kafka Intro"
+
+      steps:
+        - 00-intro
+        - 01-docker-compose
+        - 02-kafka-cli
+        - 99-summary
+
+modules:
+  - name: 00-intro
+    title: Úvod do workshopu
+
+  - name: 01-docker-compose
+    title: Spustenie Kafka cez Docker Compose
+
+  - name: 02-kafka-cli
+    title: Práca s Kafka CLI (topics, producer, consumer)
+
+  - name: 99-summary
+    title: Zhrnutie a ďalšie kroky
+
+# pathways:
+#   default: workshop
+#
+#   paths:
+#     workshop:
+#       title: "Workshop"
+#
+#       steps:
+#       - 00-workshop-overview
+#       - 01-workshop-instructions
+#       - 99-workshop-summary
+#
+#       params:
+#       - name: NAME
+#         value: undefined
+#         aliases:
+#         - ALIAS
+
+# modules:
+# - name: 00-workshop-overview
+#   title: Workshop Overview
+# - name: 01-workshop-instructions
+#   title: Workshop Instructions
+# - name: 99-workshop-summary
+#   title: Workshop Summary
+
+# params:
+# - name: NAME
+#   value: undefined
+#   aliases:
+#   - ALIAS
