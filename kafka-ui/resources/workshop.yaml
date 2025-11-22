@@ -14,11 +14,11 @@ spec:
         url: https://github.com/tbocinec/educates-labs
         ref: origin/main
       includePaths:
-      - /workshop/**
-      - /exercises/**
-      - /README.md
-      - /docker-compose.yml
-      newRootPath: /kafka-ui
+      - workshop/**
+      - exercises/**
+      - README.md
+      - docker-compose.yml
+      newRootPath: kafka-ui
   session:
     namespaces:
       budget: x-large

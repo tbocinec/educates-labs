@@ -15,9 +15,9 @@ spec:
           url: https://github.com/tbocinec/educates-labs
           ref: origin/main
         includePaths:
-          - /workshop/**
-          - /README.md
-        newRootPath: /kafka-intro
+          - workshop/**
+          - README.md
+        newRootPath: kafka-intro
 
   session:
     namespaces:
