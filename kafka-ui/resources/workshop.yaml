@@ -5,17 +5,20 @@ metadata:
 spec:
   title: "Kafka a Kafka UI Workshop ver2"
   description: "Naučte sa základy práce s Apache Kafka a Kafka UI - od inštalácie po posielanie správ."
+  url: https://github.com/tbocinec/educates-labs/kafka-ui
   publish:
     image: "$(image_repository)/kafka-ui-files:$(workshop_version)"
   workshop:
     files:
-    - image:
-        url: "$(image_repository)/kafka-ui-files:$(workshop_version)"
+    - git:
+        url: https://github.com/tbocinec/educates-labs/kafka-ui
+        ref: origin/main
       includePaths:
       - /workshop/**
       - /exercises/**
       - /README.md
       - /docker-compose.yml
+      newRootPath: /kafka-ui
   session:
     namespaces:
       budget: x-large
