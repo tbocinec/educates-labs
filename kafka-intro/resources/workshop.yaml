@@ -5,14 +5,14 @@ metadata:
 spec:
   title: "Kafka Intro with Docker"
   description: "Jednoduchý workshop: spustenie Apache Kafka cez Docker Compose, vytvorenie topicu a posielanie/čítanie správ."
-  url: https://github.com/tbocinec/educates-labs/kafka-intro
+  url: https://github.com/tbocinec/educates-labs
   publish:
     image: "$(image_repository)/kafka-intro-files:$(workshop_version)"
 
   workshop:
     files:
       - git:
-          url: https://github.com/tbocinec/educates-labs/kafka-intro
+          url: https://github.com/tbocinec/educates-labs
           ref: origin/main
         includePaths:
           - /workshop/**
