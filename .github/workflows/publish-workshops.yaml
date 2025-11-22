@@ -1,0 +1,24 @@
+name: Publish All Workshops
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+"
+
+jobs:
+  publish-workshops:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+      packages: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Publish multiple workshops
+        uses: educates/educates-github-actions/publish-multiple-workshops@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+       

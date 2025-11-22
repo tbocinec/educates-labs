@@ -8,17 +8,24 @@ spec:
   url: https://github.com/tbocinec/educates-labs
   publish:
     image: "$(image_repository)/kafka-ui-files:$(workshop_version)"
+    files:
+    - directory:
+        path: .
+      includePaths:
+      - /workshop/**
+      - /exercises/**
+      - /README.md
+      - /docker-compose.yml
+
   workshop:
     files:
-    - git:
-        url: https://github.com/tbocinec/educates-labs
-        ref: main
+    - image:
+        url: "$(image_repository)/kafka-ui-files:$(workshop_version)"
       includePaths:
-      - workshop/**
-      - exercises/**
-      - README.md
-      - docker-compose.yml
-      newRootPath: kafka-ui
+      - /workshop/**
+      - /exercises/**
+      - /README.md
+      - /docker-compose.yml
   session:
     namespaces:
       budget: x-large

@@ -8,16 +8,20 @@ spec:
   url: https://github.com/tbocinec/educates-labs
   publish:
     image: "$(image_repository)/kafka-intro-files:$(workshop_version)"
+    files:
+    - directory:
+        path: .
+      includePaths:
+      - /workshop/**
+      - /README.md
 
   workshop:
     files:
-      - git:
-          url: https://github.com/tbocinec/educates-labs
-          ref: main
-        includePaths:
-          - workshop/**
-          - README.md
-        newRootPath: kafka-intro
+    - image:
+        url: "$(image_repository)/kafka-intro-files:$(workshop_version)"
+      includePaths:
+      - /workshop/**
+      - /README.md
 
   session:
     namespaces:
