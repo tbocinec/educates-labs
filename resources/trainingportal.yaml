@@ -29,4 +29,12 @@ items:
       orphaned: 5m
       overdue: 2m
       reserved: 0
+    - alias: ""
+      expires: 60m
+      initial: 0
+      name: Grafana-Intro
+      url: https://github.com/tbocinec/educates-labs/releases/download/0.2/grafana-intro.yaml
+      orphaned: 5m
+      overdue: 2m
+      reserved: 0
 

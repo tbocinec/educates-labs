@@ -1,0 +1,41 @@
+title: Grafana Intro Workshop
+duration: 60m
+renderer: markdown
+
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Grafana Intro"
+
+      steps:
+        - 00-workshop-overview
+        - 01-install-grafana
+        - 02-start-grafana
+        - 03-access-grafana
+        - 04-add-prometheus-datasource
+        - 05-create-first-dashboard
+        - 99-workshop-summary
+
+modules:
+  - name: 00-workshop-overview
+    title: Workshop Overview
+
+  - name: 01-install-grafana
+    title: Install Grafana
+
+  - name: 02-start-grafana
+    title: Start Grafana Server
+
+  - name: 03-access-grafana
+    title: Access Grafana UI
+
+  - name: 04-add-prometheus-datasource
+    title: Add Prometheus Data Source
+
+  - name: 05-create-first-dashboard
+    title: Create Your First Dashboard
+
+  - name: 99-workshop-summary
+    title: Workshop Summary
