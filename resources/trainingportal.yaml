@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: training.educates.dev/v1beta1
+  kind: TrainingPortal
+  metadata:
+    name: educates-cli    
+  spec:
+    portal:      
+      password: orange
+      registration:
+        type: anonymous
+      sessions:
+        maximum: 20      
+    workshops:
+    - alias: ""
+      expires: 60m
+      initial: 0
+      name: educates-cli--kafka-intro-e7ea950
+      url: https://github.com/tbocinec/educates-labs/releases/download/0.1/kafka-intro.yaml
+      orphaned: 5m
+      overdue: 2m
+      reserved: 0
+    - alias: ""
+      expires: 60m
+      initial: 0
+      name: educates-cli--kafka-ui-5b06831
+      url: https://github.com/tbocinec/educates-labs/releases/download/0.1/kafka-ui.yaml
+      orphaned: 5m
+      overdue: 2m
+      reserved: 0
+
