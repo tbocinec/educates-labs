@@ -12,7 +12,7 @@ spec:
     files:
     - git:
         url: https://github.com/tbocinec/educates-labs
-        ref: origin/main
+        ref: main
       includePaths:
       - workshop/**
       - exercises/**
