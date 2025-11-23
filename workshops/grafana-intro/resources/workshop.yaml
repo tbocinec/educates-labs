@@ -6,6 +6,7 @@ spec:
   title: "Grafana Intro Workshop"
   description: "Learn how to install, start, access Grafana and build a first dashboard."
   url: https://github.com/tbocinec/educates-labs
+  
   publish:
     image: "$(image_repository)/grafana-intro-files:$(workshop_version)"
     files:
@@ -29,10 +30,13 @@ spec:
     applications:
       terminal:
         enabled: true
+        layout: default
       editor:
-        enabled: true
-      docker:
         enabled: false
+      docker:
+        enabled: true
+        socket:
+          enabled: true
       console:
         enabled: false
     ingresses:

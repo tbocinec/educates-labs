@@ -11,16 +11,21 @@ pathways:
 
       steps:
         - 00-workshop-overview
+        - 01-container-setup
         - 01-install-grafana
         - 02-start-grafana
         - 03-access-grafana
-        - 04-add-prometheus-datasource
+        - 04-grafana-cli
         - 05-create-first-dashboard
+        - 06-create-dashboard
         - 99-workshop-summary
 
 modules:
   - name: 00-workshop-overview
     title: Workshop Overview
+
+  - name: 01-container-setup
+    title: Container Setup
 
   - name: 01-install-grafana
     title: Install Grafana
@@ -31,10 +36,13 @@ modules:
   - name: 03-access-grafana
     title: Access Grafana UI
 
-  - name: 04-add-prometheus-datasource
-    title: Add Prometheus Data Source
+  - name: 04-grafana-cli
+    title: Grafana CLI Tools
 
   - name: 05-create-first-dashboard
+    title: Exploring Grafana UI
+
+  - name: 06-create-dashboard
     title: Create Your First Dashboard
 
   - name: 99-workshop-summary
