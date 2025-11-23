@@ -1,0 +1,37 @@
+title: Grafana with Docker - Quick Start
+duration: 30m
+renderer: markdown
+
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Grafana with Docker"
+
+      steps:
+        - 00-workshop-overview
+        - 01-run-grafana-docker
+        - 02-configure-grafana
+        - 03-install-plugins
+        - 04-docker-compose
+        - 99-workshop-summary
+
+modules:
+  - name: 00-workshop-overview
+    title: Workshop Overview
+
+  - name: 01-run-grafana-docker
+    title: Run Grafana with Docker
+
+  - name: 02-configure-grafana
+    title: Configure Grafana Container
+
+  - name: 03-install-plugins
+    title: Install Plugins
+
+  - name: 04-docker-compose
+    title: Using Docker Compose
+
+  - name: 99-workshop-summary
+    title: Workshop Summary
