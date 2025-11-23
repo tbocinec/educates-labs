@@ -4,6 +4,7 @@ pathways:
   paths:
     workshop:
       title: "Kafka a Kafka UI Workshop"
+      duration: 150m
 
       steps:
       - 00-workshop-overview

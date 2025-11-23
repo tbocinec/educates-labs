@@ -4,6 +4,7 @@ pathways:
   paths:
     workshop:
       title: "Kafka Intro"
+      duration: 150m
 
       steps:
         - 00-intro
