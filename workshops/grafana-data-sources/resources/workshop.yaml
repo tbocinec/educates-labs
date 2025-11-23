@@ -1,0 +1,59 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: grafana-data-sources
+spec:
+  title: "Grafana Data Sources Workshop"
+  description: "Learn how to connect Grafana to various data sources: Prometheus, InfluxDB, and ClickHouse."
+  url: https://github.com/tbocinec/educates-labs
+  
+  publish:
+    image: "$(image_repository)/grafana-data-sources-files:$(workshop_version)"
+    files:
+    - directory:
+        path: .
+      includePaths:
+      - /workshop/**
+      - /README.md
+
+  workshop:
+    files:
+    - image:
+        url: "$(image_repository)/grafana-data-sources-files:$(workshop_version)"
+      includePaths:
+      - /workshop/**
+      - /README.md
+
+  session:
+    namespaces:
+      budget: x-large
+    applications:
+      terminal:
+        enabled: true
+        layout: default
+      editor:
+        enabled: true
+      docker:
+        enabled: true
+        socket:
+          enabled: true
+      console:
+        enabled: false
+    ingresses:
+    - name: grafana
+      port: 3000
+    - name: prometheus
+      port: 9090
+    - name: influxdb
+      port: 8086
+    - name: clickhouse
+      port: 8123
+    dashboards:
+    - name: Grafana
+      url: "$(ingress_protocol)://$(session_namespace)-grafana.$(ingress_domain)"
+    - name: Prometheus
+      url: "$(ingress_protocol)://$(session_namespace)-prometheus.$(ingress_domain)"
+    - name: InfluxDB
+      url: "$(ingress_protocol)://$(session_namespace)-influxdb.$(ingress_domain)"
+    - name: ClickHouse
+      url: "$(ingress_protocol)://$(session_namespace)-clickhouse.$(ingress_domain)/play"

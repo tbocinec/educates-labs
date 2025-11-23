@@ -1,0 +1,37 @@
+title: Grafana Data Sources Workshop
+duration: 150m
+renderer: markdown
+
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Grafana Data Sources"
+
+      steps:
+        - 00-workshop-overview
+        - 01-prometheus-datasource
+        - 02-influxdb-datasource
+        - 03-clickhouse-datasource
+        - 04-playground
+        - 99-workshop-summary
+
+modules:
+  - name: 00-workshop-overview
+    title: Workshop Overview
+
+  - name: 01-prometheus-datasource
+    title: Prometheus Data Source
+
+  - name: 02-influxdb-datasource
+    title: InfluxDB Data Source
+
+  - name: 03-clickhouse-datasource
+    title: ClickHouse Data Source
+
+  - name: 04-playground
+    title: "Playground: Explore & Experiment"
+
+  - name: 99-workshop-summary
+    title: Workshop Summary

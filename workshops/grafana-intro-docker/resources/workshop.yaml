@@ -26,7 +26,7 @@ spec:
 
   session:
     namespaces:
-      budget: medium
+      budget: x-large
     applications:
       terminal:
         enabled: true
