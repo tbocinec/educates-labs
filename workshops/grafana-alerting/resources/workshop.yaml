@@ -1,0 +1,51 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: grafana-alerting
+spec:
+  title: "Grafana Alerting Workshop"
+  description: "Hands-on workshop for setting up end-to-end alerting in Grafana with ClickHouse. Learn to create alerts using Grafana Unified Alerting, configure notifications, and test alert scenarios."
+  url: https://github.com/tbocinec/educates-labs
+  
+  publish:
+    image: "$(image_repository)/grafana-alerting-files:$(workshop_version)"
+    files:
+    - directory:
+        path: .
+      includePaths:
+      - /workshop/**
+      - /README.md
+
+  workshop:
+    files:
+    - image:
+        url: "$(image_repository)/grafana-alerting-files:$(workshop_version)"
+      includePaths:
+      - /workshop/**
+      - /README.md
+
+  session:
+    namespaces:
+      budget: x-large
+    applications:
+      terminal:
+        enabled: true
+        layout: default
+      editor:
+        enabled: true
+      docker:
+        enabled: true
+        socket:
+          enabled: true
+      console:
+        enabled: false
+    ingresses:
+    - name: grafana
+      port: 3000
+    - name: clickhouse
+      port: 8123
+    dashboards:
+    - name: Grafana
+      url: "$(ingress_protocol)://$(session_namespace)-grafana.$(ingress_domain)"
+    - name: ClickHouse
+      url: "$(ingress_protocol)://$(session_namespace)-clickhouse.$(ingress_domain)/play"

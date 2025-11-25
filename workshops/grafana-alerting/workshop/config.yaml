@@ -1,0 +1,37 @@
+title: Grafana Alerting Workshop
+duration: 90m
+renderer: markdown
+
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Grafana Alerting"
+
+      steps:
+        - 00-workshop-overview
+        - 01-setup-clickhouse
+        - 02-notification-channels
+        - 03-threshold-alerts
+        - 04-alert-testing
+        - 99-workshop-summary
+
+modules:
+  - name: 00-workshop-overview
+    title: Workshop Overview
+
+  - name: 01-setup-clickhouse
+    title: Setup ClickHouse & Data
+
+  - name: 02-notification-channels
+    title: Notification Channels
+
+  - name: 03-threshold-alerts
+    title: Threshold Alert
+
+  - name: 04-alert-testing
+    title: Testing Alert
+
+  - name: 99-workshop-summary
+    title: Workshop Summary
