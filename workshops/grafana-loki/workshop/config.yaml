@@ -1,0 +1,33 @@
+title: Grafana Loki - Log Aggregation
+duration: 30m
+renderer: markdown
+
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Grafana Loki Log Aggregation"
+
+      steps:
+        - 00-workshop-overview
+        - 01-launch-services
+        - 02-configure-loki
+        - 03-generate-explore-logs
+        - 99-workshop-summary
+
+modules:
+  - name: 00-workshop-overview
+    title: Workshop Overview
+
+  - name: 01-launch-services
+    title: Launch Grafana and Loki
+
+  - name: 02-configure-loki
+    title: Configure Loki Data Source
+
+  - name: 03-generate-explore-logs
+    title: Generate and Explore Logs
+
+  - name: 99-workshop-summary
+    title: Workshop Summary

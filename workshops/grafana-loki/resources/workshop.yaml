@@ -1,0 +1,47 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: grafana-loki
+spec:
+  title: "Grafana Loki - Log Aggregation"
+  description: "Learn how to set up Grafana Loki for log aggregation and visualization. Deploy Grafana, Loki, and Promtail using Docker Compose, collect logs from containers, and explore them in Grafana."
+  url: https://github.com/tbocinec/educates-labs
+  
+  publish:
+    image: "$(image_repository)/grafana-loki-files:$(workshop_version)"
+    files:
+    - directory:
+        path: .
+      includePaths:
+      - /workshop/**
+      - /README.md
+
+  workshop:
+    files:
+    - image:
+        url: "$(image_repository)/grafana-loki-files:$(workshop_version)"
+      includePaths:
+      - /workshop/**
+      - /README.md
+
+  session:
+    namespaces:
+      budget: x-large
+    applications:
+      terminal:
+        enabled: true
+        layout: default
+      editor:
+        enabled: true
+      docker:
+        enabled: true
+        socket:
+          enabled: true
+      console:
+        enabled: false
+    ingresses:
+    - name: grafana
+      port: 3000
+    dashboards:
+    - name: Grafana
+      url: "$(ingress_protocol)://$(session_namespace)-grafana.$(ingress_domain)"
