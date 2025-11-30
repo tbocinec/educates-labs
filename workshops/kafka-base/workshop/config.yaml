@@ -1,0 +1,18 @@
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Kafka Basics"
+      duration: 45m
+
+      steps:
+      - 01-kafka-startup
+      - 02-hello-world
+
+modules:
+- name: 01-kafka-startup
+  title: Kafka Startup
+  
+- name: 02-hello-world
+  title: Hello World

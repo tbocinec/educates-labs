@@ -1,0 +1,62 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: "kafka-intro-java"
+spec:
+  title: "Kafka with Java Applications"
+  description: "Java workshop for Apache Kafka with producer/consumer applications. Environment includes Java JDK 21 and text editor (accessible via Editor tab)."
+  url: https://github.com/tbocinec/educates-labs
+  publish:
+    image: "$(image_repository)/kafka-intro-java-files:$(workshop_version)"
+    files:
+    - directory:
+        path: .
+      includePaths:
+      - /workshop/**
+      - /docker-compose.yml
+      - /kafka-apps/**
+      - /build-apps.sh
+      - /run-producer.sh
+      - /run-consumer.sh
+      - /README.md
+
+  workshop:
+    image: "ghcr.io/educates/educates-jdk21-environment:latest"
+    files:
+    - image:
+        url: "$(image_repository)/kafka-intro-java-files:$(workshop_version)"
+      includePaths:
+      - /workshop/**
+      - /docker-compose.yml
+      - /kafka-apps/**
+      - /build-apps.sh
+      - /run-producer.sh
+      - /run-consumer.sh
+      - /README.md
+      
+  session:
+    namespaces:
+      budget: x-large
+    resources:
+      memory: 4Gi
+    applications:
+      terminal:
+        enabled: true
+        layout: split
+      editor:
+        enabled: true
+      console:
+        enabled: false
+      docker:
+        enabled: true
+        memory: 4Gi
+      registry:
+        enabled: false
+      vcluster:
+        enabled: false
+    ingresses:
+    - name: kafka-ui
+      port: 8080
+    dashboards:
+    - name: kafka-ui
+      url: "$(ingress_protocol)://$(session_namespace)-kafka-ui.$(ingress_domain)"

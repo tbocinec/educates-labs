@@ -1,0 +1,38 @@
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Kafka with Java"
+      duration: 90m
+
+      steps:
+      - 01-kafka-startup
+      - 02-create-topic
+      - 03-build-apps
+      - 04-run-producer
+      - 05-run-consumer
+      - 06-explore-results
+      - 99-summary
+
+modules:
+- name: 01-kafka-startup
+  title: Kafka Startup and Environment
+  
+- name: 02-create-topic
+  title: Create Kafka Topic
+  
+- name: 03-build-apps
+  title: Build Java Applications
+  
+- name: 04-run-producer
+  title: Run Java Producer
+  
+- name: 05-run-consumer
+  title: Run Java Consumer
+  
+- name: 06-explore-results
+  title: Explore Results in Kafka UI
+  
+- name: 99-summary
+  title: Summary and Next Steps
