@@ -1,0 +1,50 @@
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Kafka CLI Tools"
+      duration: 180m
+
+      steps:
+      - 01-setup
+      - 02-topic-management
+      - 03-producer-consumer
+      - 04-partitions-ordering
+      - 05-consumer-groups
+      - 06-topic-configuration
+      - 07-admin-tools
+      - 08-security-acl
+      - 09-bonus-kcat
+      - 10-summary
+
+modules:
+- name: 01-setup
+  title: Environment Setup & Kafka Startup
+  
+- name: 02-topic-management
+  title: Topic Management - Basics
+  
+- name: 03-producer-consumer
+  title: Producer & Consumer - Basics
+  
+- name: 04-partitions-ordering
+  title: Partitions & Ordering
+  
+- name: 05-consumer-groups
+  title: Consumer Groups & Offsets
+  
+- name: 06-topic-configuration
+  title: Topic Configuration & Retention
+  
+- name: 07-admin-tools
+  title: Admin Tools & Operations
+  
+- name: 08-security-acl
+  title: Security & ACL (Optional)
+  
+- name: 09-bonus-kcat
+  title: Bonus - Kcat/Kafkacat (Optional)
+  
+- name: 10-summary
+  title: Summary and Next Steps
