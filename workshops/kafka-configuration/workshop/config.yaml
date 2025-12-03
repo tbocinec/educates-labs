@@ -1,0 +1,46 @@
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Kafka Configuration"
+      duration: 120m
+
+      steps:
+      - 01-setup
+      - 02-broker-config
+      - 03-topic-config
+      - 04-producer-config
+      - 05-consumer-config
+      - 06-performance-tuning
+      - 07-security-config
+      - 08-monitoring-config
+      - 99-summary
+
+modules:
+- name: 01-setup
+  title: Environment Setup
+  
+- name: 02-broker-config
+  title: Broker Configuration
+  
+- name: 03-topic-config
+  title: Topic Configuration
+  
+- name: 04-producer-config
+  title: Producer Configuration
+  
+- name: 05-consumer-config
+  title: Consumer Configuration
+  
+- name: 06-performance-tuning
+  title: Performance Tuning
+  
+- name: 07-security-config
+  title: Security Configuration
+  
+- name: 08-monitoring-config
+  title: Monitoring Configuration
+  
+- name: 99-summary
+  title: Summary & Best Practices

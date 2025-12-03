@@ -1,0 +1,53 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: "kafka-configuration"
+spec:
+  title: "Kafka Configuration Mastery"
+  description: "Complete guide to configuring Apache Kafka: brokers, topics, producers, consumers, and performance tuning. Hands-on configuration with real examples."
+  url: https://github.com/tbocinec/educates-labs
+  publish:
+    image: "$(image_repository)/kafka-configuration-files:$(workshop_version)"
+    files:
+    - directory:
+        path: .
+      includePaths:
+      - /workshop/**
+      - /docker-compose.yml
+      - /README.md
+
+  workshop:
+    image: "ghcr.io/educates/educates-jdk21-environment:latest"
+    files:
+    - image:
+        url: "$(image_repository)/kafka-configuration-files:$(workshop_version)"
+      includePaths:
+      - /workshop/**
+      - /docker-compose.yml
+      - /README.md
+      
+  session:
+    namespaces:
+      budget: x-large
+    resources:
+      memory: 4Gi
+    applications:
+      terminal:
+        enabled: true
+        layout: split
+      editor:
+        enabled: true
+      console:
+        enabled: false
+      docker:
+        enabled: true
+        memory: 4Gi
+      registry:
+        enabled: true
+      vcluster:
+        enabled: false
+    ingresses:
+    - name: kafka-ui
+      protocol: http
+      host: ""
+      port: 8080
