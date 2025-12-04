@@ -18,6 +18,7 @@ All tools are available in separate tabs:
 **💻 Terminal** - Kubernetes terminal with kubectl access  
 **✏️ Editor** - Integrated file editor  
 **🖥️ Console** - Kubernetes web console  
+**📊 Slides** - Workshop presentation slides  
 **🌐 SecretApp** - Tab where the application will appear (after fixing)
 
 ---

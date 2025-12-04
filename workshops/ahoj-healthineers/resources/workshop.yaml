@@ -4,7 +4,7 @@ metadata:
   name: ahoj-healthineers
 spec:
   title: "Ahoj Healthineers"
-  description: "Jednoduchý uvítací workshop pre Healthineers tím. Demonštrácia základných možností Educates platformy."
+  description: "Simple welcome workshop for Healthineers team. Demonstration of Educates platform basics."
   url: https://github.com/tbocinec/educates-labs
   
   publish:
@@ -39,6 +39,8 @@ spec:
       editor:
         enabled: true
       console:
+        enabled: true
+      slides:
         enabled: true
       docker:
         enabled: false
