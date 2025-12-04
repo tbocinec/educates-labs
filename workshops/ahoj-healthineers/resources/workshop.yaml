@@ -1,0 +1,51 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: ahoj-healthineers
+spec:
+  title: "Ahoj Healthineers"
+  description: "Jednoduchý uvítací workshop pre Healthineers tím. Demonštrácia základných možností Educates platformy."
+  url: https://github.com/tbocinec/educates-labs
+  
+  publish:
+    image: "$(image_repository)/ahoj-healthineers-files:$(workshop_version)"
+    files:
+    - directory:
+        path: .
+      includePaths:
+      - /workshop/**
+      - /README.md
+
+  workshop:
+    files:
+    - image:
+        url: "$(image_repository)/ahoj-healthineers-files:$(workshop_version)"
+      includePaths:
+      - /workshop/**
+      - /README.md
+
+  session:
+    namespaces:
+      budget: small
+    ingresses:
+    - name: secretapp
+      protocol: http
+      host: secretapp.$(session_namespace).svc.$(cluster_domain)
+      port: 8080
+    applications:
+      terminal:
+        enabled: true
+        layout: split
+      editor:
+        enabled: true
+      console:
+        enabled: true
+      docker:
+        enabled: false
+      registry:
+        enabled: false
+      vcluster:
+        enabled: false
+    dashboards:
+    - name: SecretApp
+      url: "$(ingress_protocol)://secretapp-$(session_name).$(ingress_domain)/"

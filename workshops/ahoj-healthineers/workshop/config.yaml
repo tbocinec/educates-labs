@@ -1,0 +1,11 @@
+modules:
+  activate:
+  - workshop-instructions
+  - terminal
+  config:
+    workshop-instructions:
+      workshop_file: index.md
+
+setup:
+  files:
+  - path: setup.d/01-copy-files.sh
