@@ -1,0 +1,51 @@
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Kafka Consumers Deep Dive"
+      duration: 150m
+
+      steps:
+      - 01-environment-setup
+      - 02-consumer-basics
+      - 03-consumer-records
+      - 04-manual-offset-management
+      - 05-rebalancing-demo
+      - 06-consumer-configuration
+      - 07-multithreaded-consumer
+      - 08-error-handling
+      - 09-kafka-ui-exploration
+      - 99-summary
+
+modules:
+- name: 01-environment-setup
+  title: Environment Setup and Producer
+
+- name: 02-consumer-basics
+  title: Consumer Basics - First Consumer
+
+- name: 03-consumer-records
+  title: Understanding ConsumerRecords
+
+- name: 04-manual-offset-management
+  title: Manual Offset Management
+
+- name: 05-rebalancing-demo
+  title: Partition Rebalancing in Action
+
+- name: 06-consumer-configuration
+  title: Consumer Configuration Deep Dive
+
+- name: 07-multithreaded-consumer
+  title: Multithreaded Consumer Pattern
+
+- name: 08-error-handling
+  title: Error Handling and Retry Logic
+
+- name: 09-kafka-ui-exploration
+  title: Kafka UI Exploration
+
+- name: 99-summary
+  title: Summary and Best Practices
+

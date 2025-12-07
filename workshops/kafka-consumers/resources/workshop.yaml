@@ -1,0 +1,61 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: kafka-consumers
+spec:
+  title: Kafka Consumers Deep Dive
+  description: Master Apache Kafka consumer patterns with hands-on exercises using humidity sensor data
+  url: https://github.com/yourusername/educates-labs
+  difficulty: intermediate
+  duration: 2h30m
+
+  vendor: educates.dev
+  authors:
+    - Kafka Workshop Team
+  tags:
+    - kafka
+    - consumers
+    - java
+    - streaming
+    - real-time
+
+  session:
+    namespaces:
+      budget: medium
+    applications:
+      terminal:
+        enabled: true
+        layout: split
+      editor:
+        enabled: true
+      console:
+        enabled: true
+    dashboards:
+      - name: Kafka UI
+        url: http://localhost:8080
+
+    env:
+      - name: JAVA_HOME
+        value: /usr/lib/jvm/java-21-openjdk-amd64
+      - name: PATH
+        value: /usr/lib/jvm/java-21-openjdk-amd64/bin:$(PATH)
+
+    resources:
+      storage: 5Gi
+      memory: 4Gi
+
+    ingresses:
+      - name: kafka-ui
+        port: 8080
+        protocol: http
+        host: "$(session_namespace).$(ingress_domain)"
+
+  workshop:
+    files:
+      - path: .
+        includePaths:
+          - docker-compose.yml
+          - build-apps.sh
+          - run-*.sh
+          - kafka-apps/**
+
