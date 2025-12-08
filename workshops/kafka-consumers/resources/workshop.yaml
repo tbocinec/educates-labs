@@ -19,6 +19,26 @@ spec:
     - streaming
     - real-time
 
+  publish:
+    image: "$(image_repository)/kafka-consumers-files:$(workshop_version)"
+    files:
+    - directory:
+        path: .
+      includePaths:
+      - /workshop/**
+      - /README.md
+
+  workshop:
+    files:
+    - image:
+        url: "$(image_repository)/kafka-consumers-files:$(workshop_version)"
+      includePaths:
+        - docker-compose.yml
+        - build-apps.sh
+        - run-*.sh
+        - kafka-apps/**
+
+
   session:
     namespaces:
       budget: medium
@@ -49,13 +69,3 @@ spec:
         port: 8080
         protocol: http
         host: "$(session_namespace).$(ingress_domain)"
-
-  workshop:
-    files:
-      - path: .
-        includePaths:
-          - docker-compose.yml
-          - build-apps.sh
-          - run-*.sh
-          - kafka-apps/**
-
