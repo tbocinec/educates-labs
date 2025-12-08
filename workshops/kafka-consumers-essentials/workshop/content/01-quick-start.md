@@ -45,7 +45,7 @@ Takes about 30 seconds...
 ## Start Producer
 Start the producer in background:
 ```terminal:execute
-command: ./run-producer.sh
+command: ./run-producer.sh > /dev/null 2>&1 &
 background: true
 ```
 The producer generates humidity readings every 3 seconds from 3 sensors:
@@ -58,6 +58,7 @@ Check that messages are flowing:
 ```terminal:execute
 command: docker exec kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic humidity_readings --from-beginning --max-messages 3
 background: false
+session: 2
 ```
 You should see JSON messages like:
 ```json
@@ -65,8 +66,8 @@ You should see JSON messages like:
 ```
 ---
 ## Access Kafka UI
-Open Kafka UI to visualize the cluster:
-**URL:** http://localhost:8080
+Switch to tab **Kafka UI** to visualize the cluster:
+
 You can explore:
 - Topics and partitions
 - Messages

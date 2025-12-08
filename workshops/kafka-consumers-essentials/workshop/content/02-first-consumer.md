@@ -15,6 +15,7 @@ Our consumer starts in AUTO-COMMIT mode by default.
 ```terminal:execute
 command: ./run-consumer.sh
 background: false
+session: 1
 ```
 **Let it run for 30-60 seconds** to see multiple readings.
 Press Ctrl+C when done observing.
@@ -35,6 +36,7 @@ Check your consumer group:
 ```terminal:execute
 command: docker exec kafka kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group humidity-monitor
 background: false
+session: 2
 ```
 ---
 ## Auto-Commit Behavior

@@ -1,6 +1,9 @@
 # Manual Offset Control
 
+**NOTE**: before continuing, please stop consumer from previous module (Ctrl+C).
+
 Learn to control offset commits for AT-LEAST-ONCE delivery semantics.
+
 
 ---
 
@@ -80,6 +83,7 @@ Now run the consumer in manual commit mode:
 ```terminal:execute
 command: ./run-consumer.sh
 background: false
+session: 1
 ```
 
 **You'll see:**
@@ -139,6 +143,7 @@ Let's prove at-least-once semantics.
 ```terminal:execute
 command: docker exec kafka kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group humidity-monitor
 background: false
+session: 2
 ```
 
 Note the `CURRENT-OFFSET` for each partition.
@@ -263,6 +268,7 @@ Reset offsets to reprocess all messages:
 ```terminal:execute
 command: docker exec kafka kafka-consumer-groups --bootstrap-server localhost:9092 --group humidity-monitor --reset-offsets --to-earliest --topic humidity_readings --execute
 background: false
+session: 2
 ```
 
 Now restart consumer - it reprocesses everything from beginning!

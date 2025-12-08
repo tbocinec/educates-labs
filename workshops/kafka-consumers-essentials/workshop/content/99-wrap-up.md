@@ -188,6 +188,7 @@ Clean up workshop resources:
 ```terminal:execute
 command: pkill -f "java.*Humidity" || true; docker compose down -v
 background: false
+session: 2
 ```
 
 ---
