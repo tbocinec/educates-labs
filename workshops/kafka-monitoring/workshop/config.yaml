@@ -1,0 +1,12 @@
+name: "Kafka Monitoring & Observability"
+modules:
+  activate:
+  - 00-workshop-overview
+  - 01-setup-environment
+  - 02-cli-monitoring
+  - 03-jmx-monitoring
+  - 04-kafka-exporter
+  - 04b-kminion
+  - 05-grafana-dashboards
+  - 99-workshop-summary
+exit_sign: "Finish"
