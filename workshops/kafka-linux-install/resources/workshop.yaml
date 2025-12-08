@@ -1,0 +1,70 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: kafka-linux-install
+spec:
+  title: "Apache Kafka on Linux - KRaft Mode Installation"
+  description: "Learn how to install and configure Apache Kafka in KRaft mode on Ubuntu. Start with a single broker, then scale to a multi-broker cluster."
+  url: https://github.com/tbocinec/educates-labs
+  difficulty: intermediate
+  duration: 120m
+
+  vendor: educates.dev
+  authors:
+    - Kafka Workshop Team
+  tags:
+    - kafka
+    - kraft
+    - linux
+    - installation
+    - cluster
+
+  publish:
+    image: "$(image_repository)/kafka-linux-install-files:$(workshop_version)"
+    files:
+    - directory:
+        path: .
+      includePaths:
+      - /workshop/**
+      - /config/**
+      - /docker-compose.yml
+      - /scripts/**
+      - /README.md
+
+  workshop:
+    files:
+    - image:
+        url: "$(image_repository)/kafka-linux-install-files:$(workshop_version)"
+      includePaths:
+      - /workshop/**
+      - /config/**
+      - /docker-compose.yml
+      - /scripts/**
+      - /README.md
+
+  session:
+    namespaces:
+      budget: x-large
+    resources:
+      memory: 4Gi
+    applications:
+      terminal:
+        enabled: true
+        layout: split
+      editor:
+        enabled: true
+      console:
+        enabled: false
+      docker:
+        enabled: true
+        memory: 4Gi
+      registry:
+        enabled: false
+      vcluster:
+        enabled: false
+    ingresses:
+    - name: kafka-ui
+      port: 8080
+    dashboards:
+    - name: Kafka UI
+      url: "$(ingress_protocol)://kafka-ui-$(session_name).$(ingress_domain)/"

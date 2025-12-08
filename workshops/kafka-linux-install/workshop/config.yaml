@@ -1,0 +1,13 @@
+name: "Apache Kafka on Linux - KRaft Mode"
+modules:
+  activate:
+  - 00-workshop-overview
+  - 01-container-setup
+  - 02-kafka-installation
+  - 03-single-broker
+  - 04-topic-operations
+  - 04a-kafka-ui-setup
+  - 05-cluster-setup
+  - 06-cluster-operations
+  - 99-workshop-summary
+exit_sign: "Finish"

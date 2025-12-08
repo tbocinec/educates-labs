@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    network_mode: "container:kafka-workshop"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: "kafka-local"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "localhost:9092"
+      KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL: PLAINTEXT
+      DYNAMIC_CONFIG_ENABLED: "true"
+    restart: unless-stopped
