@@ -1,0 +1,79 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: kafka-producers-essentials
+spec:
+  title: "Kafka Producers Essentials"
+  description: "Master Kafka producer fundamentals in 45 minutes with hands-on Java exercises. Learn ProducerRecord, keys, partitioning, async/sync modes, and error handling."
+  url: https://github.com/tbocinec/educates-labs
+  difficulty: beginner
+  duration: 45m
+
+  vendor: educates.dev
+  authors:
+    - Kafka Workshop Team
+  tags:
+    - kafka
+    - producers
+    - java
+    - partitioning
+    - async
+
+  publish:
+    image: "$(image_repository)/kafka-producers-essentials-files:$(workshop_version)"
+    files:
+    - directory:
+        path: .
+      includePaths:
+      - /workshop/**
+      - /docker-compose.yml
+      - /kafka-apps/**
+      - /build-apps.sh
+      - /run-producer-basic.sh
+      - /run-producer-callback.sh
+      - /run-producer-sync.sh
+      - /README.md
+      - /QUICKSTART.md
+
+  workshop:
+    image: "ghcr.io/educates/educates-jdk21-environment:latest"
+    files:
+    - image:
+        url: "$(image_repository)/kafka-producers-essentials-files:$(workshop_version)"
+      includePaths:
+      - /workshop/**
+      - /docker-compose.yml
+      - /kafka-apps/**
+      - /build-apps.sh
+      - /run-producer-basic.sh
+      - /run-producer-callback.sh
+      - /run-producer-sync.sh
+      - /README.md
+      - /QUICKSTART.md
+
+  session:
+    namespaces:
+      budget: x-large
+    resources:
+      memory: 4Gi
+    applications:
+      terminal:
+        enabled: true
+        layout: split
+      editor:
+        enabled: true
+      console:
+        enabled: false
+      docker:
+        enabled: true
+        memory: 4Gi
+      registry:
+        enabled: false
+      vcluster:
+        enabled: false
+    ingresses:
+    - name: kafka-ui
+      port: 8080
+    dashboards:
+    - name: kafka-ui
+      url: "$(ingress_protocol)://$(session_namespace)-kafka-ui.$(ingress_domain)"
