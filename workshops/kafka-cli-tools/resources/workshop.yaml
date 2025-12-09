@@ -1,0 +1,69 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: "kafka-cli-tools"
+spec:
+  title: "Kafka CLI Tools Mastery"
+  description: "Hands-on workshop for mastering all essential Kafka CLI tools on a 3-node cluster. From basics to advanced production scenarios."
+  url: https://github.com/tbocinec/educates-labs
+  difficulty: beginner
+  duration: 150m
+
+  vendor: educates.dev
+  authors:
+    - Kafka Workshop Team
+  tags:
+    - kafka
+    - cli
+    - command-line
+    - kafka-topics
+    - kafka-console-producer
+    - kafka-console-consumer
+    - kafka-consumer-groups
+
+  publish:
+    image: "$(image_repository)/kafka-cli-tools-files:$(workshop_version)"
+    files:
+    - directory:
+        path: .
+      includePaths:
+      - /workshop/**
+      - /docker-compose.yml
+      - /README.md
+
+  workshop:
+    image: "ghcr.io/educates/educates-jdk21-environment:latest"
+    files:
+    - image:
+        url: "$(image_repository)/kafka-cli-tools-files:$(workshop_version)"
+      includePaths:
+      - /workshop/**
+      - /docker-compose.yml
+      - /README.md
+      
+  session:
+    namespaces:
+      budget: x-large
+    resources:
+      memory: 5Gi
+    applications:
+      terminal:
+        enabled: true
+        layout: split
+      editor:
+        enabled: true
+      console:
+        enabled: false
+      docker:
+        enabled: true
+        memory: 4Gi
+      registry:
+        enabled: false
+      vcluster:
+        enabled: false
+    ingresses:
+    - name: kafka-ui
+      port: 8080
+    dashboards:
+    - name: Kafka UI
+      url: "$(ingress_protocol)://$(session_namespace)-kafka-ui.$(ingress_domain)"

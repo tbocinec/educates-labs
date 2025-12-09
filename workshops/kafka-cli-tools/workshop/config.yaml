@@ -1,0 +1,17 @@
+name: "Kafka CLI Tools Mastery"
+modules:
+  activate:
+  - 00-workshop-overview
+  - 01-cli-introduction
+  - 02-kafka-topics
+  - 03-kafka-console-producer
+  - 04-kafka-console-consumer
+  - 05-kafka-consumer-groups
+  - 06-kafka-reassign-partitions
+  - 07-kafka-log-dirs
+  - 08-kafka-configs
+  - 09-kafka-acls
+  - 10-kafka-replication
+  - 11-kafka-advanced-tools
+  - 99-workshop-summary
+exit_sign: "Finish"
