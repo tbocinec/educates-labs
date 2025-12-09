@@ -97,7 +97,7 @@ Press `Ctrl+C` to stop the consumer.
 
 ## Consumer Groups
 
-Create a consumer in a consumer group:
+Create a consumer in a consumer group (the group is automatically created when you specify the `--group` parameter):
 
 ```terminal:execute
 command: |
@@ -105,10 +105,10 @@ command: |
   bin/kafka-console-consumer.sh \
     --topic test-topic \
     --group my-consumer-group \
-    --bootstrap-server localhost:9092
+    --bootstrap-server localhost:9092 > /tmp/consumer-output.log 2>&1 &
 ```
 
-Press `Ctrl+C` to stop the consumer.
+This runs the consumer in the background and redirects output to `/tmp/consumer-output.log`.
 
 ## Check Consumer Group Status
 

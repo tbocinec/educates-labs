@@ -16,16 +16,17 @@ Running Kafka in a Docker container provides:
 
 While we use a custom Ubuntu container in this workshop for learning purposes, Kafka can be deployed in various ways:
 
-### Operating System Installations
+### Platform Independence
 
-**Linux Distributions:**
-- **Ubuntu/Debian** - APT packages or manual installation
-- **RHEL/CentOS/Fedora** - YUM/DNF packages
-- **Any Linux** - Download binaries and extract
+Apache Kafka is a **Java-based application** and is not tied to any specific operating system. Kafka can run on any platform that supports **Java 11 or later** (Java 21 is recommended for optimal performance and security).
 
-**Other Platforms:**
-- **macOS** - Homebrew or manual installation
-- **Windows** - WSL2 or manual installation with Windows binaries
+**Supported Platforms:**
+- **Linux** - Ubuntu, Debian, RHEL, CentOS, Fedora, or any distribution with Java runtime
+- **macOS** - Intel or Apple Silicon with Java installed
+- **Windows** - Native installation or WSL2 with Java runtime
+- **Unix-based systems** - Solaris, FreeBSD, or other Unix variants
+
+The only requirement is a compatible Java Virtual Machine (JVM). Kafka binaries are distributed as platform-independent JAR files, making deployment flexible across different environments.
 
 ### Docker & Kubernetes
 

@@ -89,7 +89,7 @@ You should see directories like:
 
 ## Set Environment Variable
 
-For convenience, let's set the KAFKA_HOME environment variable:
+For convenience, let's set the KAFKA_HOME environment variable and add Kafka binaries to PATH:
 
 ```terminal:execute
 command: |
@@ -99,7 +99,7 @@ command: |
   export PATH=$PATH:$KAFKA_HOME/bin
 ```
 
-Now you can run Kafka commands from any directory!
+This allows you to run all Kafka CLI tools from any directory without specifying the full path!
 
 ## Next Steps
 

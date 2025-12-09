@@ -32,19 +32,25 @@ session: 1
 Verify it's stopped:
 
 ```terminal:execute
-command: ps aux | grep kafka | grep -v grep
+command: ps aux
 session: 1
 ```
 
 ## Review Configuration Files
 
-Three configuration files have been prepared for you in the `config/` directory. You can review them in the Editor:
+Three configuration files have been prepared for you in the `config/` directory. You can open them directly in the Editor:
 
-- **config/controller.properties** - Controller node configuration
-- **config/broker1.properties** - First broker configuration  
-- **config/broker2.properties** - Second broker configuration
+```editor:open-file
+file: ~/config/controller.properties
+```
 
-Click on the **Editor** tab and explore these files to understand the cluster setup.
+```editor:open-file
+file: ~/config/broker1.properties
+```
+
+```editor:open-file
+file: ~/config/broker2.properties
+```
 
 Key differences between the files:
 - **node.id** - Unique ID for each node (1, 2, 3)
@@ -161,7 +167,7 @@ session: 1
 Check that all processes are running:
 
 ```terminal:execute
-command: ps aux | grep kafka.Kafka | grep -v grep
+command: ps aux
 session: 1
 ```
 

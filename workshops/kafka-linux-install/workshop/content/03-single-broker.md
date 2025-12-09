@@ -31,7 +31,15 @@ The most important settings we'll use are already configured in this file. You c
 
 ## Format the Storage Directory
 
-Before starting Kafka for the first time, we need to format the storage directory:
+Before starting Kafka for the first time, we need to format the storage directory. This is a **required one-time operation** that initializes the Kafka cluster metadata in KRaft mode.
+
+**Why is formatting necessary?**
+- **Initializes cluster metadata** - Creates the internal metadata structures that KRaft uses instead of ZooKeeper
+- **Generates unique cluster identity** - Ensures this cluster has a unique ID to prevent accidental mixing of data from different clusters
+- **Prepares log directories** - Sets up the directory structure for storing topics, partitions, and metadata
+- **Creates metadata snapshots** - Initializes the metadata log that tracks cluster configuration and state
+
+Without formatting, Kafka won't start because it needs this metadata foundation to operate in KRaft mode.
 
 ```terminal:execute
 command: |
@@ -40,10 +48,25 @@ command: |
 ```
 
 This command:
-- Formats the log directories
-- Initializes metadata for KRaft mode
+- Formats the log directories specified in `server.properties`
+- Initializes metadata for KRaft mode with the cluster ID
 - Uses `--standalone` flag for single-node combined broker/controller mode
 - Prepares the broker to start
+
+**Note:** You only need to format once when setting up a new cluster. Re-formatting will **erase all existing data**!
+
+## Inspect the Storage Directory
+
+After formatting, you can view the created storage structure:
+
+```terminal:execute
+command: ls -la /tmp/kraft-combined-logs/
+```
+
+You should see files and directories like:
+- `__cluster_metadata-0/` - Metadata partition for KRaft consensus
+- `meta.properties` - Cluster and node identification
+- Various log and snapshot files
 
 ## Understanding the Configuration
 
@@ -88,7 +111,7 @@ Look for messages like:
 Check if the Kafka process is running:
 
 ```terminal:execute
-command: ps aux | grep kafka | grep -v grep
+command: ps aux
 ```
 
 You should see the Java process running `kafka.Kafka`.

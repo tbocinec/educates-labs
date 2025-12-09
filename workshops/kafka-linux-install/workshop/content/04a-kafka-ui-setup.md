@@ -34,7 +34,11 @@ session: 2
 
 ## Access Kafka UI
 
-Once Kafka UI is running, click on the **Kafka UI** tab at the top of this page to open the dashboard.
+Once Kafka UI is running, open the dashboard:
+
+```dashboard:open-dashboard
+name: Kafka UI
+```
 
 You should see:
 - **Cluster overview** - Number of brokers, topics, partitions
