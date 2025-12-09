@@ -48,9 +48,9 @@ session: 1
 
 Mal by si vidieť metriky v Prometheus formáte:
 ```
-# HELP kafka_server_brokertopicmetrics_messagesinpersec_total Message in rate
-# TYPE kafka_server_brokertopicmetrics_messagesinpersec_total counter
-kafka_server_brokertopicmetrics_messagesinpersec_total{topic="monitoring-demo"} 1543.0
+# HELP kafka_server_brokertopicmetrics_messagesin_total Total messages in
+# TYPE kafka_server_brokertopicmetrics_messagesin_total counter
+kafka_server_brokertopicmetrics_messagesin_total 0.0
 ```
 
 ## Generovanie dát pre monitoring
@@ -79,10 +79,8 @@ Počkaj 10-15 sekúnd a overte že dáta prichádzajú:
 ```terminal:execute
 command: |
   echo "=== Počet správ v téme ==="
-  kafka-run-class kafka.tools.GetOffsetShell \
-    --broker-list localhost:9092 \
-    --topic monitoring-demo \
-    --time -1 | awk -F: '{sum += $3} END {print "Total messages: " sum}'
+  docker exec kafka kafka-get-offsets --bootstrap-server localhost:9092 \
+    --topic monitoring-demo | awk -F: '{sum += $3} END {print "Total messages: " sum}'
 session: 1
 ```
 
@@ -93,7 +91,7 @@ Otvor **Prometheus** tab a vyskúšaj tieto PromQL queries:
 ### 1. Message Rate (Správy za sekundu)
 
 ```
-rate(kafka_server_brokertopicmetrics_messagesinpersec_total{topic="monitoring-demo"}[1m])
+rate(kafka_server_brokertopicmetrics_messagesin_total[1m])
 ```
 
 Klikni **Execute** a potom **Graph** - uvidíš grafické zobrazenie príchodu správ.
@@ -101,24 +99,24 @@ Klikni **Execute** a potom **Graph** - uvidíš grafické zobrazenie príchodu s
 ### 2. Throughput (Bajty za sekundu)
 
 ```
-rate(kafka_server_brokertopicmetrics_bytesinpersec_total{topic="monitoring-demo"}[1m])
+rate(kafka_server_brokertopicmetrics_bytesin_total[1m])
 ```
 
-### 3. Heap Memory Utilization (Využitie pamäte)
+### 3. Under-Replicated Partitions
 
 ```
-jvm_memory_bytes_used{area="heap"} / jvm_memory_bytes_max{area="heap"} * 100
+kafka_server_replicamanager_underreplicatedpartitions
 ```
 
-Toto ukazuje percentuálne využitie heap pamäte v JVM.
+Tento počet by mal byť vždy 0 v zdravom klastri.
 
-### 4. Garbage Collection Time
+### 4. Request Latency (p99)
 
 ```
-rate(jvm_gc_collection_seconds_total[5m]) * 1000
+kafka_network_requestmetrics_totaltimems{quantile="0.99",request="Produce"}
 ```
 
-Milisekundy strávené v GC za sekundu (malo by byť nízke!).
+99. percentil celkového času Produce requestov v milisekundách.
 
 ## Kľúčové Kafka metriky z JMX
 
@@ -128,11 +126,11 @@ Pozrime sa na najdôležitejšie metriky priamo z terminálu:
 
 ```terminal:execute
 command: |
-  echo "=== Messages In Per Second (všetky témy) ==="
-  curl -s http://localhost:7071/metrics | grep "kafka_server_brokertopicmetrics_messagesinpersec_total"
+  echo "=== Messages In Total ==="
+  curl -s http://localhost:7071/metrics | grep "kafka_server_brokertopicmetrics_messagesin_total"
   echo ""
-  echo "=== Bytes In Per Second ==="
-  curl -s http://localhost:7071/metrics | grep "kafka_server_brokertopicmetrics_bytesinpersec_total"
+  echo "=== Bytes In Total ==="
+  curl -s http://localhost:7071/metrics | grep "kafka_server_brokertopicmetrics_bytesin_total"
 session: 1
 ```
 
@@ -140,13 +138,13 @@ session: 1
 
 ```terminal:execute
 command: |
-  echo "=== Produce Request Rate ==="
+  echo "=== Produce Request Total Time ==="
   curl -s http://localhost:7071/metrics | \
-    grep 'kafka_network_requestmetrics_requestspersec_total{request="Produce"}'
+    grep 'kafka_network_requestmetrics_totaltimems_count_total{request="Produce"}'
   echo ""
-  echo "=== Fetch Request Rate ==="
+  echo "=== Fetch Request Total Time ==="
   curl -s http://localhost:7071/metrics | \
-    grep 'kafka_network_requestmetrics_requestspersec_total{request="Fetch"}'
+    grep 'kafka_network_requestmetrics_totaltimems_count_total{request="Fetch"}'
 session: 1
 ```
 
@@ -260,7 +258,7 @@ Metriky môžeš dotazovať aj programaticky:
 
 ```terminal:execute
 command: |
-  curl -s 'http://localhost:9090/api/v1/query?query=rate(kafka_server_brokertopicmetrics_messagesinpersec_total[1m])' | \
+  curl -s 'http://localhost:9090/api/v1/query?query=rate(kafka_server_brokertopicmetrics_messagesin_total[1m])' | \
     python3 -m json.tool | head -n 30
 session: 1
 ```
@@ -283,10 +281,10 @@ Neexportuj všetky JMX metriky - má to vplyv na výkon:
 ### 2. Používaj rate() pre counters
 ```promql
 # ❌ Zlé - zobrazí kumulatívnu hodnotu
-kafka_server_brokertopicmetrics_messagesinpersec_total
+kafka_server_brokertopicmetrics_messagesin_total
 
 # ✅ Správne - zobrazí rate
-rate(kafka_server_brokertopicmetrics_messagesinpersec_total[1m])
+rate(kafka_server_brokertopicmetrics_messagesin_total[1m])
 ```
 
 ### 3. Nastav baseline

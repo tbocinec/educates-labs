@@ -129,8 +129,8 @@ KMinion provides enhanced consumer group monitoring:
 
 ```terminal:execute
 command: |
-  echo "=== Consumer Group Lag (KMinion) ==="
-  curl -s http://localhost:8081/metrics | grep "kminion_consumer_group_topic_lag{" | head -n 20
+  echo "=== KMinion Consumer Group Metrics ==="
+  curl -s http://localhost:8081/metrics | grep "kminion_consumer" | head -n 30
 session: 1
 ```
 
@@ -144,39 +144,17 @@ Notice the rich labels:
 
 ```terminal:execute
 command: |
-  echo "=== Offset Commit Rate ==="
-  curl -s http://localhost:8081/metrics | grep "kminion_consumer_group_commit_count"
+  echo "=== All KMinion Metrics ==="
+  curl -s http://localhost:8081/metrics | grep "^kminion" | head -n 50
 session: 1
 ```
 
-### Consumer Group Members
+### Topic Metrics
 
 ```terminal:execute
 command: |
-  echo "=== Active Consumer Members ==="
-  curl -s http://localhost:8081/metrics | grep "kminion_consumer_group_members{"
-session: 1
-```
-
-## Topic Metrics (Advanced)
-
-KMinion provides detailed topic analytics:
-
-### Topic Configuration
-
-```terminal:execute
-command: |
-  echo "=== Topic Retention Configuration ==="
-  curl -s http://localhost:8081/metrics | grep "kminion_topic_info.*retention"
-session: 1
-```
-
-### Topic Partition Count
-
-```terminal:execute
-command: |
-  echo "=== Topic Partitions ==="
-  curl -s http://localhost:8081/metrics | grep "kminion_kafka_topic_partition_count{"
+  echo "=== KMinion Topic Metrics ==="
+  curl -s http://localhost:8081/metrics | grep "kminion_kafka_topic" | head -n 30
 session: 1
 ```
 
@@ -326,9 +304,9 @@ Wait 30 seconds and check metrics:
 
 ```terminal:execute
 command: |
-  echo "=== Current Consumer Lag ==="
+  echo "=== KMinion Consumer Group Metrics ==="
   curl -s http://localhost:8081/metrics | \
-    grep 'kminion_consumer_group_topic_lag{.*consumer_group="slow-kminion-consumer"'
+    grep "kminion_consumer_group" | head -n 30
 session: 1
 ```
 
@@ -477,10 +455,9 @@ Check topic retention settings:
 
 ```terminal:execute
 command: |
-  echo "=== Topic Retention Policies ==="
+  echo "=== KMinion Topic Info Metrics ==="
   curl -s http://localhost:8081/metrics | \
-    grep 'kminion_topic_info{' | \
-    grep 'config="retention.ms"'
+    grep "kminion_topic_info" | head -n 30
 session: 1
 ```
 
