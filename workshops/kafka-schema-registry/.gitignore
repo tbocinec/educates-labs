@@ -1,0 +1,68 @@
+# Java / Maven
+.env.local
+.env
+# Environment
+
+schema-backups/
+*.backup
+*.bak
+# Backups
+
+*.tmp
+temp/
+tmp/
+# Temporary files
+
+*.log
+logs/
+# Logs
+
+.docker/
+# Docker
+
+Desktop.ini
+Thumbs.db
+.DS_Store
+# OS
+
+*~
+*.swo
+*.swp
+.classpath
+.project
+.settings/
+.vscode/
+*.iws
+*.ipr
+*.iml
+.idea/
+# IDE
+
+**/target/generated-test-sources/
+**/target/generated-sources/
+# Generated Avro sources
+
+.flattened-pom.xml
+buildNumber.properties
+dependency-reduced-pom.xml
+release.properties
+pom.xml.next
+pom.xml.versionsBackup
+pom.xml.releaseBackup
+pom.xml.tag
+mvnw.cmd
+mvnw
+.mvn/
+# Maven
+
+replay_pid*
+hs_err_pid*
+*.nar
+*.ear
+*.war
+!**/src/test/**/*.jar
+!**/src/main/**/*.jar
+*.jar
+*.class
+target/
+

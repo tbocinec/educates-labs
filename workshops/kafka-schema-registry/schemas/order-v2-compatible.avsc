@@ -1,0 +1,51 @@
+{
+  "type": "record",
+  "name": "OrderCreated",
+  "namespace": "com.example.events",
+  "doc": "Event emitted when a new order is created - Version 2 (BACKWARD compatible)",
+  "fields": [
+    {
+      "name": "order_id",
+      "type": "string",
+      "doc": "Unique identifier for the order"
+    },
+    {
+      "name": "customer_id",
+      "type": "string",
+      "doc": "Customer who placed the order"
+    },
+    {
+      "name": "product_id",
+      "type": "string",
+      "doc": "Product being ordered"
+    },
+    {
+      "name": "quantity",
+      "type": "int",
+      "doc": "Number of items ordered"
+    },
+    {
+      "name": "total_price",
+      "type": "double",
+      "doc": "Total price in USD"
+    },
+    {
+      "name": "created_at",
+      "type": "long",
+      "doc": "Order creation timestamp (epoch seconds)"
+    },
+    {
+      "name": "shipping_address",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Shipping address for the order (optional - BACKWARD compatible)"
+    },
+    {
+      "name": "discount_code",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Discount code applied (optional - BACKWARD compatible)"
+    }
+  ]
+}
+

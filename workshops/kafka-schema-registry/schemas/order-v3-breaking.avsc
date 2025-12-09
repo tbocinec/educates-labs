@@ -1,0 +1,44 @@
+{
+  "type": "record",
+  "name": "OrderCreated",
+  "namespace": "com.example.events",
+  "doc": "Event emitted when a new order is created - Version 3 (BREAKING - will fail compatibility check)",
+  "fields": [
+    {
+      "name": "order_id",
+      "type": "string",
+      "doc": "Unique identifier for the order"
+    },
+    {
+      "name": "customer_id",
+      "type": "string",
+      "doc": "Customer who placed the order"
+    },
+    {
+      "name": "product_id",
+      "type": "string",
+      "doc": "Product being ordered"
+    },
+    {
+      "name": "quantity",
+      "type": "int",
+      "doc": "Number of items ordered"
+    },
+    {
+      "name": "total_amount",
+      "type": "double",
+      "doc": "BREAKING: Renamed from 'total_price' to 'total_amount'"
+    },
+    {
+      "name": "created_at",
+      "type": "long",
+      "doc": "Order creation timestamp (epoch seconds)"
+    },
+    {
+      "name": "payment_method",
+      "type": "string",
+      "doc": "BREAKING: New required field without default"
+    }
+  ]
+}
+
