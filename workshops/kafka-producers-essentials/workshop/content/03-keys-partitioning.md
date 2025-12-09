@@ -105,12 +105,13 @@ session: 2
 
 **You'll see output like:**
 ```
-Partition:0    sensor-1    {"sensor_id":1,...}
-Partition:0    sensor-1    {"sensor_id":1,...}
-Partition:1    sensor-2    {"sensor_id":2,...}
-Partition:1    sensor-2    {"sensor_id":2,...}
-Partition:2    sensor-3    {"sensor_id":3,...}
-Partition:2    sensor-3    {"sensor_id":3,...}
+Partition:2     sensor-3        {"sensor_id":3, ...}
+Partition:2     sensor-3        {"sensor_id":3, ...}
+Partition:1     sensor-1        {"sensor_id":1, ...}
+Partition:1     sensor-1        {"sensor_id":1, ...}
+Partition:1     sensor-2        {"sensor_id":2, ...}
+Partition:1     sensor-1        {"sensor_id":1, ...}
+Partition:1     sensor-2        {"sensor_id":2, ...}
 ```
 
 **Notice:** Each sensor (key) consistently goes to the same partition!
@@ -119,14 +120,25 @@ Partition:2    sensor-3    {"sensor_id":3,...}
 
 ## Kafka UI Verification
 
-1. Open **Kafka UI** → **Topics** → **humidity_readings**
+Switch to the Kafka UI dashboard:
+
+```dashboard:open-dashboard
+name: Kafka UI
+```
+
+Then navigate:
+1. **Topics** → **humidity_readings**
 2. Click **Messages**
 3. Group by **Partition**
 
 **Observe:**
-- Partition 0: Only `sensor-1` messages
-- Partition 1: Only `sensor-2` messages
+- Partition 0: No messages 
+- Partition 1: From `sensor-1` and `sensor-2` messages
 - Partition 2: Only `sensor-3` messages
+---
+
+Why did `sensor-1` and `sensor-2` go to the same partition? Small key space and hash collisions!
+(In free time you can experiment to increase number of generated sensors to observe better distribution)
 
 ---
 
@@ -153,9 +165,9 @@ hash("sensor-3") % 3 → partition 2
 
 Run a test to verify ordering:
 
-```editor:open
+```editor:open-file
 file: ~/kafka-apps/producer-basic/src/main/java/com/example/HumidityProducerBasic.java
-line: 45
+line: 63
 ```
 
 **Current behavior:** Random sensor selection

@@ -74,8 +74,10 @@ public class HumidityProducerBasic {
             String json = objectMapper.writeValueAsString(reading);
             String key = "sensor-" + sensor.sensorId();
 
-            // Create ProducerRecord with key
+            // Create ProducerRecord with key (guarantees ordering as records always go to same partition)
             var record = new ProducerRecord<>(TOPIC_NAME, key, json);
+            // Uncomment below to create ProducerRecord without key (partition chosen round-robin)
+            // var record = new ProducerRecord<>(TOPIC_NAME, json);
 
             // FIRE-AND-FORGET: Send without callback
             producer.send(record);

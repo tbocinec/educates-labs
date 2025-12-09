@@ -3,7 +3,7 @@ kind: Workshop
 metadata:
   name: kafka-consumers-essentials
 spec:
-  title: "Kafka Producer-Consumer Essentials"
+  title: "Kafka Consumer Essentials"
   description: "Learn the essentials of Kafka producers and consumers with hands-on Java exercises. Environment includes Java JDK 21, Docker, and text editor."
   url: https://github.com/tbocinec/educates-labs
   difficulty: beginner

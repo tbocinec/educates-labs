@@ -37,6 +37,18 @@ This will start three containers:
 - **schema-registry** - Confluent Schema Registry (port 8081)
 - **kafka-ui** - Web-based management UI (port 8080)
 
+While services are starting (~60 seconds), let's inspect the Docker Compose configuration:
+
+```editor:open-file
+file: docker-compose.yml
+```
+
+This file defines:
+- **Kafka broker** on port 9092
+- **Schema Registry** on port 8081
+- **Kafka UI** on port 8080
+- Health checks and dependencies between services
+
 ### Step 3: Wait for Services to Start
 
 It takes about 60 seconds for all services to become healthy. Check the status:
@@ -83,9 +95,11 @@ This empty list is normal - we haven't registered any schemas yet!
 
 Kafka UI provides a web interface to explore Kafka topics, messages, and schemas.
 
-**Dashboard access:**
-- Click on the **Kafka UI** tab/dashboard in your Educates environment
-- Or open: http://localhost:8080 in your browser
+Switch to the Kafka UI dashboard:
+
+```dashboard:open-dashboard
+name: Kafka UI
+```
 
 You should see:
 - 📊 Cluster overview

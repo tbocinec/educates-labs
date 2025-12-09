@@ -284,9 +284,13 @@ background: false
 
 Check offset management in Kafka UI:
 
-1. Open http://localhost:8080
-2. **Consumer Groups** → **humidity-monitor**
-3. **Offsets** tab
+```dashboard:open-dashboard
+name: Kafka UI
+```
+
+Then navigate:
+1. **Consumer Groups** → **humidity-monitor**
+2. **Offsets** tab
 
 You'll see:
 - Current offset (last committed)

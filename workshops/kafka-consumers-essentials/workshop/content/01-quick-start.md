@@ -7,13 +7,41 @@ Welcome! In this workshop, you'll learn Kafka consumer essentials through hands-
 3. **Manual Commit** (15 min) - Control offsets
 4. **Wrap-Up** (5 min) - Best practices
 ---
+---
+
+## Make Scripts Executable
+
+First, let's make all shell scripts executable:
+
+```terminal:execute
+command: chmod +x build-apps.sh run-producer.sh run-consumer.sh
+background: false
+session: 1
+```
+
+This ensures all helper scripts can be run throughout the workshop.
+
+---
+
 ## Start Kafka Services
 Start Kafka and Kafka UI:
 ```terminal:execute
 command: cd /home/eduk8s && docker compose up -d
 background: false
 ```
-Wait ~20 seconds for services to be healthy:
+
+While services are starting (~20 seconds), let's inspect the Docker Compose configuration:
+
+```editor:open-file
+file: docker-compose.yml
+```
+
+This file defines:
+- **Kafka broker** on port 9092
+- **Kafka UI** on port 8080
+- Health checks and dependencies
+
+Check that services are healthy:
 ```terminal:execute
 command: docker compose ps
 background: false
@@ -66,7 +94,12 @@ You should see JSON messages like:
 ```
 ---
 ## Access Kafka UI
-Switch to tab **Kafka UI** to visualize the cluster:
+
+Switch to the Kafka UI dashboard to visualize the cluster:
+
+```dashboard:open-dashboard
+name: Kafka UI
+```
 
 You can explore:
 - Topics and partitions

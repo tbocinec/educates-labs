@@ -15,6 +15,20 @@ Welcome! In this workshop, you'll learn Kafka producer essentials through hands-
 
 ---
 
+## Make Scripts Executable
+
+First, let's make all shell scripts executable:
+
+```terminal:execute
+command: chmod +x build-apps.sh run-producer-basic.sh run-producer-callback.sh run-producer-sync.sh
+background: false
+session: 1
+```
+
+This ensures all helper scripts can be run throughout the workshop.
+
+---
+
 ## Start Kafka Services
 
 Start Kafka and Kafka UI:
@@ -24,7 +38,18 @@ command: cd /home/eduk8s && docker compose up -d
 background: false
 ```
 
-Wait ~20 seconds for services to be healthy:
+While services are starting (~20 seconds), let's inspect the Docker Compose configuration:
+
+```editor:open-file
+file: docker-compose.yml
+```
+
+This file defines:
+- **Kafka broker** on port 9092
+- **Kafka UI** on port 8080
+- Health checks and dependencies
+
+Check that services are healthy:
 
 ```terminal:execute
 command: docker compose ps
@@ -89,9 +114,6 @@ We have 3 producer implementations to explore:
 - Lowest throughput (demo only)
 
 ---
-
-## Verify Kafka is Ready
-
 Check that the topic exists:
 
 ```terminal:execute
@@ -105,7 +127,11 @@ You should see `humidity_readings` in the list.
 
 ## Access Kafka UI
 
-Switch to tab **Kafka UI** to visualize the cluster:
+Switch to the Kafka UI dashboard to visualize the cluster:
+
+```dashboard:open-dashboard
+name: Kafka UI
+```
 
 You can explore:
 - Topics and partitions

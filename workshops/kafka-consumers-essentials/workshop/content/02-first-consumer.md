@@ -47,10 +47,18 @@ With auto-commit enabled:
 This is **AT-MOST-ONCE** delivery.
 ---
 ## Check Consumer Lag in Kafka UI
-Open Kafka UI: http://localhost:8080
-1. Navigate to **Consumer Groups**
+
+Switch to the Kafka UI dashboard:
+
+```dashboard:open-dashboard
+name: Kafka UI
+```
+
+Then navigate:
+1. **Consumer Groups**
 2. Find **humidity-monitor** group
 3. View **Offsets** tab
+
 **Healthy consumer:** Lag is low and stable
 ---
 ## Key Concepts Review

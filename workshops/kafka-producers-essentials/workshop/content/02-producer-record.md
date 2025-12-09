@@ -125,9 +125,15 @@ You should see:
 
 ## View Messages in Kafka UI
 
-1. Open **Kafka UI** tab
-2. Navigate to **Topics** → **humidity_readings**
-3. Click **Messages**
+Switch to the Kafka UI dashboard:
+
+```dashboard:open-dashboard
+name: Kafka UI
+```
+
+Then navigate:
+1. **Topics** → **humidity_readings**
+2. Click **Messages**
 
 **Observe:**
 - Messages distributed across 3 partitions

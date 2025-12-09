@@ -256,10 +256,16 @@ Map<MetricName, ? extends Metric> metrics = producer.metrics();
 
 ### View Messages in Kafka UI
 
-1. Open Kafka UI: http://localhost:8080
-2. Navigate to **Topics** → **humidity_readings**
-3. Click **Messages**
-4. Inspect keys, partitions, offsets
+Switch to the Kafka UI dashboard:
+
+```dashboard:open-dashboard
+name: Kafka UI
+```
+
+Then navigate:
+1. **Topics** → **humidity_readings**
+2. Click **Messages**
+3. Inspect keys, partitions, offsets
 
 ### Console Consumer Verification
 
