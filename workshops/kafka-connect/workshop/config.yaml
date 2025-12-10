@@ -1,0 +1,26 @@
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Kafka Connect with PostgreSQL"
+      duration: 45m
+
+      steps:
+      - 00-intro
+      - 01-startup
+      - 02-configure-connector
+      - 99-summary
+
+modules:
+- name: 00-intro
+  title: Introduction to Kafka Connect
+  
+- name: 01-startup
+  title: Start Environment and Verify PostgreSQL
+  
+- name: 02-configure-connector
+  title: Configure JDBC Source Connector
+  
+- name: 99-summary
+  title: Summary and Next Steps

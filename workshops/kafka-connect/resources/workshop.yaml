@@ -1,0 +1,54 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: "kafka-connect"
+spec:
+  title: "Kafka Connect with PostgreSQL"
+  description: "Learn how to stream data from PostgreSQL to Kafka using Kafka Connect JDBC Source Connector. Workshop includes PostgreSQL database, Kafka Connect, and Kafka UI."
+  url: https://github.com/tbocinec/educates-labs
+  publish:
+    image: "$(image_repository)/kafka-connect-files:$(workshop_version)"
+    files:
+    - directory:
+        path: .
+      includePaths:
+      - /workshop/**
+      - /docker-compose.yml
+      - /init-db.sql
+      - /postgres-source-connector.json
+      - /README.md
+
+  workshop:
+    image: "ghcr.io/educates/educates-base-environment:latest"
+    files:
+    - image:
+        url: "$(image_repository)/kafka-connect-files:$(workshop_version)"
+      includePaths:
+      - /workshop/**
+      - /docker-compose.yml
+      - /init-db.sql
+      - /postgres-source-connector.json
+      - /README.md
+      
+  session:
+    namespaces:
+      budget: large
+    resources:
+      memory: 4Gi
+    applications:
+      terminal:
+        enabled: true
+        layout: split
+      editor:
+        enabled: true
+      console:
+        enabled: false
+      docker:
+        enabled: true
+        memory: 4Gi
+    ingresses:
+    - name: kafka-ui
+      port: 8080
+    dashboards:
+    - name: Kafka UI
+      url: "$(ingress_protocol)://$(session_namespace)-kafka-ui.$(ingress_domain)"
