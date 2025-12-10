@@ -15,20 +15,6 @@ kafka-topics --bootstrap-server <brokers> <action> [options]
 - `--alter` - Modify existing topic
 - `--delete` - Delete topic
 
-## List Topics
-
-Start by viewing existing topics:
-
-```terminal:execute
-command: |
-  kafka-topics --bootstrap-server $BOOTSTRAP --list
-session: 1
-```
-
-You'll see internal topics starting with `__`:
-- `__consumer_offsets` - Stores consumer offset commits
-- `__cluster_metadata` - KRaft controller metadata
-
 ## Create a Topic
 
 ### Simple Topic (Development)

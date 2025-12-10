@@ -120,48 +120,6 @@ command: |
 session: 1
 ```
 
-## Throttled Reassignment
-
-For production, always throttle bandwidth to avoid impacting live traffic:
-
-```terminal:execute
-command: |
-  kafka-topics --bootstrap-server $BOOTSTRAP \
-    --create \
-    --topic large-topic \
-    --partitions 6 \
-    --replication-factor 2 --if-not-exists
-  
-  # Generate test data
-  for i in {1..500}; do
-    echo "Message $i: $(head -c 200 /dev/zero | tr '\0' 'X')"
-  done | kafka-console-producer --bootstrap-server $BOOTSTRAP --topic large-topic
-session: 1
-```
-
-Create reassignment with throttle:
-
-```terminal:execute
-command: |
-  echo '{"version":1,"partitions":[' > /tmp/large-topic-reassign.json
-  echo '{"topic":"large-topic","partition":0,"replicas":[3,1],"log_dirs":["any","any"]},' >> /tmp/large-topic-reassign.json
-  echo '{"topic":"large-topic","partition":1,"replicas":[1,2],"log_dirs":["any","any"]},' >> /tmp/large-topic-reassign.json
-  echo '{"topic":"large-topic","partition":2,"replicas":[2,3],"log_dirs":["any","any"]},' >> /tmp/large-topic-reassign.json
-  echo '{"topic":"large-topic","partition":3,"replicas":[3,1],"log_dirs":["any","any"]},' >> /tmp/large-topic-reassign.json
-  echo '{"topic":"large-topic","partition":4,"replicas":[1,2],"log_dirs":["any","any"]},' >> /tmp/large-topic-reassign.json
-  echo '{"topic":"large-topic","partition":5,"replicas":[2,3],"log_dirs":["any","any"]}]}' >> /tmp/large-topic-reassign.json
-  
-  kafka-reassign-partitions --bootstrap-server $BOOTSTRAP \
-    --reassignment-json-file /tmp/large-topic-reassign.json \
-    --execute \
-    --throttle 10000000
-  
-  echo "✓ Reassignment started with 10 MB/s throttle"
-session: 1
-```
-
-> Throttle of 10000000 bytes/sec = 10 MB/s prevents network saturation
-
 ## Increase Replication Factor
 
 Change replication factor from 2 to 3:

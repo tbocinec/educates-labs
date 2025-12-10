@@ -165,34 +165,6 @@ session: 1
 
 The new product "Webcam" should now appear in the stream! 🎉
 
-## View Data in Kafka UI
-
-Now let's visualize the data in Kafka UI:
-
-```dashboard:open-dashboard
-name: Kafka UI
-```
-
-In Kafka UI:
-
-1. Click on **Topics** in the left menu
-2. Find and click on **postgres-products** topic
-3. Click on the **Messages** tab
-4. You'll see all 6 products from the database in JSON format
-
-**What you can explore in Kafka UI:**
-
-- 📊 **Messages** - View all streamed product records
-- 📈 **Statistics** - Topic size, message rate, partition count
-- ⚙️ **Settings** - Topic configuration (retention, replication)
-- 🔌 **Connectors** - View your running postgres-source-connector
-
-The Kafka UI provides a much better view than console commands - you can see:
-- Formatted JSON messages
-- Message keys and values
-- Partition distribution
-- Real-time updates as new products are added
-
 ## How It Works
 
 ```

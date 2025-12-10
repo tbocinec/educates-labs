@@ -10,8 +10,4 @@ modules:
   - 06-kafka-reassign-partitions
   - 07-kafka-log-dirs
   - 08-kafka-configs
-  - 09-kafka-acls
-  - 10-kafka-replication
-  - 11-kafka-advanced-tools
-  - 99-workshop-summary
 exit_sign: "Finish"

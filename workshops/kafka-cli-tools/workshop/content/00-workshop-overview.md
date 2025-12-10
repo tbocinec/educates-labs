@@ -1,10 +1,10 @@
 # Kafka CLI Tools Workshop
 
-Master Kafka command-line tools through hands-on practice with a live 3-node cluster.
+Master essential Kafka command-line tools through hands-on practice with a live 3-node cluster.
 
 ## What You'll Learn
 
-This workshop covers **11 essential Kafka CLI tools** with practical scenarios on a production-like cluster:
+This workshop covers **8 essential Kafka CLI tools** with practical scenarios:
 
 ### 🎯 Core Topics
 
@@ -15,10 +15,6 @@ This workshop covers **11 essential Kafka CLI tools** with practical scenarios o
 5. **kafka-reassign-partitions** - Partition rebalancing across brokers
 6. **kafka-log-dirs** - Disk usage analysis and capacity planning
 7. **kafka-configs** - Dynamic broker and topic configuration
-8. **kafka-acls** - Security and authorization management
-9. **kafka-leader-election** - Leader rebalancing and preferred elections
-10. **kafka-replica-verification** - Replication integrity checks
-11. **kafka-advanced-tools** - Log inspection, data deletion, offset management
 
 ### 💡 Why CLI Tools?
 
@@ -47,7 +43,7 @@ Each level focuses on one tool with:
 
 ### ⏱️ Duration
 
-**120-150 minutes** - Each level takes 10-15 minutes
+**90 minutes** - Each level takes 10-15 minutes
 
 ### 🚀 Who Should Attend
 
@@ -71,8 +67,6 @@ After completing this workshop, you'll be able to:
 - ✅ Rebalance partitions for performance optimization
 - ✅ Monitor disk usage and plan capacity
 - ✅ Configure brokers and topics dynamically
-- ✅ Implement security with ACLs
-- ✅ Troubleshoot replication problems
 - ✅ Automate Kafka operations with scripts
 
 ### 🛠️ Learning Approach
@@ -87,37 +81,28 @@ Every command is **clickable** (`terminal:execute`), so:
 ## Lesson Structure
 
 ### Level 1: CLI Introduction
-Where to find tools, how help works, environment setup
+Environment setup and cluster connectivity
 
 ### Level 2: kafka-topics
-Creating, deleting, listing, describing, altering topics
+Creating, describing, and managing topics
 
 ### Level 3: kafka-console-producer  
-Sending messages, keys, partitioning, properties
+Sending messages with keys and properties
 
 ### Level 4: kafka-console-consumer
-Reading from beginning, latest, specific offset, consumer groups
+Reading messages, filtering, and consuming from specific offsets
 
 ### Level 5: kafka-consumer-groups
-Listing, describing, resetting offsets, deleting groups
+Managing consumer groups, lag monitoring, and offset resets
 
 ### Level 6: kafka-reassign-partitions
-Balancing partitions, rack awareness, throttling
+Rebalancing partitions across brokers
 
 ### Level 7: kafka-log-dirs
-Disk usage analysis, replica sizes, broker storage
+Analyzing disk usage and broker storage
 
 ### Level 8: kafka-configs
-Broker configs, topic configs, dynamic updates
-
-### Level 9: kafka-acls
-Security, authorization, ACL management, multi-tenant setup
-
-### Level 10: kafka-replication
-Leader election, replica verification, ISR monitoring
-
-### Level 11: kafka-advanced-tools
-Dump log, delete records, get offsets, GDPR compliance
+Dynamic broker and topic configuration
 
 ## Why a 3-node cluster?
 

@@ -172,14 +172,15 @@ While Kafka UI is helpful for visualization, **CLI tools are essential for produ
 
 ### Connection Issues
 
-If you get "Connection refused" errors:
+If you get "Connection refused" errors, verify that all broker containers are running and healthy:
 
 ```terminal:execute
 command: |
-  # Verify brokers are listening
-  netstat -tuln | grep -E "19092|19093|19094"
+  docker compose ps
 session: 1
 ```
+
+All three brokers should show status as `Up` and `healthy`.
 
 ### Check Broker Logs
 
