@@ -1,0 +1,14 @@
+{
+  "name": "humidity-datagen-source",
+  "config": {
+    "connector.class": "io.confluent.kafka.connect.datagen.DatagenConnector",
+    "kafka.topic": "raw_sensors",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false",
+    "max.interval": 2000,
+    "iterations": 10000000,
+    "schema.string": "{\"type\":\"record\",\"name\":\"SensorReading\",\"fields\":[{\"name\":\"sensor_id\",\"type\":{\"type\":\"string\",\"arg.properties\":{\"options\":[\"sensor-01\",\"sensor-02\",\"sensor-03\",\"sensor-04\",\"sensor-05\"]}}},{\"name\":\"location\",\"type\":{\"type\":\"string\",\"arg.properties\":{\"options\":[\"basement\",\"bathroom\",\"kitchen\",\"bedroom\",\"living-room\",\"garage\"]}}},{\"name\":\"humidity\",\"type\":{\"type\":\"int\",\"arg.properties\":{\"range\":{\"min\":30,\"max\":95}}}},{\"name\":\"temperature\",\"type\":{\"type\":\"int\",\"arg.properties\":{\"range\":{\"min\":15,\"max\":30}}}},{\"name\":\"timestamp\",\"type\":{\"type\":\"long\",\"arg.properties\":{\"iteration\":{\"start\":1700000000000,\"step\":1000}}}}]}",
+    "schema.keyfield": "sensor_id"
+  }
+}

@@ -1,0 +1,80 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: kafka-flink-mold-alert
+spec:
+  title: "Kafka + Flink: Real-Time Mold Alert System"
+  description: "Learn stream processing with Apache Flink and Kafka by building a real-time humidity monitoring system. Filter sensor data, detect mold risk, and route alerts using both Java DataStream API and Flink SQL."
+  url: https://github.com/tbocinec/educates-labs
+  difficulty: beginner
+  duration: 75m
+
+  vendor: educates.dev
+  authors:
+    - Kafka Flink Workshop Team
+  tags:
+    - kafka
+    - flink
+    - stream-processing
+    - real-time
+    - java
+    - iot
+
+  publish:
+    image: "$(image_repository)/kafka-flink-mold-alert-files:$(workshop_version)"
+    files:
+    - directory:
+        path: .
+      includePaths:
+      - /workshop/**
+      - /docker-compose.yml
+      - /flink-app/**
+      - /schemas/**
+      - /scripts/**
+      - /build-flink-job.sh
+      - /submit-flink-job.sh
+      - /setup-flink-sql-connectors.sh
+      - /start-datagen.sh
+      - /README.md
+
+  workshop:
+    image: "ghcr.io/educates/educates-jdk21-environment:latest"
+    files:
+    - image:
+        url: "$(image_repository)/kafka-flink-mold-alert-files:$(workshop_version)"
+      includePaths:
+      - /workshop/**
+      - /docker-compose.yml
+      - /flink-app/**
+      - /schemas/**
+      - /scripts/**
+      - /build-flink-job.sh
+      - /submit-flink-job.sh
+      - /setup-flink-sql-connectors.sh
+      - /start-datagen.sh
+      - /README.md
+
+  session:
+    namespaces:
+      budget: x-large
+    applications:
+      terminal:
+        enabled: true
+        layout: split
+      editor:
+        enabled: true
+      console:
+        enabled: false
+      docker:
+        enabled: true
+    ingresses:
+      - name: kafka-ui
+        port: 8080
+      - name: flink-ui
+        port: 8081
+    dashboards:
+    - name: Kafka UI
+      url: "$(ingress_protocol)://$(session_namespace)-kafka-ui.$(ingress_domain)"
+    - name: Flink UI
+      url: "$(ingress_protocol)://$(session_namespace)-flink-ui.$(ingress_domain)"
+
