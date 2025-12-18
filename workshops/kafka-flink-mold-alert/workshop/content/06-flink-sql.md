@@ -78,72 +78,14 @@ name: Flink UI
 
 ---
 
-### Prepare Docker Environment
-
-First, we need to restart docker-compose to apply proper user permissions for the volume mount:
-
-```terminal:execute
-command: export UID=$(id -u) GID=$(id -g) && docker compose down && docker compose up -d
-background: false
-session: 1
-```
-
-This restarts all containers with proper user/group IDs, preventing permission issues.
-
-Wait ~30 seconds for all services to start, then verify:
+Verify all services are up:
 
 ```terminal:execute
 command: docker ps | grep -E "kafka|flink"
 background: false
 session: 1
 ```
-
-All containers should show "Up" status.
-
----
-
-### Download Kafka Connectors
-
-The Flink SQL client needs the Kafka connector libraries. Let's download them:
-
-```terminal:execute
-command: chmod +x setup-flink-sql-connectors.sh && ./setup-flink-sql-connectors.sh
-background: false
-session: 1
-```
-
-This script will:
-1. Create `flink-connectors` directory
-2. Download the Flink Kafka SQL connector JARs
-3. JARs are automatically loaded via `FLINK_CLASSPATH` environment variable
-
-Wait for the "✅ Setup complete!" message.
-
-**Note:** The connectors are loaded via the `FLINK_CLASSPATH=/opt/flink/connectors/*` environment variable configured in docker-compose.yml. No symlinks or complex setup needed!
-
----
-
-### Restart Flink JobManager
-
-Restart the JobManager to load the new connectors:
-
-```terminal:execute
-command: docker restart flink-jobmanager
-background: false
-session: 1
-```
-
-**Wait for Flink to fully restart** (~15-20 seconds). Check the status:
-
-```terminal:execute
-command: docker ps --filter name=flink-jobmanager --format "{{.Status}}"
-background: false
-session: 1
-```
-
-Wait until it shows "Up X seconds" (not "Restarting").
-
-Verify Flink is ready by checking the dashboard:
+You should see both Kafka and Flink containers running.
 
 ```dashboard:open-dashboard
 name: Flink UI
