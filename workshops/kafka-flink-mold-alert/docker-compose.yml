@@ -90,7 +90,7 @@ services:
 
   # Flink JobManager
   jobmanager:
-    image: flink:1.18-java11
+    image: bocak95/flink-kafka:1
     container_name: flink-jobmanager
     ports:
       - "8081:8081"
@@ -112,7 +112,7 @@ services:
 
   # Flink TaskManager
   taskmanager:
-    image: flink:1.18-java11
+    image: bocak95/flink-kafka:1
     container_name: flink-taskmanager
     depends_on:
       jobmanager:

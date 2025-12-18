@@ -67,6 +67,7 @@ spec:
         enabled: false
       docker:
         enabled: true
+        memory: 4Gi
     ingresses:
       - name: kafka-ui
         port: 8080
