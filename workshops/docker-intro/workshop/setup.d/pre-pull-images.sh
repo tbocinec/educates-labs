@@ -13,16 +13,16 @@ else
     exit 1
 fi
 
-# Pre-pull commonly used images to speed up the workshop experience
-echo "📦 Pre-pulling workshop images..." >> /tmp/docker-setup.log
+# # Pre-pull commonly used images to speed up the workshop experience
+# echo "📦 Pre-pulling workshop images..." >> /tmp/docker-setup.log
 
-docker pull nginx:latest >> /tmp/docker-setup.log 2>&1 &
-docker pull alpine:latest >> /tmp/docker-setup.log 2>&1 &
-docker pull postgres:17 >> /tmp/docker-setup.log 2>&1 &
-docker pull redis:7 >> /tmp/docker-setup.log 2>&1 &
-docker pull nginx:alpine >> /tmp/docker-setup.log 2>&1 &
+# docker pull nginx:latest >> /tmp/docker-setup.log 2>&1 &
+# docker pull alpine:latest >> /tmp/docker-setup.log 2>&1 &
+# docker pull postgres:17 >> /tmp/docker-setup.log 2>&1 &
+# docker pull redis:7 >> /tmp/docker-setup.log 2>&1 &
+# docker pull nginx:alpine >> /tmp/docker-setup.log 2>&1 &
 
-wait
+# wait
 
-echo "✅ All images pre-pulled successfully" >> /tmp/docker-setup.log
-echo "🚀 Workshop environment is ready!" >> /tmp/docker-setup.log
+# echo "✅ All images pre-pulled successfully" >> /tmp/docker-setup.log
+# echo "🚀 Workshop environment is ready!" >> /tmp/docker-setup.log
