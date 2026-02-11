@@ -1,0 +1,34 @@
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Docker: Networking, Ports & Storage"
+      duration: 60m
+
+      steps:
+      - 00-workshop-overview
+      - 01-port-mapping
+      - 02-volumes-and-data
+      - 03-container-networking
+      - 04-cleanup
+      - 99-workshop-summary
+
+modules:
+- name: 00-workshop-overview
+  title: Workshop Overview
+
+- name: 01-port-mapping
+  title: Port Mapping & Exposing Services
+
+- name: 02-volumes-and-data
+  title: Volumes & Persistent Data
+
+- name: 03-container-networking
+  title: Container Networking
+
+- name: 04-cleanup
+  title: Cleanup & Best Practices
+
+- name: 99-workshop-summary
+  title: Workshop Summary

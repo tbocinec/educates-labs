@@ -1,0 +1,42 @@
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Building Docker Images with Dockerfiles"
+      duration: 60m
+
+      steps:
+      - 00-workshop-overview
+      - 01-dockerfile-basics
+      - 02-first-image
+      - 03-image-layers
+      - 04-more-instructions
+      - 05-best-practices
+      - 06-multistage-builds
+      - 99-workshop-summary
+
+modules:
+- name: 00-workshop-overview
+  title: Workshop Overview
+
+- name: 01-dockerfile-basics
+  title: Dockerfile Basics
+
+- name: 02-first-image
+  title: Building Your First Image
+
+- name: 03-image-layers
+  title: Understanding Image Layers
+
+- name: 04-more-instructions
+  title: Dockerfile Instructions Deep Dive
+
+- name: 05-best-practices
+  title: Best Practices
+
+- name: 06-multistage-builds
+  title: Multi-Stage Builds
+
+- name: 99-workshop-summary
+  title: Workshop Summary

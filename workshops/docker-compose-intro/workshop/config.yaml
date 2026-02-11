@@ -1,0 +1,42 @@
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Introduction to Docker Compose"
+      duration: 45m
+
+      steps:
+      - 00-workshop-overview
+      - 01-compose-basics
+      - 02-first-compose-file
+      - 03-multi-container-apps
+      - 04-compose-commands
+      - 05-environment-and-volumes
+      - 06-scaling-and-profiles
+      - 99-workshop-summary
+
+modules:
+- name: 00-workshop-overview
+  title: Workshop Overview
+
+- name: 01-compose-basics
+  title: What is Docker Compose?
+
+- name: 02-first-compose-file
+  title: Your First Compose File
+
+- name: 03-multi-container-apps
+  title: Multi-Container Applications
+
+- name: 04-compose-commands
+  title: Essential Compose Commands
+
+- name: 05-environment-and-volumes
+  title: Environment, Volumes & Networking
+
+- name: 06-scaling-and-profiles
+  title: Scaling & Profiles
+
+- name: 99-workshop-summary
+  title: Workshop Summary

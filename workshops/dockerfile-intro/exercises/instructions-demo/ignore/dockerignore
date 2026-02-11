@@ -1,0 +1,12 @@
+# .dockerignore — works like .gitignore
+# Files matching these patterns are excluded from the build context.
+# They are NEVER sent to the Docker daemon, so they can't end up in the image.
+
+# Version control
+.git
+
+# All text files (e.g., logs, secrets)
+*.txt
+
+# Docker build files (not needed inside the image)
+Dockerfile

@@ -1,0 +1,46 @@
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Introduction to Docker"
+      duration: 60m
+
+      steps:
+      - 00-workshop-overview
+      - 01-docker-basics
+      - 02-running-first-container
+      - 03-container-lifecycle
+      - 04-executing-commands
+      - 05-container-logs
+      - 06-environment-variables
+      - 07-docker-images
+      - 99-workshop-summary
+
+modules:
+- name: 00-workshop-overview
+  title: Workshop Overview
+
+- name: 01-docker-basics
+  title: Docker Basics & Architecture
+
+- name: 02-running-first-container
+  title: Running Your First Container
+
+- name: 03-container-lifecycle
+  title: Container Lifecycle Management
+
+- name: 04-executing-commands
+  title: Executing Commands Inside Containers
+
+- name: 05-container-logs
+  title: Working with Container Logs
+
+- name: 06-environment-variables
+  title: Environment Variables & Configuration
+
+- name: 07-docker-images
+  title: Exploring Docker Images
+
+- name: 99-workshop-summary
+  title: Workshop Summary

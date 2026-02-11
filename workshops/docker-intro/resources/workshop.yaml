@@ -1,0 +1,46 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: "docker-intro"
+spec:
+  title: "Introduction to Docker"
+  description: "A comprehensive hands-on workshop covering Docker fundamentals — pulling images, running containers, executing commands inside containers, managing container lifecycle, inspecting logs, working with environment variables, and exploring Docker images."
+  url: https://github.com/tbocinec/educates-labs
+  publish:
+    image: "$(image_repository)/docker-intro-files:$(workshop_version)"
+    files:
+    - directory:
+        path: .
+      includePaths:
+      - /workshop/**
+      - /README.md
+
+  workshop:
+    image: "ghcr.io/educates/educates-jdk21-environment:latest"
+    files:
+    - image:
+        url: "$(image_repository)/docker-intro-files:$(workshop_version)"
+      includePaths:
+      - /workshop/**
+      - /README.md
+      
+  session:
+    namespaces:
+      budget: x-large
+    resources:
+      memory: 2Gi
+    applications:
+      terminal:
+        enabled: true
+        layout: split
+      editor:
+        enabled: true
+      console:
+        enabled: false
+      docker:
+        enabled: true
+        memory: 3Gi
+      registry:
+        enabled: true
+      vcluster:
+        enabled: false

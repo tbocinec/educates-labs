@@ -1,0 +1,3 @@
+DB_USER=admin
+DB_PASSWORD=s3cur3pass
+DB_NAME=production
