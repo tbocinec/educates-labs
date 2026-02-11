@@ -1,0 +1,19 @@
+# =============================================================
+# pod.yaml — A basic Kubernetes Pod running Nginx
+# =============================================================
+# A Pod is the smallest deployable unit in Kubernetes.
+# This manifest defines a single Pod with one Nginx container.
+# =============================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-nginx
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.27
+    ports:
+    - containerPort: 80

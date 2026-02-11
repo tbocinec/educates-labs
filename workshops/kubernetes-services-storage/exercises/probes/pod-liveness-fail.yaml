@@ -1,0 +1,42 @@
+# =============================================================
+# pod-liveness-fail.yaml — Pod with a failing liveness probe
+# =============================================================
+# This Pod starts healthy but becomes unhealthy after 15 seconds
+# (the /tmp/healthy file is removed). The liveness probe checks
+# for this file — when it's gone, the probe fails and Kubernetes
+# restarts the container.
+#
+# This demonstrates automatic self-healing via liveness probes.
+# =============================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: liveness-fail-demo
+  labels:
+    app: liveness-demo
+spec:
+  containers:
+  - name: busybox
+    image: busybox:1.36
+    command:
+    - sh
+    - -c
+    - |
+      echo "Starting up — creating health file..."
+      touch /tmp/healthy
+      echo "App is healthy. Will become unhealthy in 15s..."
+      sleep 15
+      echo "Removing health file — app is now unhealthy!"
+      rm -f /tmp/healthy
+      echo "Waiting for Kubernetes to detect and restart..."
+      sleep 600
+    livenessProbe:
+      exec:
+        command:
+        - cat
+        - /tmp/healthy
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      failureThreshold: 2
+  restartPolicy: Always

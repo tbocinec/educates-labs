@@ -1,0 +1,42 @@
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Kubernetes Services, Secrets & Storage"
+      duration: 90m
+
+      steps:
+      - 00-workshop-overview
+      - 01-networking-basics
+      - 02-services
+      - 03-secrets
+      - 04-persistent-storage
+      - 05-probes
+      - 06-jobs-cronjobs
+      - 99-workshop-summary
+
+modules:
+- name: 00-workshop-overview
+  title: Workshop Overview
+
+- name: 01-networking-basics
+  title: Pod Networking & DNS
+
+- name: 02-services
+  title: Services
+
+- name: 03-secrets
+  title: Secrets
+
+- name: 04-persistent-storage
+  title: Persistent Storage
+
+- name: 05-probes
+  title: Health Checks & Probes
+
+- name: 06-jobs-cronjobs
+  title: Jobs & CronJobs
+
+- name: 99-workshop-summary
+  title: Workshop Summary

@@ -1,0 +1,31 @@
+# =============================================================
+# job.yaml — A basic Kubernetes Job
+# =============================================================
+# A Job creates one or more Pods and ensures a specified number
+# of them successfully complete. Once complete, the Job is done.
+#
+# Use cases: database migrations, batch processing, report generation.
+#
+# Docs: https://kubernetes.io/docs/concepts/workloads/controllers/job/
+# =============================================================
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pi-calculator
+spec:
+  template:
+    spec:
+      containers:
+      - name: pi
+        image: perl:5.38-slim
+        command: ["perl", "-Mbignum=bpi", "-wle", "print bpi(200)"]
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 500m
+            memory: 128Mi
+      restartPolicy: Never
+  backoffLimit: 3

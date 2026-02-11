@@ -1,0 +1,27 @@
+# =============================================================
+# pod-with-pvc.yaml — Pod mounting a PersistentVolumeClaim
+# =============================================================
+# This Pod writes data to /data (backed by the PVC).
+# If the Pod is deleted and recreated, the data persists
+# because it's stored on the PersistentVolume, not in the container.
+# =============================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: storage-writer
+  labels:
+    app: storage-demo
+spec:
+  containers:
+  - name: busybox
+    image: busybox:1.36
+    command: ["sh", "-c", "echo 'Writing data...'; date >> /data/log.txt; echo 'Current log:'; cat /data/log.txt; sleep 3600"]
+    volumeMounts:
+    - name: data-volume
+      mountPath: /data
+  volumes:
+  - name: data-volume
+    persistentVolumeClaim:
+      claimName: my-data
+  restartPolicy: Never

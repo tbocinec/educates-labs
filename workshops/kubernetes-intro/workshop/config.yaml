@@ -1,0 +1,50 @@
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Kubernetes Fundamentals"
+      duration: 90m
+
+      steps:
+      - 00-workshop-overview
+      - 01-kubernetes-architecture
+      - 02-kubectl-basics
+      - 03-first-pod
+      - 04-pods-with-yaml
+      - 05-deployments
+      - 06-updates-and-rollbacks
+      - 07-configmaps
+      - 08-labels-selectors-namespaces
+      - 99-workshop-summary
+
+modules:
+- name: 00-workshop-overview
+  title: Workshop Overview
+
+- name: 01-kubernetes-architecture
+  title: Kubernetes Architecture
+
+- name: 02-kubectl-basics
+  title: kubectl CLI Basics
+
+- name: 03-first-pod
+  title: Running Your First Pod
+
+- name: 04-pods-with-yaml
+  title: Pods with YAML Manifests
+
+- name: 05-deployments
+  title: Deployments
+
+- name: 06-updates-and-rollbacks
+  title: Updates & Rollbacks
+
+- name: 07-configmaps
+  title: ConfigMaps
+
+- name: 08-labels-selectors-namespaces
+  title: Labels, Selectors & Namespaces
+
+- name: 99-workshop-summary
+  title: Workshop Summary

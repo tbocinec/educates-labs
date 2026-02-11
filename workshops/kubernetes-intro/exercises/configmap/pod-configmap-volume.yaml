@@ -1,0 +1,27 @@
+# =============================================================
+# pod-configmap-volume.yaml — Pod mounting ConfigMap as a volume
+# =============================================================
+# This Pod mounts the 'file-config' ConfigMap as files inside
+# the container at /etc/config/. Each key in the ConfigMap
+# becomes a file, and the value becomes the file content.
+# =============================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configmap-volume-demo
+  labels:
+    app: configmap-demo
+spec:
+  containers:
+  - name: busybox
+    image: busybox:1.36
+    command: ["sh", "-c", "echo '--- Contents of /etc/config/ ---'; ls /etc/config/; echo '--- app-config.properties ---'; cat /etc/config/app-config.properties; sleep 3600"]
+    volumeMounts:
+    - name: config-volume
+      mountPath: /etc/config
+  volumes:
+  - name: config-volume
+    configMap:
+      name: file-config
+  restartPolicy: Never

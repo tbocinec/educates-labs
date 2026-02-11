@@ -1,0 +1,32 @@
+# =============================================================
+# job-parallel.yaml — A Job with parallel execution
+# =============================================================
+# This Job runs 4 completions with up to 2 Pods running
+# in parallel. Each Pod simulates a work item.
+#
+# completions: total number of successful Pods required
+# parallelism: max Pods running at the same time
+# =============================================================
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: parallel-worker
+spec:
+  completions: 4
+  parallelism: 2
+  template:
+    spec:
+      containers:
+      - name: worker
+        image: busybox:1.36
+        command: ["sh", "-c", "echo \"Worker $(hostname) starting...\"; sleep 5; echo \"Worker $(hostname) done!\""]
+        resources:
+          requests:
+            cpu: 50m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 64Mi
+      restartPolicy: Never
+  backoffLimit: 2

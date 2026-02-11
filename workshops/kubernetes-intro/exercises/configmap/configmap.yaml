@@ -1,0 +1,18 @@
+# =============================================================
+# configmap.yaml — A ConfigMap defined in YAML
+# =============================================================
+# ConfigMaps store non-sensitive configuration data as key-value
+# pairs. They can be consumed by Pods as:
+#   - Environment variables
+#   - Command-line arguments
+#   - Configuration files in a mounted volume
+# =============================================================
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  APP_COLOR: "blue"
+  APP_MODE: "production"
+  LOG_LEVEL: "INFO"

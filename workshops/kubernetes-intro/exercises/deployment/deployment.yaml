@@ -1,0 +1,39 @@
+# =============================================================
+# deployment.yaml — A basic Deployment running Nginx
+# =============================================================
+# A Deployment manages a set of identical Pods (ReplicaSet).
+# It provides:
+#   - Desired state (replicas count)
+#   - Self-healing (restarts failed Pods)
+#   - Easy scaling (change replicas)
+#   - Rolling updates and rollbacks
+# =============================================================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.26
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi

@@ -1,0 +1,38 @@
+# =============================================================
+# cronjob.yaml — A CronJob that runs on a schedule
+# =============================================================
+# A CronJob creates Jobs on a time-based schedule (cron syntax).
+# This example runs every minute and prints the current time.
+#
+# Cron format: "minute hour day-of-month month day-of-week"
+#   */1 * * * * = every minute
+#   0 */6 * * * = every 6 hours
+#   0 0 * * 1   = every Monday at midnight
+#
+# Docs: https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/
+# =============================================================
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: time-reporter
+spec:
+  schedule: "*/1 * * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: reporter
+            image: busybox:1.36
+            command: ["sh", "-c", "echo \"Report generated at $(date)\""]
+            resources:
+              requests:
+                cpu: 50m
+                memory: 32Mi
+              limits:
+                cpu: 100m
+                memory: 64Mi
+          restartPolicy: Never

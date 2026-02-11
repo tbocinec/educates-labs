@@ -1,0 +1,23 @@
+# =============================================================
+# pvc.yaml — A PersistentVolumeClaim requesting storage
+# =============================================================
+# A PVC is a request for storage. Kubernetes dynamically
+# provisions a PersistentVolume (PV) that satisfies this claim.
+#
+# Key fields:
+#   - accessModes: ReadWriteOnce = single node read/write
+#   - resources.requests.storage: how much storage to request
+#
+# Docs: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+# =============================================================
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi

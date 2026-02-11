@@ -1,0 +1,39 @@
+# =============================================================
+# backend-deployment.yaml — A backend app that returns its hostname
+# =============================================================
+# This Deployment creates a simple HTTP server using hashicorp/http-echo.
+# Each Pod responds with its own name, making it easy to see
+# load-balancing in action when accessed through a Service.
+# =============================================================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: echo
+        image: hashicorp/http-echo:0.2.3
+        args:
+        - "-text=Hello from backend"
+        - "-listen=:5678"
+        ports:
+        - containerPort: 5678
+        resources:
+          requests:
+            cpu: 50m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 64Mi

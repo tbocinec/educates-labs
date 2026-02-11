@@ -1,0 +1,25 @@
+# =============================================================
+# pod-labels.yaml — A Pod demonstrating labels and annotations
+# =============================================================
+# Labels are key-value pairs used to organize and select resources.
+# Annotations store non-identifying metadata (docs, contacts, etc.)
+# =============================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: labeled-app
+  labels:
+    app: web
+    environment: development
+    team: frontend
+    version: "1.0"
+  annotations:
+    description: "A demo pod showing labels and annotations"
+    owner: "workshop-user"
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.27
+    ports:
+    - containerPort: 80

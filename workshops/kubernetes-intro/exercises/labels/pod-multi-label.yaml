@@ -1,0 +1,46 @@
+# =============================================================
+# pod-multi-label.yaml — Multiple Pods with different labels
+# =============================================================
+# These Pods demonstrate how labels enable filtering
+# and selecting specific resources with kubectl.
+# =============================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frontend-v1
+  labels:
+    app: web
+    tier: frontend
+    version: "1.0"
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.27
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frontend-v2
+  labels:
+    app: web
+    tier: frontend
+    version: "2.0"
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.27
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: backend-v1
+  labels:
+    app: api
+    tier: backend
+    version: "1.0"
+spec:
+  containers:
+  - name: busybox
+    image: busybox:1.36
+    command: ["sh", "-c", "echo 'Backend API running'; sleep 3600"]

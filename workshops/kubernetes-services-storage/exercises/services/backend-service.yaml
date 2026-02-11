@@ -1,0 +1,26 @@
+# =============================================================
+# backend-service.yaml — A ClusterIP Service for the backend
+# =============================================================
+# A Service provides a stable IP address and DNS name for a set
+# of Pods selected by labels. ClusterIP is the default type —
+# it makes the Service accessible only within the cluster.
+#
+# Other Pods can reach this Service via:
+#   - http://backend-svc:5678          (same namespace)
+#   - http://backend-svc.<ns>.svc.cluster.local:5678  (cross-namespace)
+#
+# Docs: https://kubernetes.io/docs/concepts/services-networking/service/
+# =============================================================
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: backend
+  ports:
+  - protocol: TCP
+    port: 5678
+    targetPort: 5678

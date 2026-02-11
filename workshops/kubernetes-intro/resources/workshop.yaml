@@ -1,0 +1,75 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: "kubernetes-intro"
+spec:
+  title: "Kubernetes Fundamentals"
+  description: "A hands-on workshop covering Kubernetes basics — kubectl commands, Pods, Deployments with updates and rollbacks, ConfigMaps, Labels, Selectors, and Namespaces. Includes access to a Kubernetes Dashboard for visual cluster management."
+  url: https://github.com/tbocinec/educates-labs
+  difficulty: beginner
+  duration: 90m
+  publish:
+    image: "$(image_repository)/kubernetes-intro-files:$(workshop_version)"
+    files:
+    - directory:
+        path: .
+      includePaths:
+      - /workshop/**
+      - /exercises/**
+      - /README.md
+
+  workshop:
+    image: "ghcr.io/educates/educates-jdk21-environment:latest"
+    files:
+    - image:
+        url: "$(image_repository)/kubernetes-intro-files:$(workshop_version)"
+      includePaths:
+      - /workshop/**
+      - /exercises/**
+      - /README.md
+
+  session:
+    namespaces:
+      budget: x-large
+      security:
+        policy: baseline
+    resources:
+      memory: 1Gi
+    applications:
+      terminal:
+        enabled: true
+        layout: split
+      editor:
+        enabled: true
+      console:
+        enabled: true
+      docker:
+        enabled: false
+      registry:
+        enabled: false
+      vcluster:
+        enabled: false
+    objects:
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      metadata:
+        name: $(session_name)-cluster-reader
+      rules:
+      - apiGroups: [""]
+        resources: ["nodes", "namespaces"]
+        verbs: ["get", "list", "watch"]
+      - apiGroups: [""]
+        resources: ["services"]
+        verbs: ["get", "list"]
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: $(session_name)-cluster-reader
+      roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: $(session_name)-cluster-reader
+      subjects:
+      - kind: ServiceAccount
+        namespace: $(workshop_namespace)
+        name: $(service_account)
