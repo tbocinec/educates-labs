@@ -76,7 +76,7 @@ This is a typical application configuration file with database settings and logg
 Create a ConfigMap from this file:
 
 ```terminal:execute
-command: kubectl create configmap file-config --from-file=app-config.properties=exercises/configmap/app-config.properties
+command: kubectl create configmap file-config --from-file=app-config.properties=~/exercises/configmap/app-config.properties
 ```
 
 View the result:

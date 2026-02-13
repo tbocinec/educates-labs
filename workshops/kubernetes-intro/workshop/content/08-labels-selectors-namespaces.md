@@ -144,6 +144,8 @@ Your workshop namespace is `{{ session_namespace }}`. All `kubectl` commands in 
 
 ### Working Across Namespaces
 
+> **Note:** The following commands may not work in clusters where you don't have permissions to view resources in other namespaces (e.g., in shared environments like Educates). If a command returns a "Forbidden" error, that's expected — it means RBAC policies are restricting your access to your own namespace only.
+
 See Pods in a specific namespace:
 
 ```terminal:execute
