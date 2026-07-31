@@ -1,34 +1,34 @@
-# Environment Variables and Volumes
+# Environment variables a volumes
 
-Docker Compose provides powerful mechanisms for configuring services through environment variables and persisting data with volumes.
+Docker Compose poskytuje výkonné mechanizmy na konfiguráciu services pomocou environment variables a na perzistenciu dát pomocou volumes.
 
 ---
 
-## Environment Variables in Compose
+## Environment variables v Compose
 
-There are several ways to pass environment variables to your services.
+Existuje niekoľko spôsobov, ako odovzdať environment variables vašim services.
 
-### Inline `environment` Block
+### Inline `environment` blok
 
-The simplest approach — define variables directly in the Compose file. Copy the prepared file:
+Najjednoduchší prístup — definujte premenné priamo v Compose súbore. Skopírujte pripravený súbor:
 
 ```terminal:execute
 command: mkdir -p ~/env-volumes && cp ~/exercises/env-volumes/compose.yaml ~/env-volumes/
 ```
 
-**Open the Compose file in the Editor tab:**
+**Otvorte Compose súbor v záložke Editor:**
 
 ```editor:open-file
 file: ~/env-volumes/compose.yaml
 ```
 
-Notice the `environment` block with hardcoded values for `POSTGRES_USER`, `POSTGRES_PASSWORD`, and `POSTGRES_DB`.
+Všimnite si blok `environment` s natvrdo zadanými hodnotami pre `POSTGRES_USER`, `POSTGRES_PASSWORD` a `POSTGRES_DB`.
 
 ```terminal:execute
 command: cd ~/env-volumes && docker compose up -d
 ```
 
-**Verify the environment variables inside the container:**
+**Overte environment variables vnútri kontajnera:**
 
 ```terminal:execute
 command: cd ~/env-volumes && docker compose exec db env | grep POSTGRES
@@ -36,29 +36,29 @@ command: cd ~/env-volumes && docker compose exec db env | grep POSTGRES
 
 ---
 
-### Using `.env` Files
+### Používanie `.env` súborov
 
-Hardcoding passwords in your Compose file is not ideal. A better approach is using an **environment file**.
+Natvrdo zadávať heslá do vášho Compose súboru nie je ideálne. Lepší prístup je použiť **environment súbor**.
 
-**Copy the prepared `.env` file:**
+**Skopírujte pripravený `.env` súbor:**
 
 ```terminal:execute
 command: cp ~/exercises/env-volumes/env ~/env-volumes/.env
 ```
 
-**Open the `.env` file in the Editor tab to see its contents:**
+**Otvorte `.env` súbor v záložke Editor a pozrite si jeho obsah:**
 
 ```editor:open-file
 file: ~/env-volumes/.env
 ```
 
-**Now apply a Compose file that uses variable substitution instead of hardcoded values:**
+**Teraz aplikujte Compose súbor, ktorý namiesto natvrdo zadaných hodnôt používa variable substitution:**
 
 ```terminal:execute
 command: cp ~/exercises/env-volumes/compose-substitution.yaml ~/env-volumes/compose.yaml
 ```
 
-**Open the updated Compose file — notice the `${VARIABLE}` syntax:**
+**Otvorte aktualizovaný Compose súbor — všimnite si syntax `${VARIABLE}`:**
 
 ```editor:open-file
 file: ~/env-volumes/compose.yaml
@@ -69,18 +69,20 @@ file: ~/env-volumes/compose.yaml
 text: ${DB_USER}
 ```
 
-**Verify the resolved configuration:**
+**Overte vyriešenú konfiguráciu:**
 
 ```terminal:execute
 command: cd ~/env-volumes && docker compose config | grep -A5 environment
 ```
 
-The `${VARIABLE}` syntax reads from the `.env` file in the same directory. This is the **Compose-level** `.env` file — it's automatically loaded.
+Syntax `${VARIABLE}` číta zo súboru `.env` v tom istom adresári. Toto je **Compose-level** `.env` súbor — načíta sa automaticky.
 
-**Recreate the service with new variables:**
+**Znova vytvorte service s novými premennými:**
+
+> **Poznámka:** Volume `dbdata` sme predtým inicializovali s pôvodnými prihlasovacími údajmi (`myuser` / `workshop`). PostgreSQL inicializuje databázu iba pri prvom spustení nad prázdnym data adresárom, preto najprv pomocou `docker compose down -v` odstránime starý volume, aby sa nové prihlasovacie údaje (`admin` / `production`) skutočne použili.
 
 ```terminal:execute
-command: cd ~/env-volumes && docker compose up -d
+command: cd ~/env-volumes && docker compose down -v && docker compose up -d
 ```
 
 ```terminal:execute
@@ -89,29 +91,29 @@ command: cd ~/env-volumes && docker compose exec db env | grep POSTGRES
 
 ---
 
-### Using `env_file` Directive
+### Používanie direktívy `env_file`
 
-You can also point a service to a specific environment file using `env_file`. This loads the variables **into the container** (unlike `.env` which is used for Compose-level substitution).
+Service môžete tiež nasmerovať na konkrétny environment súbor pomocou `env_file`. Toto načíta premenné **do kontajnera** (na rozdiel od `.env`, ktorý sa používa na Compose-level substitúciu).
 
-**Copy the prepared `app.env` file:**
+**Skopírujte pripravený `app.env` súbor:**
 
 ```terminal:execute
 command: cp ~/exercises/env-volumes/app.env ~/env-volumes/
 ```
 
-**Open the `app.env` file in the Editor:**
+**Otvorte `app.env` súbor v Editore:**
 
 ```editor:open-file
 file: ~/env-volumes/app.env
 ```
 
-Now apply the updated Compose file that includes the `env_file` directive:
+Teraz aplikujte aktualizovaný Compose súbor, ktorý obsahuje direktívu `env_file`:
 
 ```terminal:execute
 command: cp ~/exercises/env-volumes/compose-envfile.yaml ~/env-volumes/compose.yaml
 ```
 
-**Open the updated Compose file and notice the `env_file` section:**
+**Otvorte aktualizovaný Compose súbor a všimnite si sekciu `env_file`:**
 
 ```editor:open-file
 file: ~/env-volumes/compose.yaml
@@ -126,55 +128,55 @@ text: env_file
 command: cd ~/env-volumes && docker compose up -d
 ```
 
-**Verify that both sources of variables are present:**
+**Overte, že sú prítomné oba zdroje premenných:**
 
 ```terminal:execute
 command: cd ~/env-volumes && docker compose exec db env | grep -E 'POSTGRES|APP_MODE|LOG_LEVEL|MAX_CONNECTIONS'
 ```
 
-> **Summary:** Use `.env` for Compose-level substitution (image tags, port numbers). Use `env_file` to load application configuration into containers.
+> **Zhrnutie:** Použite `.env` na Compose-level substitúciu (tagy images, čísla portov). Použite `env_file` na načítanie konfigurácie aplikácie do kontajnerov.
 
 ---
 
-## Volumes in Docker Compose
+## Volumes v Docker Compose
 
-Volumes persist data beyond the lifecycle of containers.
+Volumes zachovávajú dáta aj po skončení životného cyklu kontajnerov.
 
-### Named Volumes
+### Named volumes
 
-Our Compose file already uses a named volume `dbdata`. Let's verify data persistence.
+Náš Compose súbor už používa named volume `dbdata`. Overme si perzistenciu dát.
 
-**Insert some data into PostgreSQL:**
+**Vložte nejaké dáta do PostgreSQL:**
 
 ```terminal:execute
 command: cd ~/env-volumes && docker compose exec db psql -U admin -d production -c "CREATE TABLE notes (id SERIAL PRIMARY KEY, text VARCHAR(255)); INSERT INTO notes (text) VALUES ('Compose volumes work');"
 ```
 
-> **Note:** The credentials `admin` / `production` come from the `.env` file (`DB_USER`, `DB_NAME`). PostgreSQL doesn't require a password when connecting locally inside the container.
+> **Poznámka:** Prihlasovacie údaje `admin` / `production` pochádzajú zo súboru `.env` (`DB_USER`, `DB_NAME`). PostgreSQL nevyžaduje heslo pri lokálnom pripojení vnútri kontajnera.
 
 ```terminal:execute
 command: cd ~/env-volumes && docker compose down && docker compose up -d
 ```
 
-**Check that data survived:**
+**Skontrolujte, že dáta pretrvali:**
 
 ```terminal:execute
 command: cd ~/env-volumes && docker compose exec db psql -U admin -d production -c "SELECT * FROM notes;"
 ```
 
-The data is still there — the named volume persists across container restarts and recreation.
+Dáta sú stále tam — named volume pretrváva medzi reštartmi a opätovným vytvorením kontajnera.
 
 ---
 
-### Multiple Volumes
+### Viaceré volumes
 
-Services can use multiple volumes. Let's apply a version that adds a logs volume:
+Services môžu používať viacero volumes. Aplikujme verziu, ktorá pridáva volume pre logy:
 
 ```terminal:execute
 command: cp ~/exercises/env-volumes/compose-multi-volumes.yaml ~/env-volumes/compose.yaml
 ```
 
-**Open the file to see the new `dblogs` volume:**
+**Otvorte súbor a pozrite si nový volume `dblogs`:**
 
 ```editor:open-file
 file: ~/env-volumes/compose.yaml
@@ -189,47 +191,47 @@ text: dblogs
 command: cd ~/env-volumes && docker compose up -d
 ```
 
-**List volumes managed by this Compose project:**
+**Zobrazte volumes spravované týmto Compose projektom:**
 
 ```terminal:execute
 command: docker volume ls --filter "name=env-volumes"
 ```
 
-You should see both `env-volumes_dbdata` and `env-volumes_dblogs`.
+Mali by ste vidieť `env-volumes_dbdata` aj `env-volumes_dblogs`.
 
 ---
 
-### Removing Volumes
+### Odstraňovanie volumes
 
-**Remove containers but keep volumes (default):**
+**Odstráňte kontajnery, ale ponechajte volumes (predvolené):**
 
 ```terminal:execute
 command: cd ~/env-volumes && docker compose down
 ```
 
-**Verify volumes still exist:**
+**Overte, že volumes stále existujú:**
 
 ```terminal:execute
 command: docker volume ls --filter "name=env-volumes"
 ```
 
-**Remove containers AND volumes:**
+**Odstráňte kontajnery AJ volumes:**
 
 ```terminal:execute
 command: cd ~/env-volumes && docker compose down -v
 ```
 
-**Verify volumes are gone:**
+**Overte, že volumes sú preč:**
 
 ```terminal:execute
 command: docker volume ls --filter "name=env-volumes"
 ```
 
-> **Best Practice:** Use `docker compose down` during development to preserve data. Use `docker compose down -v` for clean resets or when you're done with a project.
+> **Osvedčený postup:** Počas vývoja používajte `docker compose down` na zachovanie dát. Použite `docker compose down -v` na čisté resetovanie alebo keď ste s projektom hotoví.
 
 ---
 
-## Cleanup
+## Vyčistenie
 
 ```terminal:execute
 command: cd ~/env-volumes && docker compose down -v 2>/dev/null; rm -rf ~/env-volumes

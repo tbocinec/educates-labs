@@ -1,126 +1,126 @@
-# Running Your First Container
+# Spustenie vášho prvého containera
 
-It's time to run your very first Docker container. In this section, you will pull an image from Docker Hub and start a container from it.
+Je čas spustiť váš úplne prvý Docker container. V tejto časti stiahnete image z Docker Hubu a spustíte z nej container.
 
 ---
 
-## Pulling an Image
+## Stiahnutie image (pull)
 
-Before running a container, you need an image. Let's start by pulling the official **Nginx** web server image:
+Skôr než spustíte container, potrebujete image. Začnime stiahnutím oficiálnej image webového servera **Nginx**:
 
 ```terminal:execute
 command: docker pull nginx:latest
 ```
 
-Docker downloads the image layer by layer from Docker Hub. Each layer is cached locally, so subsequent pulls of the same image (or images sharing layers) will be much faster.
+Docker sťahuje image vrstvu po vrstve (layer by layer) z Docker Hubu. Každá vrstva sa ukladá do lokálnej cache, takže ďalšie sťahovania tej istej image (alebo images zdieľajúcich vrstvy) budú oveľa rýchlejšie.
 
-**Verify the image was downloaded:**
+**Overte, že image bola stiahnutá:**
 
 ```terminal:execute
 command: docker images
 ```
 
-You should see the `nginx` image listed with its tag, image ID, creation date, and size.
+V zozname by ste mali vidieť image `nginx` spolu s jej tagom, image ID, dátumom vytvorenia a veľkosťou.
 
 ---
 
-## Running a Container in Foreground Mode
+## Spustenie containera v režime popredia (foreground)
 
-The simplest way to run a container is in **foreground** (attached) mode. This attaches your terminal's standard input, output, and error streams to the container process:
+Najjednoduchší spôsob, ako spustiť container, je v režime **popredia (foreground / attached)**. Tento režim pripojí štandardný vstup, výstup a chybový výstup vášho terminálu k procesu containera:
 
 ```terminal:execute
 command: docker run --name my-nginx nginx:latest
 ```
 
-You will see Nginx log output directly in your terminal. The container is running in the foreground and your terminal is blocked.
+Priamo v termináli uvidíte log výstup Nginxu. Container beží v popredí a váš terminál je zablokovaný.
 
-**Press `Ctrl+C`** in the terminal to stop the container.
+**Stlačte `Ctrl+C`** v termináli, čím container zastavíte.
 
 ---
 
-## Running a Container in Detached Mode
+## Spustenie containera v režime na pozadí (detached)
 
-In most real-world scenarios, you want containers to run in the **background** (detached mode) using the `-d` flag:
+Vo väčšine reálnych scenárov chcete, aby containers bežali na **pozadí (detached mode)** pomocou prepínača `-d`:
 
 ```terminal:execute
 command: docker run -d --name my-nginx-bg nginx:latest
 ```
 
-Docker prints the full **container ID** and returns control to your terminal immediately. The container continues running in the background.
+Docker vypíše úplné **container ID** a okamžite vráti kontrolu vášmu terminálu. Container ďalej beží na pozadí.
 
-**List running containers:**
+**Vypíšte bežiace containers:**
 
 ```terminal:execute
 command: docker ps
 ```
 
-You should see `my-nginx-bg` in the list with its container ID, image name, command, creation time, status, and exposed ports.
+V zozname by ste mali vidieť `my-nginx-bg` spolu s jeho container ID, názvom image, príkazom, časom vytvorenia, stavom (status) a zverejnenými portmi.
 
 ---
 
-## Understanding `docker ps` Output
+## Ako čítať výstup `docker ps`
 
-The `docker ps` command provides essential information about running containers:
+Príkaz `docker ps` poskytuje základné informácie o bežiacich containers:
 
-| Column | Description |
+| Stĺpec | Popis |
 |--------|-------------|
-| **CONTAINER ID** | A unique 12-character hash identifying the container |
-| **IMAGE** | The image the container was created from |
-| **COMMAND** | The default command the container is running |
-| **CREATED** | When the container was created |
-| **STATUS** | Current state (e.g., `Up 2 minutes`) |
-| **PORTS** | Port mappings between host and container |
-| **NAMES** | The human-readable name of the container |
+| **CONTAINER ID** | Unikátny 12-znakový hash identifikujúci container |
+| **IMAGE** | Image, z ktorej bol container vytvorený |
+| **COMMAND** | Predvolený príkaz, ktorý container spúšťa |
+| **CREATED** | Kedy bol container vytvorený |
+| **STATUS** | Aktuálny stav (napr. `Up 2 minutes`) |
+| **PORTS** | Mapovanie portov medzi hostiteľom a containerom |
+| **NAMES** | Ľudsky čitateľný názov containera |
 
-**List ALL containers** (including stopped ones):
+**Vypíšte VŠETKY containers** (vrátane zastavených):
 
 ```terminal:execute
 command: docker ps -a
 ```
 
-Notice that `my-nginx` (the foreground container you stopped earlier) appears here with a status of `Exited`.
+Všimnite si, že `my-nginx` (foreground container, ktorý ste zastavili predtým) sa tu objaví so stavom `Exited`.
 
 ---
 
-## Running a One-Shot Container
+## Spustenie jednorazového containera (one-shot)
 
-Not all containers run long-lived services. You can run a container that executes a single command and then exits:
+Nie všetky containers bežia ako dlhotrvajúce služby. Môžete spustiť container, ktorý vykoná jediný príkaz a potom skončí:
 
 ```terminal:execute
 command: docker run --rm alpine:latest echo "Hello from Docker!"
 ```
 
-Let's break down the flags:
-- `--rm` — Automatically removes the container after it exits (cleanup)
-- `alpine:latest` — A minimal Linux distribution image (only ~7 MB)
-- `echo "Hello from Docker!"` — The command to execute inside the container
+Rozoberme si jednotlivé prepínače:
+- `--rm` — automaticky odstráni container po jeho ukončení (cleanup)
+- `alpine:latest` — image minimálnej Linuxovej distribúcie (iba ~7 MB)
+- `echo "Hello from Docker!"` — príkaz, ktorý sa vykoná vo vnútri containera
 
-The container starts, prints the message, and is immediately removed.
+Container sa spustí, vypíše správu a okamžite sa odstráni.
 
-**Run another one-shot command to see the container's OS information:**
+**Spustite ďalší jednorazový príkaz na zobrazenie informácií o OS containera:**
 
 ```terminal:execute
 command: docker run --rm alpine:latest cat /etc/os-release
 ```
 
-This demonstrates that the container is running its own isolated Linux environment — Alpine Linux — regardless of what the host OS is running.
+Toto demonštruje, že container beží vo vlastnom izolovanom Linuxovom prostredí — Alpine Linux — bez ohľadu na to, aký OS beží na hostiteľovi.
 
 ---
 
-## Naming Containers
+## Pomenovanie containers
 
-By default, Docker assigns random names to containers (like `eager_newton` or `happy_darwin`). You've already seen the `--name` flag in action. Named containers are easier to manage:
+V predvolenom nastavení Docker prideľuje containers náhodné názvy (napríklad `eager_newton` alebo `happy_darwin`). Prepínač `--name` ste už videli v akcii. Pomenované containers sa spravujú jednoduchšie:
 
 ```terminal:execute
 command: docker run -d --name webserver nginx:latest
 ```
 
-You can now refer to this container by its name (`webserver`) instead of its container ID in all subsequent commands.
+Na tento container sa teraz môžete vo všetkých ďalších príkazoch odvolávať jeho názvom (`webserver`) namiesto container ID.
 
-**Verify it's running:**
+**Overte, že beží:**
 
 ```terminal:execute
 command: docker ps --filter "name=webserver"
 ```
 
-> **Note:** Container names must be unique. If a container with the same name already exists (even if stopped), you must remove it before creating a new one with that name.
+> **Poznámka:** Názvy containers musia byť unikátne. Ak container s rovnakým názvom už existuje (aj keď je zastavený), musíte ho pred vytvorením nového s tým istým názvom odstrániť.

@@ -3,7 +3,7 @@ pathways:
 
   paths:
     workshop:
-      title: "Introduction to Docker Compose"
+      title: "Úvod do Docker Compose"
       duration: 45m
 
       steps:
@@ -18,25 +18,25 @@ pathways:
 
 modules:
 - name: 00-workshop-overview
-  title: Workshop Overview
+  title: Prehľad workshopu
 
 - name: 01-compose-basics
-  title: What is Docker Compose?
+  title: Čo je Docker Compose?
 
 - name: 02-first-compose-file
-  title: Your First Compose File
+  title: Váš prvý Compose súbor
 
 - name: 03-multi-container-apps
-  title: Multi-Container Applications
+  title: Viackontajnerové aplikácie
 
 - name: 04-compose-commands
-  title: Essential Compose Commands
+  title: Základné Compose príkazy
 
 - name: 05-environment-and-volumes
-  title: Environment, Volumes & Networking
+  title: Environment, volumes a networking
 
 - name: 06-scaling-and-profiles
-  title: Scaling & Profiles
+  title: Škálovanie a profiles
 
 - name: 99-workshop-summary
-  title: Workshop Summary
+  title: Zhrnutie workshopu

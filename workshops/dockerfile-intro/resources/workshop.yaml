@@ -3,8 +3,8 @@ kind: Workshop
 metadata:
   name: "dockerfile-intro"
 spec:
-  title: "Building Docker Images with Dockerfiles"
-  description: "A hands-on workshop covering Dockerfile fundamentals — writing Dockerfiles, understanding image layers and caching, key instructions, best practices, and multi-stage builds for production-ready images."
+  title: "Vytváranie Docker images pomocou Dockerfile"
+  description: "Praktický workshop o základoch Dockerfile — písanie Dockerfile, pochopenie vrstiev (layers) image a cachingu, kľúčové inštrukcie, osvedčené postupy a multi-stage builds pre images pripravené do produkcie."
   url: https://github.com/tbocinec/educates-labs
   publish:
     image: "$(image_repository)/dockerfile-intro-files:$(workshop_version)"
@@ -28,9 +28,9 @@ spec:
 
   session:
     namespaces:
-      budget: x-large
+      budget: large
     resources:
-      memory: 2Gi
+      memory: 1536Mi
     applications:
       terminal:
         enabled: true
@@ -41,9 +41,9 @@ spec:
         enabled: false
       docker:
         enabled: true
-        memory: 4Gi
+        memory: 2Gi
       registry:
-        enabled: true
+        enabled: false
       vcluster:
         enabled: false
     ingresses:

@@ -1,28 +1,28 @@
-# Container Networking
+# Sieťovanie kontajnerov
 
-Docker provides built-in networking capabilities that allow containers to communicate with each other, with the host, and with external networks. Understanding networking is essential for building multi-container applications.
+Docker poskytuje zabudované sieťové možnosti, ktoré umožňujú kontajnerom komunikovať navzájom, s hostiteľom aj s externými sieťami. Pochopenie sieťovania je nevyhnutné pri budovaní viackontajnerových aplikácií.
 
 ---
 
-## Default Docker Networks
+## Predvolené Docker siete
 
-Docker creates three networks automatically:
+Docker automaticky vytvára tri siete:
 
 ```terminal:execute
 command: docker network ls
 ```
 
-| Network | Driver | Purpose |
+| Sieť | Driver | Účel |
 |---------|--------|---------|
-| **bridge** | bridge | Default network for containers. Provides NAT-based isolation. |
-| **host** | host | Container shares the host's network stack directly. |
-| **none** | null | No networking — complete isolation. |
+| **bridge** | bridge | Predvolená sieť pre kontajnery. Poskytuje izoláciu založenú na NAT. |
+| **host** | host | Kontajner priamo zdieľa sieťový stack hostiteľa. |
+| **none** | null | Žiadne sieťovanie — úplná izolácia. |
 
 ---
 
-## The Default Bridge Network
+## Predvolená bridge sieť
 
-When you run a container without specifying a network, it connects to the default **bridge** network:
+Keď spustíte kontajner bez zadania siete, pripojí sa k predvolenej sieti **bridge**:
 
 ```terminal:execute
 command: docker run -d --name net-demo1 alpine:latest sleep 3600
@@ -32,7 +32,7 @@ command: docker run -d --name net-demo1 alpine:latest sleep 3600
 command: docker run -d --name net-demo2 alpine:latest sleep 3600
 ```
 
-**Inspect the IP addresses:**
+**Preskúmajte IP adresy:**
 
 ```terminal:execute
 command: docker inspect net-demo1 --format '{{.NetworkSettings.IPAddress}}'
@@ -42,13 +42,13 @@ command: docker inspect net-demo1 --format '{{.NetworkSettings.IPAddress}}'
 command: docker inspect net-demo2 --format '{{.NetworkSettings.IPAddress}}'
 ```
 
-**Test connectivity between containers by IP address:**
+**Otestujte konektivitu medzi kontajnermi cez IP adresu:**
 
 ```terminal:execute
 command: docker exec net-demo1 ping -c 3 $(docker inspect net-demo2 --format '{{.NetworkSettings.IPAddress}}')
 ```
 
-Containers on the default bridge can communicate via IP addresses, but **DNS-based name resolution does not work** on the default bridge.
+Kontajnery na predvolenom bridge dokážu komunikovať cez IP adresy, ale **DNS rozlíšenie mien nefunguje** na predvolenom bridge.
 
 ```terminal:execute
 command: docker exec net-demo1 ping -c 1 net-demo2 2>&1 || echo "DNS resolution failed on default bridge — this is expected!"
@@ -56,17 +56,17 @@ command: docker exec net-demo1 ping -c 1 net-demo2 2>&1 || echo "DNS resolution 
 
 ---
 
-## User-Defined Bridge Networks
+## Používateľom definované bridge siete
 
-User-defined bridge networks provide **automatic DNS resolution** between containers — a critical feature for multi-container applications:
+Používateľom definované bridge siete poskytujú **automatické DNS rozlíšenie** medzi kontajnermi — kľúčová vlastnosť pre viackontajnerové aplikácie:
 
-**Create a custom network:**
+**Vytvorte vlastnú sieť:**
 
 ```terminal:execute
 command: docker network create workshop-net
 ```
 
-**Inspect the network:**
+**Preskúmajte sieť:**
 
 ```terminal:execute
 command: docker network inspect workshop-net
@@ -74,7 +74,7 @@ command: docker network inspect workshop-net
 
 ---
 
-## Running Containers on a Custom Network
+## Spúšťanie kontajnerov na vlastnej sieti
 
 ```terminal:execute
 command: docker rm -f net-demo1 net-demo2
@@ -88,88 +88,89 @@ command: docker run -d --name web-app --network workshop-net nginx:latest
 command: docker run -d --name test-client --network workshop-net alpine:latest sleep 3600
 ```
 
-**Test DNS resolution — containers can now reach each other by name:**
+**Otestujte DNS rozlíšenie — kontajnery sa teraz dokážu navzájom dosiahnuť podľa mena:**
 
 ```terminal:execute
 command: docker exec test-client ping -c 3 web-app
 ```
 
-**Access the Nginx service by container name:**
+**Pristúpte k službe Nginx podľa mena kontajnera:**
 
 ```terminal:execute
 command: docker exec test-client wget -qO- http://web-app:80 | head -5
 ```
 
-This is how multi-container applications communicate in Docker — services reference each other by container name, not by IP address.
+Takto komunikujú viackontajnerové aplikácie v Dockeri — služby sa navzájom referencujú podľa mena kontajnera, nie podľa IP adresy.
 
 ---
 
-## Connecting a Container to Multiple Networks
+## Pripojenie kontajnera k viacerým sieťam
 
-A container can be connected to multiple networks simultaneously:
+Kontajner môže byť pripojený k viacerým sieťam súčasne:
 
-**Create a second network:**
+**Vytvorte druhú sieť:**
 
 ```terminal:execute
 command: docker network create backend-net
 ```
 
-**Connect the web-app container to both networks:**
+**Pripojte kontajner web-app k obom sieťam:**
 
 ```terminal:execute
 command: docker network connect backend-net web-app
 ```
 
-**Verify the container has interfaces on both networks:**
+**Overte, že kontajner má rozhrania na oboch sieťach:**
 
-docker inspect web-app 
+```terminal:execute
+command: docker inspect web-app --format '{{range $net, $conf := .NetworkSettings.Networks}}{{$net}}: {{$conf.IPAddress}}{{println}}{{end}}'
+```
 
-
-The container now has an IP address on both `workshop-net` and `backend-net`.
+Kontajner má teraz IP adresu na `workshop-net` aj `backend-net`.
 
 ---
 
-## Network Isolation
+## Izolácia sietí
 
-Containers on different networks **cannot** communicate with each other unless explicitly connected:
+Kontajnery na rôznych sieťach spolu **nemôžu** komunikovať, pokiaľ nie sú explicitne prepojené:
 
 ```terminal:execute
 command: docker run -d --name isolated-app --network backend-net alpine:latest sleep 3600
 ```
 
-**Test: `isolated-app` (backend-net) cannot reach `test-client` (workshop-net):**
+**Test: `isolated-app` (backend-net) nedokáže dosiahnuť `test-client` (workshop-net):**
 
 ```terminal:execute
-command: docker exec isolated-app ping -c 1 -W 2 test-client 2>&1 
+command: docker exec isolated-app ping -c 1 -W 2 test-client 2>&1 || echo "Cannot reach test-client across networks — this is expected!"
 ```
 
-**But `isolated-app` can reach `web-app` (which is on both networks):**
+**Ale `isolated-app` dokáže dosiahnuť `web-app` (ktorý je na oboch sieťach):**
 
 ```terminal:execute
 command: docker exec isolated-app ping -c 3 web-app
 ```
 
-This network segmentation is a powerful security feature — you can isolate database containers from public-facing web servers while still allowing application containers to connect to both.
+Táto segmentácia sietí je mocná bezpečnostná vlastnosť — databázové kontajnery môžete izolovať od verejne prístupných webových serverov, pričom aplikačné kontajnery sa stále môžu pripojiť k obom.
 
 ---
 
-## Disconnecting from a Network
+## Odpojenie od siete
 
 ```terminal:execute
 command: docker network disconnect backend-net web-app
 ```
 
-**Verify the container is no longer on the backend network:**
+**Overte, že kontajner už nie je na sieti backend-net:**
 
-
-docker inspect web-app
-
+```terminal:execute
+command: docker inspect web-app --format '{{range $net, $conf := .NetworkSettings.Networks}}{{$net}}: {{$conf.IPAddress}}{{println}}{{end}}'
+```
 
 ---
 
-## Host Network Mode
+## Režim host network
 
-In **host** network mode, the container shares the host's network namespace directly — no port mapping is needed:
+V režime **host** kontajner priamo zdieľa sieťový namespace hostiteľa — nie je potrebné žiadne mapovanie portov:
 
 ```terminal:execute
 command: docker rm -f web-app
@@ -179,17 +180,17 @@ command: docker rm -f web-app
 command: docker run -d --name host-net-demo --network host nginx:latest
 ```
 
-**Nginx is now accessible directly on the host's port 80:**
+**Nginx je teraz prístupný priamo na porte 80 hostiteľa:**
 
 ```terminal:execute
 command: curl -s http://localhost:80 | head -3
 ```
 
-> **Note:** Host networking removes network isolation. The container has full access to the host's network interfaces. Use it only when the performance overhead of bridge networking is unacceptable.
+> **Poznámka:** Host networking odstraňuje sieťovú izoláciu. Kontajner má plný prístup k sieťovým rozhraniam hostiteľa. Používajte ho iba vtedy, keď je výkonnostná réžia bridge sieťovania neprijateľná.
 
 ---
 
-## Cleanup
+## Upratanie
 
 ```terminal:execute
 command: docker rm -f test-client isolated-app host-net-demo

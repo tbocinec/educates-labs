@@ -3,7 +3,7 @@ pathways:
 
   paths:
     workshop:
-      title: "Docker: Networking, Ports & Storage"
+      title: "Docker: Sieťovanie, porty a úložisko"
       duration: 60m
 
       steps:
@@ -16,19 +16,19 @@ pathways:
 
 modules:
 - name: 00-workshop-overview
-  title: Workshop Overview
+  title: Prehľad workshopu
 
 - name: 01-port-mapping
-  title: Port Mapping & Exposing Services
+  title: Mapovanie portov a sprístupnenie služieb
 
 - name: 02-volumes-and-data
-  title: Volumes & Persistent Data
+  title: Volumes a perzistentné dáta
 
 - name: 03-container-networking
-  title: Container Networking
+  title: Sieťovanie kontajnerov
 
 - name: 04-cleanup
-  title: Cleanup & Best Practices
+  title: Upratovanie a osvedčené postupy
 
 - name: 99-workshop-summary
-  title: Workshop Summary
+  title: Zhrnutie workshopu

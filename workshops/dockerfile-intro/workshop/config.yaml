@@ -3,7 +3,7 @@ pathways:
 
   paths:
     workshop:
-      title: "Building Docker Images with Dockerfiles"
+      title: "Vytváranie Docker images pomocou Dockerfile"
       duration: 60m
 
       steps:
@@ -18,25 +18,25 @@ pathways:
 
 modules:
 - name: 00-workshop-overview
-  title: Workshop Overview
+  title: Prehľad workshopu
 
 - name: 01-dockerfile-basics
-  title: Dockerfile Basics
+  title: Základy Dockerfile
 
 - name: 02-first-image
-  title: Building Your First Image
+  title: Vytvorenie prvého image
 
 - name: 03-image-layers
-  title: Understanding Image Layers
+  title: Pochopenie vrstiev image (layers)
 
 - name: 04-more-instructions
-  title: Dockerfile Instructions Deep Dive
+  title: Podrobný pohľad na inštrukcie Dockerfile
 
 - name: 05-best-practices
-  title: Best Practices
+  title: Osvedčené postupy
 
 - name: 06-multistage-builds
-  title: Multi-Stage Builds
+  title: Multi-stage builds
 
 - name: 99-workshop-summary
-  title: Workshop Summary
+  title: Zhrnutie workshopu

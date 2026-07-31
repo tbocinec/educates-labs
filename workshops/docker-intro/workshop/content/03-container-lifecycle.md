@@ -1,12 +1,12 @@
-# Container Lifecycle Management
+# Správa životného cyklu containera
 
-Understanding how to manage the container lifecycle is essential for day-to-day Docker operations. In this section, you will learn how to stop, start, restart, pause, and remove containers.
+Pochopenie toho, ako spravovať životný cyklus containera, je nevyhnutné pre každodennú prácu s Dockerom. V tejto časti sa naučíte, ako containers zastaviť, spustiť, reštartovať, pozastaviť (pause) a odstrániť.
 
 ---
 
-## Container States
+## Stavy containera
 
-A Docker container can exist in several states:
+Docker container sa môže nachádzať vo viacerých stavoch:
 
 ```
 Created ──► Running ──► Paused
@@ -18,43 +18,43 @@ Created ──► Running ──► Paused
             Stopped (Exited) ──► Removed
 ```
 
-| State | Description |
+| Stav | Popis |
 |-------|-------------|
-| **Created** | Container has been created but never started |
-| **Running** | Container is actively running its main process |
-| **Paused** | Container's processes are suspended (frozen in memory) |
-| **Stopped** | Container's main process has exited |
-| **Removed** | Container has been deleted from the system |
+| **Created** | Container bol vytvorený, ale nikdy nespustený |
+| **Running** | Container aktívne vykonáva svoj hlavný proces |
+| **Paused** | Procesy containera sú pozastavené (zmrazené v pamäti) |
+| **Stopped** | Hlavný proces containera skončil |
+| **Removed** | Container bol zo systému odstránený |
 
 ---
 
-## Stopping a Container
+## Zastavenie containera
 
-The `docker stop` command sends a **SIGTERM** signal to the container's main process, giving it a grace period (default: 10 seconds) to shut down cleanly. If the process doesn't stop within that window, Docker sends a **SIGKILL** to force termination:
+Príkaz `docker stop` pošle hlavnému procesu containera signál **SIGTERM** a poskytne mu určitý čas (predvolene 10 sekúnd) na čisté ukončenie. Ak sa proces v tomto okne nezastaví, Docker pošle signál **SIGKILL** na vynútené ukončenie:
 
 ```terminal:execute
 command: docker stop webserver
 ```
 
-**Verify the container has stopped:**
+**Overte, že sa container zastavil:**
 
 ```terminal:execute
 command: docker ps -a --filter "name=webserver"
 ```
 
-The status should now show `Exited`.
+Stav by teraz mal ukazovať `Exited`.
 
-You can customize the grace period with the `--time` or `-t` flag:
+Čas na čisté ukončenie môžete prispôsobiť prepínačom `--time` alebo `-t`:
 
 ```
-docker stop -t 30 webserver   # Wait 30 seconds before SIGKILL
+docker stop -t 30 webserver   # Počkaj 30 sekúnd pred SIGKILL
 ```
 
 ---
 
-## Starting a Stopped Container
+## Spustenie zastaveného containera
 
-A stopped container retains its filesystem and configuration. You can start it again:
+Zastavený container si zachováva svoj filesystem aj konfiguráciu. Môžete ho spustiť znova:
 
 ```terminal:execute
 command: docker start webserver
@@ -64,13 +64,13 @@ command: docker start webserver
 command: docker ps --filter "name=webserver"
 ```
 
-The container is running again with the same configuration, data, and container ID as before.
+Container opäť beží s rovnakou konfiguráciou, dátami a rovnakým container ID ako predtým.
 
 ---
 
-## Restarting a Container
+## Reštartovanie containera
 
-The `docker restart` command stops and then starts a container in a single operation. This is useful when a service needs a fresh start:
+Príkaz `docker restart` zastaví a následne spustí container v rámci jednej operácie. Hodí sa to vtedy, keď služba potrebuje čisté opätovné spustenie:
 
 ```terminal:execute
 command: docker restart webserver
@@ -80,15 +80,15 @@ command: docker restart webserver
 command: docker ps --filter "name=webserver"
 ```
 
-The container's **uptime** resets, but the container ID and all configurations remain the same.
+Čas behu (**uptime**) containera sa vynuluje, ale container ID a všetky konfigurácie zostávajú rovnaké.
 
 ---
 
-## Pausing and Unpausing a Container
+## Pozastavenie a obnovenie containera (pause / unpause)
 
-Pausing a container **freezes all processes** using the Linux cgroup freezer. The container remains in memory but consumes no CPU cycles. This is useful for temporarily suspending a workload without losing its state:
+Pozastavenie containera **zmrazí všetky procesy** pomocou Linux cgroup freezer. Container zostáva v pamäti, ale nespotrebúva žiadne CPU cykly. Hodí sa to na dočasné pozastavenie záťaže bez straty jej stavu:
 
-**Pause the container:**
+**Pozastavte container:**
 
 ```terminal:execute
 command: docker pause webserver
@@ -98,9 +98,9 @@ command: docker pause webserver
 command: docker ps --filter "name=webserver"
 ```
 
-Notice the status shows `(Paused)`.
+Všimnite si, že stav ukazuje `(Paused)`.
 
-**Unpause the container:**
+**Obnovte container:**
 
 ```terminal:execute
 command: docker unpause webserver
@@ -110,25 +110,25 @@ command: docker unpause webserver
 command: docker ps --filter "name=webserver"
 ```
 
-The container resumes execution exactly where it left off.
+Container obnoví svoju činnosť presne tam, kde ju prerušil.
 
 ---
 
-## Killing a Container
+## Vynútené ukončenie containera (kill)
 
-If a container is unresponsive and `docker stop` takes too long, you can forcefully kill it with `docker kill`, which sends **SIGKILL** immediately (no grace period):
+Ak container neodpovedá a `docker stop` trvá príliš dlho, môžete ho vynútene ukončiť príkazom `docker kill`, ktorý okamžite pošle signál **SIGKILL** (bez času na čisté ukončenie):
 
 ```terminal:execute
 command: docker kill my-nginx-bg
 ```
 
-> **Tip:** Use `docker stop` for graceful shutdowns and `docker kill` only when necessary. Forceful termination can lead to data corruption in some applications.
+> **Tip:** Na čisté ukončenie používajte `docker stop` a `docker kill` iba vtedy, keď je to nevyhnutné. Vynútené ukončenie môže v niektorých aplikáciách viesť k poškodeniu dát.
 
 ---
 
-## Removing Containers
+## Odstraňovanie containers
 
-Stopped containers still consume disk space. To remove a stopped container:
+Zastavené containers stále zaberajú miesto na disku. Zastavený container odstránite takto:
 
 ```terminal:execute
 command: docker rm my-nginx
@@ -138,15 +138,15 @@ command: docker rm my-nginx
 command: docker rm my-nginx-bg
 ```
 
-**Remove a running container** (force removal):
+**Odstránenie bežiaceho containera** (vynútené odstránenie):
 
-You cannot remove a running container by default. Use the `-f` (force) flag to stop and remove it in one step:
+Bežiaci container nie je možné odstrániť štandardným spôsobom. Prepínačom `-f` (force) ho zastavíte a odstránite v jednom kroku:
 
 ```terminal:execute
 command: docker rm -f webserver
 ```
 
-**Verify all containers are cleaned up:**
+**Overte, že všetky containers sú vyčistené:**
 
 ```terminal:execute
 command: docker ps -a
@@ -154,9 +154,9 @@ command: docker ps -a
 
 ---
 
-## Automatic Container Removal
+## Automatické odstránenie containera
 
-You've already seen the `--rm` flag, which automatically removes a container when it exits. This is especially useful for short-lived or one-shot containers:
+Prepínač `--rm` ste už videli — automaticky odstráni container po jeho ukončení. Obzvlášť užitočný je pre krátkodobé alebo jednorazové containers:
 
 ```terminal:execute
 command: docker run --rm --name temp-container alpine:latest echo "I will be removed automatically"
@@ -166,20 +166,20 @@ command: docker run --rm --name temp-container alpine:latest echo "I will be rem
 command: docker ps -a --filter "name=temp-container"
 ```
 
-The container no longer exists — it was removed the instant it exited.
+Container už neexistuje — bol odstránený v okamihu, keď skončil.
 
 ---
 
-## Quick Reference: Lifecycle Commands
+## Rýchly prehľad: príkazy životného cyklu
 
-| Command | Description |
+| Príkaz | Popis |
 |---------|-------------|
-| `docker run` | Create and start a container |
-| `docker stop` | Gracefully stop a running container |
-| `docker start` | Start a stopped container |
-| `docker restart` | Stop and start a container |
-| `docker pause` | Freeze a container's processes |
-| `docker unpause` | Resume a paused container |
-| `docker kill` | Forcefully stop a container |
-| `docker rm` | Remove a stopped container |
-| `docker rm -f` | Force-remove a running container |
+| `docker run` | Vytvorí a spustí container |
+| `docker stop` | Čisto zastaví bežiaci container |
+| `docker start` | Spustí zastavený container |
+| `docker restart` | Zastaví a znova spustí container |
+| `docker pause` | Zmrazí procesy containera |
+| `docker unpause` | Obnoví pozastavený container |
+| `docker kill` | Vynútene zastaví container |
+| `docker rm` | Odstráni zastavený container |
+| `docker rm -f` | Vynútene odstráni bežiaci container |

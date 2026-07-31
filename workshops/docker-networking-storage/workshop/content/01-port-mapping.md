@@ -1,12 +1,12 @@
-# Port Mapping & Exposing Services
+# Mapovanie portov a sprístupnenie služieb
 
-Containers run in an isolated network by default. To make a containerized service accessible from the host machine (or the outside world), you need to **map** container ports to host ports.
+Kontajnery bežia predvolene v izolovanej sieti. Aby bola služba v kontajneri prístupná z hostiteľského stroja (alebo z vonkajšieho sveta), musíte **namapovať** porty kontajnera na porty hostiteľa.
 
 ---
 
-## Understanding Port Mapping
+## Ako funguje mapovanie portov
 
-When a container runs a service (e.g., a web server on port 80), that port is only accessible **inside** the container's network namespace. Port mapping creates a bridge between the host network and the container network:
+Keď v kontajneri beží služba (napr. webový server na porte 80), tento port je prístupný iba **vnútri** sieťového namespace kontajnera. Port mapping vytvorí mostík medzi sieťou hostiteľa a sieťou kontajnera:
 
 ```
 Host Machine                    Container
@@ -21,35 +21,35 @@ Host Machine                    Container
 
 ---
 
-## Basic Port Mapping with `-p`
+## Základné mapovanie portov pomocou `-p`
 
-The `-p` flag maps a **host port** to a **container port**:
+Prepínač `-p` mapuje **host port** na **container port**:
 
 ```
 -p HOST_PORT:CONTAINER_PORT
 ```
 
-**Run Nginx and map host port 8080 to container port 80:**
+**Spustite Nginx a namapujte host port 8080 na container port 80:**
 
 ```terminal:execute
 command: docker run -d --name web-port-demo -p 8080:80 nginx:latest
 ```
 
-**Test the service from the host:**
+**Otestujte službu z hostiteľa:**
 
 ```terminal:execute
 command: curl -s http://localhost:8080 | head -5
 ```
 
-You should see the Nginx welcome HTML. The request flows from `localhost:8080` on the host to port `80` inside the container.
+Mali by ste vidieť uvítacie HTML Nginxu. Požiadavka putuje z `localhost:8080` na hostiteľovi na port `80` vnútri kontajnera.
 
-You can also open the **Nginx** tab at the top of the workshop to see the Nginx welcome page directly in your browser.
+Môžete tiež otvoriť záložku **Nginx** v hornej časti workshopu a zobraziť si uvítaciu stránku Nginxu priamo v prehliadači.
 
 ---
 
-## Mapping Multiple Ports
+## Mapovanie viacerých portov
 
-You can map multiple ports by specifying `-p` multiple times:
+Viacero portov namapujete zadaním prepínača `-p` viackrát. Najprv odstráňme predchádzajúci kontajner, aby sa uvoľnil host port 8080:
 
 ```terminal:execute
 command: docker rm -f web-port-demo
@@ -59,7 +59,7 @@ command: docker rm -f web-port-demo
 command: docker run -d --name multi-port-demo -p 8080:80 -p 8443:443 nginx:latest
 ```
 
-**Verify both mappings:**
+**Overte obidve mapovania:**
 
 ```terminal:execute
 command: docker port multi-port-demo
@@ -67,51 +67,51 @@ command: docker port multi-port-demo
 
 ---
 
-## Random Host Port Assignment
+## Priradenie náhodného host portu
 
-If you don't specify a host port, Docker assigns a **random available port** using the `-p` flag with only the container port:
+Ak host port neuvediete, Docker priradí **náhodný voľný port** — prepínaču `-p` zadáte iba container port:
 
 ```terminal:execute
 command: docker run -d --name random-port-demo -p 80 nginx:latest
 ```
 
-**Find the assigned port:**
+**Zistite priradený port:**
 
 ```terminal:execute
 command: docker port random-port-demo
 ```
 
-**Or use `docker ps` to see it in the PORTS column:**
+**Alebo použite `docker ps` a pozrite si stĺpec PORTS:**
 
 ```terminal:execute
 command: docker ps --filter "name=random-port-demo"
 ```
 
-This is useful when running multiple instances of the same service and you want Docker to handle port conflicts automatically.
+Toto je užitočné, keď spúšťate viacero inštancií tej istej služby a chcete, aby Docker riešil konflikty portov automaticky.
 
 ---
 
-## Binding to a Specific Interface
+## Naviazanie na konkrétne rozhranie
 
-By default, port mappings bind to **all interfaces** (`0.0.0.0`). You can restrict the binding to a specific IP address:
+Predvolene sa mapovania portov naviažu na **všetky rozhrania** (`0.0.0.0`). Naviazanie môžete obmedziť na konkrétnu IP adresu:
 
 ```
 docker run -d -p 127.0.0.1:8080:80 nginx:latest
 ```
 
-This makes the service accessible only via `localhost` — not from external machines. This is a good security practice for services that should not be publicly exposed.
+Vďaka tomu je služba prístupná iba cez `localhost` — nie z externých strojov. Ide o dobrý bezpečnostný postup pre služby, ktoré by nemali byť verejne prístupné.
 
 ---
 
-## Practical Example: Running Multiple Web Servers
+## Praktický príklad: spustenie viacerých webových serverov
 
-Let's run three Nginx instances on different host ports to demonstrate that container port 80 can be mapped to different host ports:
+Spustime tri inštancie Nginxu na rôznych host portoch, aby sme ukázali, že container port 80 sa dá namapovať na rôzne host porty:
 
 ```terminal:execute
 command: docker run -d --name web1 -p 8081:80 nginx:latest && docker run -d --name web2 -p 8082:80 nginx:latest && docker run -d --name web3 -p 8083:80 nginx:latest
 ```
 
-**Customize each web server's content:**
+**Prispôsobte obsah každého webového servera:**
 
 ```terminal:execute
 command: docker exec web1 bash -c 'echo "<h1>Server 1</h1>" > /usr/share/nginx/html/index.html'
@@ -125,19 +125,19 @@ command: docker exec web2 bash -c 'echo "<h1>Server 2</h1>" > /usr/share/nginx/h
 command: docker exec web3 bash -c 'echo "<h1>Server 3</h1>" > /usr/share/nginx/html/index.html'
 ```
 
-**Verify each server returns different content:**
+**Overte, že každý server vracia iný obsah:**
 
 ```terminal:execute
 command: echo "--- Server 1 ---" && curl -s http://localhost:8081 && echo "--- Server 2 ---" && curl -s http://localhost:8082 && echo "--- Server 3 ---" && curl -s http://localhost:8083
 ```
 
-All three containers use the same internal port (80) but are accessible on different host ports.
+Všetky tri kontajnery používajú ten istý interný port (80), ale sú prístupné na rôznych host portoch.
 
 ---
 
 
-## Cleanup
+## Upratanie
 
 ```terminal:execute
-command: docker rm -f web-port-demo multi-port-demo random-port-demo web1 web2 web3
+command: docker rm -f multi-port-demo random-port-demo web1 web2 web3
 ```

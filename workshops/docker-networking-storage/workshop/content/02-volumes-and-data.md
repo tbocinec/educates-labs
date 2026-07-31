@@ -1,24 +1,24 @@
-# Volumes & Persistent Data
+# Volumes a perzistentné dáta
 
-By default, all data inside a container is stored in its **writable layer** and is lost when the container is removed. **Volumes** provide a mechanism for persisting data beyond the container lifecycle and for sharing data between containers.
+Predvolene sa všetky dáta vnútri kontajnera ukladajú do jeho **zapisovateľnej vrstvy** (writable layer) a pri odstránení kontajnera sa stratia. **Volumes** poskytujú mechanizmus na uchovanie dát nad rámec životného cyklu kontajnera a na zdieľanie dát medzi kontajnermi.
 
 ---
 
-## The Problem: Ephemeral Container Storage
+## Problém: dočasné úložisko kontajnera
 
-Let's demonstrate why volumes are necessary:
+Ukážme si, prečo sú volumes potrebné:
 
 ```terminal:execute
 command: docker run -d --name ephemeral-demo nginx:latest
 ```
 
-**Write some data inside the container:**
+**Zapíšte nejaké dáta vnútri kontajnera:**
 
 ```terminal:execute
 command: docker exec ephemeral-demo bash -c 'echo "Important data" > /tmp/mydata.txt && cat /tmp/mydata.txt'
 ```
 
-**Remove and recreate the container:**
+**Odstráňte a znovu vytvorte kontajner:**
 
 ```terminal:execute
 command: docker rm -f ephemeral-demo
@@ -28,13 +28,13 @@ command: docker rm -f ephemeral-demo
 command: docker run -d --name ephemeral-demo nginx:latest
 ```
 
-**Try to read the data:**
+**Skúste prečítať dáta:**
 
 ```terminal:execute
 command: docker exec ephemeral-demo cat /tmp/mydata.txt 2>&1 || echo "File not found — data was lost!"
 ```
 
-The file is gone. This is expected behavior — the new container starts from a clean image layer.
+Súbor je preč. Toto je očakávané správanie — nový kontajner štartuje z čistej vrstvy image.
 
 ```terminal:execute
 command: docker rm -f ephemeral-demo
@@ -42,23 +42,23 @@ command: docker rm -f ephemeral-demo
 
 ---
 
-## Docker Volumes
+## Docker volumes
 
-A **Docker volume** is a directory managed by Docker, stored outside the container's filesystem on the host. Volumes survive container removal, can be shared between containers, and offer better performance than bind mounts.
+**Docker volume** je adresár spravovaný Dockerom, uložený mimo súborového systému kontajnera na hostiteľovi. Volumes prežijú odstránenie kontajnera, dajú sa zdieľať medzi kontajnermi a ponúkajú lepší výkon než bind mounts.
 
-### Creating a Volume
+### Vytvorenie volume
 
 ```terminal:execute
 command: docker volume create workshop-data
 ```
 
-**List all volumes:**
+**Vypíšte všetky volumes:**
 
 ```terminal:execute
 command: docker volume ls
 ```
 
-**Inspect the volume to see where it's stored on the host:**
+**Preskúmajte volume, aby ste zistili, kde je uložený na hostiteľovi:**
 
 ```terminal:execute
 command: docker volume inspect workshop-data
@@ -66,9 +66,9 @@ command: docker volume inspect workshop-data
 
 ---
 
-## Using a Volume with a Container
+## Použitie volume s kontajnerom
 
-Mount a volume into a container using the `-v` flag:
+Volume pripojíte do kontajnera pomocou prepínača `-v`:
 
 ```
 -v VOLUME_NAME:CONTAINER_PATH
@@ -78,56 +78,56 @@ Mount a volume into a container using the `-v` flag:
 command: docker run -d --name vol-demo1 -v workshop-data:/app/data alpine:latest sh -c 'echo "Hello from container 1" > /app/data/message.txt && sleep 3600'
 ```
 
-**Verify the data was written:**
+**Overte, že sa dáta zapísali:**
 
 ```terminal:execute
 command: docker exec vol-demo1 cat /app/data/message.txt
 ```
 
-**Now run a second container sharing the same volume:**
+**Teraz spustite druhý kontajner zdieľajúci ten istý volume:**
 
 ```terminal:execute
 command: docker run --rm -v workshop-data:/app/data alpine:latest cat /app/data/message.txt
 ```
 
-The second container reads the data written by the first — volumes enable **data sharing between containers**.
+Druhý kontajner prečíta dáta zapísané prvým — volumes umožňujú **zdieľanie dát medzi kontajnermi**.
 
 ---
 
-## Data Persistence Across Container Removal
+## Perzistencia dát po odstránení kontajnera
 
-Let's prove that volume data survives container removal:
+Dokážme, že dáta vo volume prežijú odstránenie kontajnera:
 
 ```terminal:execute
 command: docker rm -f vol-demo1
 ```
 
-**Run a new container and check if the data is still there:**
+**Spustite nový kontajner a skontrolujte, či sú dáta stále k dispozícii:**
 
 ```terminal:execute
 command: docker run --rm -v workshop-data:/app/data alpine:latest cat /app/data/message.txt
 ```
 
-The data persists because it lives in the volume, not in the container.
+Dáta pretrvávajú, pretože žijú vo volume, nie v kontajneri.
 
 ---
 
-## Copying Files Into Containers with `docker cp`
+## Kopírovanie súborov do kontajnerov pomocou `docker cp`
 
-Another way to inject files into a running container is the `docker cp` command. This works by copying files directly between the host and the container's filesystem:
+Ďalším spôsobom, ako vložiť súbory do bežiaceho kontajnera, je príkaz `docker cp`. Funguje tak, že kopíruje súbory priamo medzi hostiteľom a súborovým systémom kontajnera:
 
 ```
 docker cp HOST_PATH CONTAINER:CONTAINER_PATH
 docker cp CONTAINER:CONTAINER_PATH HOST_PATH
 ```
 
-**Start an Nginx container:**
+**Spustite Nginx kontajner:**
 
 ```terminal:execute
 command: docker run -d --name cp-demo -p 8090:80 nginx:latest
 ```
 
-**Create a custom HTML file and copy it into the container:**
+**Vytvorte vlastný HTML súbor a skopírujte ho do kontajnera:**
 
 ```terminal:execute
 command: echo "<h1>Custom Page via docker cp</h1>" > /tmp/custom-index.html
@@ -137,35 +137,35 @@ command: echo "<h1>Custom Page via docker cp</h1>" > /tmp/custom-index.html
 command: docker cp /tmp/custom-index.html cp-demo:/usr/share/nginx/html/index.html
 ```
 
-**Verify the custom page is served:**
+**Overte, že sa doručuje vlastná stránka:**
 
 ```terminal:execute
 command: curl -s http://localhost:8090
 ```
 
-You should see your custom HTML content.
+Mali by ste vidieť svoj vlastný HTML obsah.
 
-**Copy a file out of the container to the host:**
+**Skopírujte súbor z kontajnera na hostiteľa:**
 
 ```terminal:execute
 command: docker cp cp-demo:/etc/nginx/nginx.conf /tmp/nginx.conf && cat /tmp/nginx.conf | head -10
 ```
 
-This is useful for extracting configuration files or logs from a container for inspection.
+Toto je užitočné na vytiahnutie konfiguračných súborov alebo logov z kontajnera na preskúmanie.
 
-> **Note:** `docker cp` creates a one-time copy — changes to the source are **not** automatically reflected. For live synchronization, **bind mounts** are used (mapping a host directory directly into the container with `-v /host/path:/container/path`). Bind mounts are commonly used in local development environments where the Docker daemon has direct access to the host filesystem.
+> **Poznámka:** `docker cp` vytvorí jednorazovú kópiu — zmeny v zdroji sa **automaticky** neprejavia. Pre živú synchronizáciu sa používajú **bind mounts** (namapovanie adresára hostiteľa priamo do kontajnera pomocou `-v /host/path:/container/path`). Bind mounts sa bežne používajú v lokálnych vývojových prostrediach, kde má Docker daemon priamy prístup k súborovému systému hostiteľa.
 
 ---
 
-## Bind Mounts (Theory)
+## Bind mounts (teória)
 
-A **bind mount** maps a specific directory on the host filesystem directly into a container:
+**Bind mount** mapuje konkrétny adresár na súborovom systéme hostiteľa priamo do kontajnera:
 
 ```
 docker run -v /host/path:/container/path nginx:latest
 ```
 
-For example, to mount a local project directory as the Nginx web root:
+Napríklad na pripojenie lokálneho adresára projektu ako web root Nginxu:
 
 ```
 mkdir -p /tmp/my-site
@@ -173,28 +173,28 @@ echo "<h1>Hello from Host</h1>" > /tmp/my-site/index.html
 docker run -d -p 8080:80 -v /tmp/my-site:/usr/share/nginx/html:ro nginx:latest
 ```
 
-The `:ro` suffix makes the mount **read-only** inside the container. Any changes to files on the host are reflected inside the container **instantly** — there is no copy involved. This makes bind mounts ideal for development workflows where you want to edit code on the host and see updates in real time.
+Prípona `:ro` robí mount **read-only** vnútri kontajnera. Akékoľvek zmeny súborov na hostiteľovi sa vnútri kontajnera prejavia **okamžite** — nedochádza k žiadnemu kopírovaniu. Práve preto sú bind mounts ideálne pre vývojové postupy, kde chcete upravovať kód na hostiteľovi a vidieť zmeny v reálnom čase.
 
-> **Note:** Bind mounts cannot be demonstrated in this workshop environment because Docker runs as Docker-in-Docker (DinD) — the Docker daemon operates in a separate container and does not have access to the session's filesystem. On a standard Docker installation (e.g., your laptop), bind mounts work as described above.
+> **Poznámka:** Bind mounts nie je možné v tomto prostredí workshopu predviesť, pretože Docker beží ako Docker-in-Docker (DinD) — Docker daemon beží v samostatnom kontajneri a nemá prístup k súborovému systému session. Na štandardnej inštalácii Dockeru (napr. na vašom notebooku) bind mounts fungujú tak, ako je opísané vyššie.
 
 ---
 
-## Volumes vs Bind Mounts vs docker cp
+## Volumes vs bind mounts vs docker cp
 
-| Feature | Volume | Bind Mount | docker cp |
+| Vlastnosť | Volume | Bind Mount | docker cp |
 |---------|--------|------------|-----------|
-| **Managed by Docker** | Yes | No | N/A |
-| **Live sync** | Yes | Yes | No (one-time copy) |
-| **Portability** | High | Low — depends on host paths | High |
-| **Performance** | Optimized by Docker | Depends on host filesystem | N/A |
-| **Use case** | Databases, persistent data | Development, config files | Quick file injection/extraction |
-| **Backup** | Via Docker CLI or volume drivers | Standard filesystem tools | Manual |
+| **Spravované Dockerom** | Áno | Nie | N/A |
+| **Živá synchronizácia** | Áno | Áno | Nie (jednorazová kópia) |
+| **Prenositeľnosť** | Vysoká | Nízka — závisí od ciest na hostiteľovi | Vysoká |
+| **Výkon** | Optimalizovaný Dockerom | Závisí od súborového systému hostiteľa | N/A |
+| **Použitie** | Databázy, perzistentné dáta | Vývoj, konfiguračné súbory | Rýchle vloženie/vytiahnutie súboru |
+| **Zálohovanie** | Cez Docker CLI alebo volume drivery | Štandardné nástroje súborového systému | Manuálne |
 
 ---
 
-## Practical Example: PostgreSQL with Persistent Storage
+## Praktický príklad: PostgreSQL s perzistentným úložiskom
 
-Let's run PostgreSQL with a named volume so data survives container restarts:
+Spustime PostgreSQL s pomenovaným volume, aby dáta prežili reštarty kontajnera:
 
 ```terminal:execute
 command: docker volume create pg-data
@@ -204,13 +204,13 @@ command: docker volume create pg-data
 command: docker run -d --name pg-vol-demo -e POSTGRES_PASSWORD=workshop -v pg-data:/var/lib/postgresql/data postgres:17
 ```
 
-**Wait for initialization and create some data:**
+**Počkajte na inicializáciu a vytvorte nejaké dáta:**
 
 ```terminal:execute
 command: sleep 5 && docker exec pg-vol-demo psql -U postgres -c "CREATE TABLE demo (id serial, name text); INSERT INTO demo (name) VALUES ('persisted data');"
 ```
 
-**Remove the container and recreate it:**
+**Odstráňte kontajner a znovu ho vytvorte:**
 
 ```terminal:execute
 command: docker rm -f pg-vol-demo
@@ -220,17 +220,17 @@ command: docker rm -f pg-vol-demo
 command: docker run -d --name pg-vol-demo -e POSTGRES_PASSWORD=workshop -v pg-data:/var/lib/postgresql/data postgres:17
 ```
 
-**Verify the data survived:**
+**Overte, že dáta prežili:**
 
 ```terminal:execute
 command: sleep 5 && docker exec pg-vol-demo psql -U postgres -c "SELECT * FROM demo;"
 ```
 
-The data is intact. This is exactly how databases should be run in Docker.
+Dáta sú neporušené. Presne takto by sa mali databázy v Dockeri prevádzkovať.
 
 ---
 
-## Cleanup
+## Upratanie
 
 ```terminal:execute
 command: docker rm -f cp-demo pg-vol-demo
@@ -242,8 +242,4 @@ command: docker volume rm workshop-data pg-data
 
 ```terminal:execute
 command: rm -f /tmp/custom-index.html /tmp/nginx.conf
-```
-
-```terminal:execute
-command: rm -rf /tmp/workshop-bind
 ```

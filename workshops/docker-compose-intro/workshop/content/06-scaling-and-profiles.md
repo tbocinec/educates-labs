@@ -1,56 +1,56 @@
-# Scaling and Profiles
+# Škálovanie a profiles
 
-Docker Compose lets you run multiple instances of a service and selectively enable services using profiles.
+Docker Compose vám umožňuje spúšťať viacero inštancií service a selektívne povoliť services pomocou profiles.
 
 ---
 
-## Scaling Services
+## Škálovanie services
 
-You can run multiple replicas of a service using the `--scale` flag.
+Pomocou flagu `--scale` môžete spustiť viacero replík service.
 
-### Setting Up a Scalable Service
+### Príprava škálovateľnej service
 
-Copy the prepared Compose file:
+Skopírujte pripravený Compose súbor:
 
 ```terminal:execute
 command: mkdir -p ~/scaling-demo && cp ~/exercises/scaling-demo/compose.yaml ~/scaling-demo/
 ```
 
-**Open the Compose file in the Editor tab:**
+**Otvorte Compose súbor v záložke Editor:**
 
 ```editor:open-file
 file: ~/scaling-demo/compose.yaml
 ```
 
-### Scaling Up
+### Škálovanie nahor
 
-**Start with 3 worker instances:**
+**Začnite s 3 inštanciami worker:**
 
 ```terminal:execute
 command: cd ~/scaling-demo && docker compose up -d --scale worker=3
 ```
 
-**View all running containers:**
+**Zobrazte všetky bežiace kontajnery:**
 
 ```terminal:execute
 command: cd ~/scaling-demo && docker compose ps
 ```
 
-You should see 3 `worker` containers and 1 `web` container.
+Mali by ste vidieť 3 kontajnery `worker` a 1 kontajner `web`.
 
-**Check logs from all workers:**
+**Skontrolujte logy zo všetkých workerov:**
 
 ```terminal:execute
 command: cd ~/scaling-demo && docker compose logs worker
 ```
 
-Each worker has a unique hostname.
+Každý worker má jedinečný hostname.
 
 ---
 
-### Scaling Up and Down Dynamically
+### Dynamické škálovanie nahor a nadol
 
-**Scale workers up to 5:**
+**Naškálujte workerov nahor na 5:**
 
 ```terminal:execute
 command: cd ~/scaling-demo && docker compose up -d --scale worker=5
@@ -60,7 +60,7 @@ command: cd ~/scaling-demo && docker compose up -d --scale worker=5
 command: cd ~/scaling-demo && docker compose ps
 ```
 
-**Scale back down to 2:**
+**Naškálujte späť nadol na 2:**
 
 ```terminal:execute
 command: cd ~/scaling-demo && docker compose up -d --scale worker=2
@@ -70,27 +70,27 @@ command: cd ~/scaling-demo && docker compose up -d --scale worker=2
 command: cd ~/scaling-demo && docker compose ps
 ```
 
-Compose gracefully stops the extra containers.
+Compose elegantne zastaví nadbytočné kontajnery.
 
-> **Note:** You cannot scale a service that has a `container_name` set, or that uses a host port mapping (e.g., `ports: "8080:80"`), because multiple containers would conflict on the same name/port.
+> **Poznámka:** Nemôžete škálovať service, ktorá má nastavený `container_name`, alebo ktorá používa mapovanie portu hostiteľa (napr. `ports: "8080:80"`), pretože viaceré kontajnery by boli v konflikte na rovnakom názve/porte.
 
 ---
 
-### Using `deploy.replicas` in the Compose File
+### Používanie `deploy.replicas` v Compose súbore
 
-Instead of the `--scale` flag, you can define the desired replica count directly in the Compose file:
+Namiesto flagu `--scale` môžete požadovaný počet replík definovať priamo v Compose súbore:
 
 ```terminal:execute
 command: cd ~/scaling-demo && docker compose down
 ```
 
-**Apply the version with `deploy.replicas`:**
+**Aplikujte verziu s `deploy.replicas`:**
 
 ```terminal:execute
 command: cp ~/exercises/scaling-demo/compose-replicas.yaml ~/scaling-demo/compose.yaml
 ```
 
-**Open the file in the Editor — notice the `deploy.replicas` section:**
+**Otvorte súbor v Editore — všimnite si sekciu `deploy.replicas`:**
 
 ```editor:open-file
 file: ~/scaling-demo/compose.yaml
@@ -109,27 +109,27 @@ command: cd ~/scaling-demo && docker compose up -d
 command: cd ~/scaling-demo && docker compose ps
 ```
 
-Three workers are started automatically based on the `deploy.replicas` setting.
+Tri workery sa spustia automaticky na základe nastavenia `deploy.replicas`.
 
 ---
 
 ## Profiles
 
-Profiles let you define services that should **only start when explicitly requested**. This is useful for development tools, debugging sidecars, or optional components.
+Profiles vám umožňujú definovať services, ktoré sa majú **spustiť iba na výslovné vyžiadanie**. To je užitočné pre vývojárske nástroje, debugovacie sidecary alebo voliteľné komponenty.
 
-### Defining Profiles
+### Definovanie profiles
 
 ```terminal:execute
 command: cd ~/scaling-demo && docker compose down
 ```
 
-**Apply the version with profiles:**
+**Aplikujte verziu s profiles:**
 
 ```terminal:execute
 command: cp ~/exercises/scaling-demo/compose-profiles.yaml ~/scaling-demo/compose.yaml
 ```
 
-**Open the file in the Editor — review the profiles configuration:**
+**Otvorte súbor v Editore — prezrite si konfiguráciu profiles:**
 
 ```editor:open-file
 file: ~/scaling-demo/compose.yaml
@@ -140,11 +140,11 @@ file: ~/scaling-demo/compose.yaml
 text: profiles
 ```
 
-Services with `profiles` are **not started by default**.
+Services s `profiles` sa **predvolene nespúšťajú**.
 
 ---
 
-### Starting Without Profiles
+### Spustenie bez profiles
 
 ```terminal:execute
 command: cd ~/scaling-demo && docker compose up -d
@@ -154,13 +154,13 @@ command: cd ~/scaling-demo && docker compose up -d
 command: cd ~/scaling-demo && docker compose ps
 ```
 
-Only `web` and `cache` are running — the `debug` and `monitoring` services are skipped.
+Bežia iba `web` a `cache` — services `debug` a `monitoring` sú preskočené.
 
 ---
 
-### Activating a Profile
+### Aktivácia profile
 
-**Start services including the debug profile:**
+**Spustite services vrátane profile debug:**
 
 ```terminal:execute
 command: cd ~/scaling-demo && docker compose --profile debug up -d
@@ -170,9 +170,9 @@ command: cd ~/scaling-demo && docker compose --profile debug up -d
 command: cd ~/scaling-demo && docker compose --profile debug ps
 ```
 
-Now `web`, `cache`, and `debug` are running.
+Teraz bežia `web`, `cache` a `debug`.
 
-**Activate multiple profiles:**
+**Aktivujte viacero profiles:**
 
 ```terminal:execute
 command: cd ~/scaling-demo && docker compose --profile debug --profile monitoring up -d
@@ -182,22 +182,22 @@ command: cd ~/scaling-demo && docker compose --profile debug --profile monitorin
 command: cd ~/scaling-demo && docker compose --profile debug --profile monitoring ps
 ```
 
-All four services are now running.
+Teraz bežia všetky štyri services.
 
 ---
 
-### When to Use Profiles
+### Kedy použiť profiles
 
-| Use Case | Example |
+| Prípad použitia | Príklad |
 |----------|---------|
-| **Development tools** | Database admin UI, debug containers |
-| **Testing** | Test runners, mock services |
-| **Monitoring** | Metrics exporters, log aggregators |
-| **CI/CD** | Services only needed in specific pipelines |
+| **Vývojárske nástroje** | Admin UI databázy, debugovacie kontajnery |
+| **Testovanie** | Test runnery, mock services |
+| **Monitoring** | Metrics exportéry, agregátory logov |
+| **CI/CD** | Services potrebné iba v konkrétnych pipeline |
 
 ---
 
-## Cleanup
+## Vyčistenie
 
 ```terminal:execute
 command: cd ~/scaling-demo && docker compose --profile debug --profile monitoring down

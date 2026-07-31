@@ -1,12 +1,12 @@
-# Executing Commands Inside Containers
+# Vykonávanie príkazov vo vnútri containers
 
-One of Docker's most powerful features is the ability to run commands inside a running container. The `docker exec` command lets you interact with a container's filesystem, debug issues, and inspect the runtime environment.
+Jednou z najsilnejších vlastností Dockeru je možnosť spúšťať príkazy vo vnútri bežiaceho containera. Príkaz `docker exec` vám umožňuje pracovať s filesystemom containera, ladiť problémy a skúmať runtime prostredie.
 
 ---
 
-## Running a Background Container for Practice
+## Spustenie containera na pozadí pre cvičenie
 
-Let's start a fresh Nginx container that we'll use throughout this section:
+Spustime si nový Nginx container, ktorý budeme používať počas celej tejto časti:
 
 ```terminal:execute
 command: docker run -d --name exec-demo nginx:latest
@@ -14,23 +14,23 @@ command: docker run -d --name exec-demo nginx:latest
 
 ---
 
-## Running a Single Command
+## Spustenie jedného príkazu
 
-Use `docker exec` to execute a one-off command inside a running container:
+Príkaz `docker exec` použite na vykonanie jednorazového príkazu vo vnútri bežiaceho containera:
 
 ```terminal:execute
 command: docker exec exec-demo hostname
 ```
 
-This runs the `hostname` command inside the `exec-demo` container and prints the result. The container's hostname defaults to its container ID.
+Toto spustí príkaz `hostname` vo vnútri containera `exec-demo` a vypíše výsledok. Hostname containera je v predvolenom nastavení jeho container ID.
 
-**Check the operating system inside the container:**
+**Skontrolujte operačný systém vo vnútri containera:**
 
 ```terminal:execute
 command: docker exec exec-demo cat /etc/os-release
 ```
 
-**List files in the Nginx default web root:**
+**Vypíšte súbory v predvolenom web root adresári Nginxu:**
 
 ```terminal:execute
 command: docker exec exec-demo ls -la /usr/share/nginx/html/
@@ -38,125 +38,125 @@ command: docker exec exec-demo ls -la /usr/share/nginx/html/
 
 ---
 
-## Interactive Shell Access
+## Interaktívny prístup do shellu
 
-The `-it` flags combine two options:
-- `-i` (**interactive**) — Keeps standard input open
-- `-t` (**tty**) — Allocates a pseudo-TTY (terminal)
+Prepínače `-it` kombinujú dve možnosti:
+- `-i` (**interactive**) — udržiava otvorený štandardný vstup
+- `-t` (**tty**) — alokuje pseudo-TTY (terminál)
 
-Together, they give you a fully interactive shell session inside the container:
+Spolu vám poskytnú plne interaktívnu shell reláciu vo vnútri containera:
 
 ```terminal:execute
 command: docker exec -it exec-demo /bin/bash
 ```
 
-You are now **inside the container**. The prompt changes to reflect the container's hostname. Try these commands inside the container:
+Teraz ste **vo vnútri containera**. Prompt sa zmení tak, aby odrážal hostname containera. Vyskúšajte vo vnútri containera nasledujúce príkazy:
 
-**Check the current user:**
+**Skontrolujte aktuálneho používateľa:**
 
 ```terminal:execute
 command: whoami
 ```
 
-**Explore the filesystem:**
+**Preskúmajte filesystem:**
 
 ```terminal:execute
 command: ls /
 ```
 
-**Check the container's IP address:**
+**Skontrolujte IP adresu containera:**
 
 ```terminal:execute
 command: hostname -i
 ```
 
-**Exit the interactive shell:**
+**Ukončite interaktívny shell:**
 
 ```terminal:execute
 command: exit
 ```
 
-> **Important:** Exiting the `exec` shell does **not** stop the container. The container's main process (Nginx) continues running. Only the shell session is terminated.
+> **Dôležité:** Ukončenie `exec` shellu container **nezastaví**. Hlavný proces containera (Nginx) beží ďalej. Ukončí sa iba shell relácia.
 
 ---
 
-## Running Commands as a Different User
+## Spustenie príkazov ako iný používateľ
 
-By default, `docker exec` runs commands as the container's default user (often `root`). You can specify a different user with the `-u` flag:
+V predvolenom nastavení `docker exec` spúšťa príkazy ako predvolený používateľ containera (často `root`). Iného používateľa môžete určiť prepínačom `-u`:
 
 ```terminal:execute
 command: docker exec -u nobody exec-demo whoami
 ```
 
-This executes the command as the `nobody` user instead of `root`.
+Toto vykoná príkaz ako používateľ `nobody` namiesto `root`.
 
 ---
 
-## Setting Environment Variables in Exec
+## Nastavenie environment variables v exec
 
-You can inject environment variables into the exec session using the `-e` flag:
+Do exec relácie môžete vložiť environment variables pomocou prepínača `-e`:
 
 ```terminal:execute
 command: docker exec -e MY_VAR="Hello Workshop" exec-demo env | grep MY_VAR
 ```
 
-This is useful for passing temporary configuration to a debugging session without affecting the container's main process.
+Hodí sa to na odovzdanie dočasnej konfigurácie do ladiacej relácie bez ovplyvnenia hlavného procesu containera.
 
 ---
 
-## Working Directory
+## Pracovný adresár (working directory)
 
-Use the `-w` flag to set the working directory for the executed command:
+Prepínačom `-w` nastavíte pracovný adresár pre vykonávaný príkaz:
 
 ```terminal:execute
 command: docker exec -w /usr/share/nginx/html exec-demo ls -la
 ```
 
-This lists the contents of the Nginx web root directory without having to specify the full path in the command.
+Toto vypíše obsah web root adresára Nginxu bez toho, aby ste v príkaze museli uvádzať celú cestu.
 
 ---
 
-## Modifying Files Inside a Container
+## Úprava súborov vo vnútri containera
 
-You can use `exec` to modify files inside a running container. Let's replace the default Nginx welcome page:
+Príkaz `exec` môžete použiť na úpravu súborov vo vnútri bežiaceho containera. Nahraďme predvolenú uvítaciu stránku Nginxu:
 
 ```terminal:execute
 command: docker exec exec-demo bash -c 'echo "<h1>Hello from Docker Workshop!</h1>" > /usr/share/nginx/html/index.html'
 ```
 
-**Verify the change:**
+**Overte zmenu:**
 
 ```terminal:execute
 command: docker exec exec-demo cat /usr/share/nginx/html/index.html
 ```
 
-> **Note:** Changes made inside a container are stored in the container's **writable layer**. They are lost when the container is removed. To persist data, Docker provides **volumes** — covered in the **Docker: Networking, Ports & Storage** workshop.
+> **Poznámka:** Zmeny vykonané vo vnútri containera sa ukladajú do zapisovateľnej vrstvy (**writable layer**) containera. Pri odstránení containera sa stratia. Na trvalé uchovanie dát poskytuje Docker **volumes** — tie sú preberané vo workshope **Docker: Networking, Ports & Storage**.
 
 ---
 
-## Practical Debugging Example
+## Praktický príklad ladenia (debugging)
 
-Let's simulate a common debugging workflow — checking why an Nginx configuration might not be working:
+Nasimulujme si bežný ladiaci postup — zisťovanie, prečo konfigurácia Nginxu možno nefunguje:
 
-**View the Nginx configuration:**
+**Zobrazte konfiguráciu Nginxu:**
 
 ```terminal:execute
 command: docker exec exec-demo cat /etc/nginx/nginx.conf
 ```
 
-**Test the Nginx configuration syntax:**
+**Otestujte syntax konfigurácie Nginxu:**
 
 ```terminal:execute
 command: docker exec exec-demo nginx -t
 ```
 
-**Check which ports Nginx is listening on:**
+**Skontrolujte, na ktorých portoch Nginx počúva:**
 
 ```terminal:execute
 command: docker exec exec-demo bash -c 'apt-get update -qq > /dev/null 2>&1 && apt-get install -y -qq net-tools > /dev/null 2>&1 && netstat -tlnp'
 ```
 
-This installs `net-tools` inside the container and shows all listening TCP ports — a common debugging technique.
+Toto vo vnútri containera nainštaluje `net-tools` a zobrazí všetky počúvajúce TCP porty — bežná ladiaca technika.
 
 ---
 

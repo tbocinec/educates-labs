@@ -1,116 +1,116 @@
-# Multi-Stage Builds
+# Multi-stage builds
 
-Multi-stage builds are one of Docker's most powerful features. They let you use **separate stages** for building and running your application — keeping build tools out of the final image.
+Multi-stage builds sú jednou z najsilnejších funkcií Dockeru. Umožňujú použiť **samostatné stage** na zostavenie (build) a na beh aplikácie — čím sa build nástroje udržia mimo výsledného image.
 
 ---
 
-## The Problem
+## Problém
 
-When you build a compiled application (Go, Java, C, Rust, etc.), you need:
+Keď zostavujete kompilovanú aplikáciu (Go, Java, C, Rust atď.), potrebujete:
 
-| Stage | Tools Needed | Size |
+| Stage | Potrebné nástroje | Veľkosť |
 |-------|-------------|------|
-| **Build** | Compiler, SDK, build tools | Large (hundreds of MB) |
-| **Run** | Just the compiled binary | Tiny (a few MB) |
+| **Build** | Kompilátor, SDK, build nástroje | Veľká (stovky MB) |
+| **Run** | Iba skompilovaný binárny súbor | Drobná (pár MB) |
 
-Without multi-stage builds, your production image includes all build tools — wasting space and increasing the attack surface.
+Bez multi-stage buildov obsahuje váš produkčný image všetky build nástroje — čo plytvá miestom a zväčšuje plochu na útok.
 
 ---
 
-## Setup
+## Príprava
 
-**Copy the exercise files:**
+**Skopírujte súbory cvičenia:**
 
 ```terminal:execute
 command: cp -r ~/exercises/multistage ~/multistage && cd ~/multistage
 ```
 
-**Look at the Go application:**
+**Pozrite sa na Go aplikáciu:**
 
 ```editor:open-file
 file: ~/multistage/main.go
 ```
 
-This is a simple HTTP server written in Go. When compiled, it produces a **single static binary** — no runtime dependencies needed.
+Toto je jednoduchý HTTP server napísaný v jazyku Go. Po skompilovaní vytvorí **jediný statický binárny súbor** — bez potreby akýchkoľvek runtime závislostí.
 
 ---
 
-## Single-Stage Build (The Old Way)
+## Single-stage build (starý spôsob)
 
-First, let's see what happens with a standard single-stage build. We'll build inside the `golang` image:
+Najprv sa pozrime, čo sa stane pri štandardnom single-stage builde. Zostavíme aplikáciu vo vnútri image `golang`:
 
 ```terminal:execute
 command: cd ~/multistage && printf 'FROM golang:1.23-alpine\nWORKDIR /app\nCOPY go.mod main.go ./\nRUN go build -o server main.go\nEXPOSE 8080\nCMD ["./server"]' | docker build -t go-single -f - .
 ```
 
-**Check the image size:**
+**Skontrolujte veľkosť image:**
 
 ```terminal:execute
 command: docker images go-single --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
 ```
 
-The image is **~250 MB** — mostly the Go compiler and SDK that we no longer need at runtime.
+Image má **~320 MB** — z veľkej časti tvorený Go kompilátorom a SDK, ktoré pri behu (runtime) už nepotrebujeme.
 
 ---
 
-## Multi-Stage Build
+## Multi-stage build
 
-Now let's use a multi-stage Dockerfile:
+Teraz použime multi-stage Dockerfile:
 
 ```editor:open-file
 file: ~/multistage/Dockerfile
 ```
 
-**Key concepts:**
+**Kľúčové koncepty:**
 
 ```editor:select-matching-text
 file: ~/multistage/Dockerfile
 text: FROM golang
 ```
 
-1. **Stage 1** (`builder`) — Uses the full Go SDK to compile the application
+1. **Stage 1** (`builder`) — použije plné Go SDK na skompilovanie aplikácie
 
 ```editor:select-matching-text
 file: ~/multistage/Dockerfile
 text: FROM alpine
 ```
 
-2. **Stage 2** — Starts fresh from a tiny `alpine` image
+2. **Stage 2** — začína nanovo z drobného `alpine` image
 
 ```editor:select-matching-text
 file: ~/multistage/Dockerfile
 text: COPY --from=builder
 ```
 
-3. **`COPY --from=builder`** — Copies **only the compiled binary** from the build stage
+3. **`COPY --from=builder`** — skopíruje **iba skompilovaný binárny súbor** z build stage
 
-Everything else from the build stage (Go compiler, source code, build cache) is **discarded**.
+Všetko ostatné z build stage (Go kompilátor, zdrojový kód, build cache) sa **zahodí**.
 
-**Build it:**
+**Zostavte ho:**
 
 ```terminal:execute
 command: cd ~/multistage && docker build -t go-multi .
 ```
 
-**Check the size:**
+**Skontrolujte veľkosť:**
 
 ```terminal:execute
 command: docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}" | grep -E 'go-single|go-multi'
 ```
 
-The multi-stage image is **~15 MB** — about **95% smaller** than the single-stage build!
+Multi-stage image má **~15 MB** — je približne **95 % menší** než single-stage build!
 
 ---
 
-## Test the Application
+## Otestovanie aplikácie
 
 ```terminal:execute
 command: docker run --rm -d -p 8080:8080 --name go-app go-multi
 ```
 
-Click the **App Preview** tab to see the Go application running. It shows the Go version and system architecture.
+Kliknutím na záložku **App Preview** uvidíte bežiacu Go aplikáciu. Zobrazuje verziu Go a architektúru systému.
 
-**Stop the container:**
+**Zastavte kontajner:**
 
 ```terminal:execute
 command: docker stop go-app
@@ -118,32 +118,32 @@ command: docker stop go-app
 
 ---
 
-## Going Even Smaller with `scratch`
+## Ešte menšie s `scratch`
 
-`alpine` is already tiny (~7 MB), but we can go further. The `scratch` image is a completely **empty** image — 0 bytes:
+`alpine` je už teraz drobný (~7 MB), ale môžeme ísť ešte ďalej. Image `scratch` je úplne **prázdny** image — 0 bajtov:
 
 ```editor:open-file
 file: ~/multistage/Dockerfile.scratch
 ```
 
-**Key differences:**
+**Kľúčové rozdiely:**
 
 ```editor:select-matching-text
 file: ~/multistage/Dockerfile.scratch
 text: CGO_ENABLED=0
 ```
 
-- `CGO_ENABLED=0` — Produces a **statically linked** binary (no C library dependency)
-- `-ldflags="-s -w"` — Strips debug symbols to reduce binary size
+- `CGO_ENABLED=0` — vytvorí **staticky zlinkovaný** binárny súbor (bez závislosti na C knižnici)
+- `-ldflags="-s -w"` — odstráni ladiace symboly a tým zmenší veľkosť binárneho súboru
 
 ```editor:select-matching-text
 file: ~/multistage/Dockerfile.scratch
 text: FROM scratch
 ```
 
-- `FROM scratch` — Starts from an **empty** image (no shell, no OS, nothing)
+- `FROM scratch` — začína z **prázdneho** image (žiadny shell, žiadny OS, nič)
 
-**Build it:**
+**Zostavte ho:**
 
 ```terminal:execute
 command: cd ~/multistage && docker build -t go-scratch -f Dockerfile.scratch .
@@ -151,27 +151,27 @@ command: cd ~/multistage && docker build -t go-scratch -f Dockerfile.scratch .
 
 ---
 
-## Compare All Three Approaches
+## Porovnanie všetkých troch prístupov
 
 ```terminal:execute
 command: docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}" | grep -E 'go-single|go-multi|go-scratch'
 ```
 
-| Image | Base | Approximate Size |
+| Image | Base | Približná veľkosť |
 |-------|------|-----------------|
 | `go-single` | golang:1.23-alpine | ~320 MB |
 | `go-multi` | alpine | ~15 MB |
 | `go-scratch` | scratch | ~7 MB |
 
-That's a **97% reduction** from single-stage to scratch!
+To je **97 % úspora** oproti single-stage buildu až po scratch!
 
-**Verify the scratch image works:**
+**Overte, že scratch image funguje:**
 
 ```terminal:execute
 command: docker run --rm -d -p 8080:8080 --name go-scratch-app go-scratch
 ```
 
-Click the **App Preview** tab — same application, fraction of the size.
+Kliknite na záložku **App Preview** — tá istá aplikácia, zlomok veľkosti.
 
 ```terminal:execute
 command: docker stop go-scratch-app
@@ -179,7 +179,7 @@ command: docker stop go-scratch-app
 
 ---
 
-## How Multi-Stage Builds Work
+## Ako fungujú multi-stage builds
 
 ```
 ┌──────────────────────────┐
@@ -207,23 +207,22 @@ command: docker stop go-scratch-app
 
 ---
 
-## When to Use Multi-Stage Builds
+## Kedy použiť multi-stage builds
 
-| Language | Build Image | Runtime Image |
+| Jazyk | Build image | Runtime image |
 |----------|------------|---------------|
-| **Go** | `golang:alpine` | `alpine` or `scratch` |
-| **Java** | `maven` or `gradle` | `eclipse-temurin:*-jre` |
-| **Node.js** | `node` (install + build) | `node:*-slim` (run) |
-| **Rust** | `rust` | `alpine` or `scratch` |
-| **C/C++** | `gcc` | `alpine` or `scratch` |
+| **Go** | `golang:alpine` | `alpine` alebo `scratch` |
+| **Java** | `maven` alebo `gradle` | `eclipse-temurin:*-jre` |
+| **Node.js** | `node` (inštalácia + build) | `node:*-slim` (beh) |
+| **Rust** | `rust` | `alpine` alebo `scratch` |
+| **C/C++** | `gcc` | `alpine` alebo `scratch` |
 
-Multi-stage builds are useful for **any** application where build requirements differ from runtime requirements.
+Multi-stage builds sú užitočné pre **akúkoľvek** aplikáciu, kde sa požiadavky na build líšia od požiadaviek na beh (runtime).
 
 ---
 
-## Cleanup
+## Vyčistenie (cleanup)
 
 ```terminal:execute
 command: docker stop $(docker ps -q) 2>/dev/null; docker rmi go-single go-multi go-scratch 2>/dev/null; rm -rf ~/multistage
 ```
-

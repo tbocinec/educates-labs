@@ -3,7 +3,7 @@ pathways:
 
   paths:
     workshop:
-      title: "Introduction to Docker"
+      title: "Úvod do Dockeru"
       duration: 60m
 
       steps:
@@ -19,28 +19,28 @@ pathways:
 
 modules:
 - name: 00-workshop-overview
-  title: Workshop Overview
+  title: Prehľad workshopu
 
 - name: 01-docker-basics
-  title: Docker Basics & Architecture
+  title: Základy a architektúra Dockeru
 
 - name: 02-running-first-container
-  title: Running Your First Container
+  title: Spustenie vášho prvého containera
 
 - name: 03-container-lifecycle
-  title: Container Lifecycle Management
+  title: Správa životného cyklu containera
 
 - name: 04-executing-commands
-  title: Executing Commands Inside Containers
+  title: Vykonávanie príkazov vo vnútri containers
 
 - name: 05-container-logs
-  title: Working with Container Logs
+  title: Práca s logmi containers
 
 - name: 06-environment-variables
-  title: Environment Variables & Configuration
+  title: Environment variables a konfigurácia
 
 - name: 07-docker-images
-  title: Exploring Docker Images
+  title: Skúmanie Docker images
 
 - name: 99-workshop-summary
-  title: Workshop Summary
+  title: Zhrnutie workshopu

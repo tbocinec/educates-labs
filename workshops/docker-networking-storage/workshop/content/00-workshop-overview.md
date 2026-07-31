@@ -1,52 +1,52 @@
-# Workshop Overview
+# Prehľad workshopu
 
-Welcome to the **Docker: Networking, Ports & Storage** workshop! This hands-on lab covers three essential areas of Docker that go beyond the basics — port mapping, persistent storage, and container networking.
-
----
-
-## What You Will Learn
-
-By the end of this workshop, you will be able to:
-
-- **Expose** container services to the host network using port mapping (`-p`)
-- **Run** multiple instances of the same service on different host ports
-- **Persist** data across container restarts using Docker volumes
-- **Copy** files into and out of containers using `docker cp`
-- **Understand** bind mounts and when to use them
-- **Create** user-defined bridge networks with automatic DNS resolution
-- **Isolate** containers on separate networks for security
-- **Connect** containers to multiple networks simultaneously
-- **Clean up** unused Docker resources efficiently
+Vitajte na workshope **Docker: Networking, Ports & Storage**! Toto praktické cvičenie pokrýva tri základné oblasti Dockeru, ktoré presahujú úplné základy — mapovanie portov, perzistentné úložisko a sieťovanie kontajnerov.
 
 ---
 
-## Prerequisites
+## Čo sa naučíte
 
-This workshop assumes you are familiar with:
+Na konci tohto workshopu budete vedieť:
 
-- Running containers (`docker run`, `-d`, `--name`, `--rm`)
-- Container lifecycle management (`docker stop`, `start`, `rm`)
-- Executing commands inside containers (`docker exec -it`)
-- Container logs (`docker logs`)
-- Environment variables (`-e`)
-
-If you haven't completed the **Introduction to Docker** workshop yet, we recommend doing that first.
-
----
-
-## Workshop Environment
-
-Your workshop environment comes pre-configured with:
-
-- **Docker Engine** — ready to use from the terminal
-- **Terminal** — split-pane terminal for running commands
-- **Editor** — accessible via the **Editor** tab for viewing files
-- **Nginx tab** — a browser tab to view services exposed on port 8080
+- **Sprístupniť** služby v kontajneri hostiteľskej sieti pomocou port mappingu (`-p`)
+- **Spustiť** viacero inštancií tej istej služby na rôznych host portoch
+- **Uchovať** dáta naprieč reštartmi kontajnera pomocou Docker volumes
+- **Kopírovať** súbory do kontajnerov a z nich pomocou `docker cp`
+- **Pochopiť** bind mounts a kedy ich použiť
+- **Vytvoriť** používateľom definované bridge networks s automatickým DNS resolution
+- **Izolovať** kontajnery na oddelených sieťach kvôli bezpečnosti
+- **Pripojiť** kontajner k viacerým sieťam súčasne
+- **Upratať** nepoužívané Docker prostriedky efektívne
 
 ---
 
-## How to Use This Workshop
+## Predpoklady
 
-Throughout this workshop you will encounter executable command blocks. Simply click on them to execute the command in the terminal.
+Tento workshop predpokladá, že sa vyznáte v nasledujúcom:
 
-**Let's get started!**
+- Spúšťanie kontajnerov (`docker run`, `-d`, `--name`, `--rm`)
+- Správa životného cyklu kontajnera (`docker stop`, `start`, `rm`)
+- Spúšťanie príkazov vnútri kontajnerov (`docker exec -it`)
+- Logy kontajnerov (`docker logs`)
+- Premenné prostredia (`-e`)
+
+Ak ste ešte neabsolvovali workshop **Introduction to Docker**, odporúčame začať ním.
+
+---
+
+## Prostredie workshopu
+
+Vaše prostredie workshopu je vopred nakonfigurované a obsahuje:
+
+- **Docker Engine** — pripravený na použitie z terminálu
+- **Terminál** — terminál s rozdelenými panelmi na spúšťanie príkazov
+- **Editor** — prístupný cez záložku **Editor** na prezeranie súborov
+- **Záložka Nginx** — záložka v prehliadači na zobrazenie služieb sprístupnených na porte 8080
+
+---
+
+## Ako používať tento workshop
+
+Počas workshopu budete narážať na spustiteľné bloky príkazov. Stačí na ne kliknúť a príkaz sa vykoná v termináli.
+
+**Poďme na to!**

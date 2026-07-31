@@ -1,8 +1,8 @@
-# Dockerfile Instructions Deep Dive
+# Podrobný pohľad na inštrukcie Dockerfile
 
-Let's explore additional Dockerfile instructions that give you more control over how images are built and containers behave.
+Poďme preskúmať ďalšie inštrukcie Dockerfile, ktoré vám dávajú väčšiu kontrolu nad tým, ako sa images zostavujú a ako sa kontajnery správajú.
 
-**Copy all exercise files for this chapter:**
+**Skopírujte všetky súbory cvičenia pre túto kapitolu:**
 
 ```terminal:execute
 command: cp -r ~/exercises/instructions-demo ~/instructions-demo
@@ -10,9 +10,9 @@ command: cp -r ~/exercises/instructions-demo ~/instructions-demo
 
 ---
 
-## `WORKDIR` — Set Working Directory
+## `WORKDIR` — nastavenie pracovného adresára
 
-Sets the working directory for all subsequent instructions (`RUN`, `COPY`, `CMD`, etc.):
+Nastavuje pracovný adresár pre všetky nasledujúce inštrukcie (`RUN`, `COPY`, `CMD` atď.):
 
 ```dockerfile
 WORKDIR /app
@@ -21,27 +21,27 @@ RUN make build   # Runs in /app/
 CMD ["./server"] # Starts in /app/
 ```
 
-If the directory doesn't exist, Docker creates it automatically. You can use `WORKDIR` multiple times.
+Ak adresár neexistuje, Docker ho vytvorí automaticky. `WORKDIR` môžete použiť viackrát.
 
-**Open the demo Dockerfile in the editor:**
+**Otvorte demo Dockerfile v editore:**
 
 ```editor:open-file
 file: ~/instructions-demo/workdir/Dockerfile
 ```
 
-The comments in the file explain the purpose. Let's build and run it:
+Komentáre v súbore vysvetľujú jeho účel. Poďme ho zostaviť a spustiť:
 
 ```terminal:execute
 command: cd ~/instructions-demo/workdir && docker build -t workdir-test . && docker run --rm workdir-test
 ```
 
-The output shows `/myapp` — confirming that `RUN` executed inside the `WORKDIR`.
+Výstup zobrazuje `/myapp` — čo potvrdzuje, že `RUN` sa vykonal vo vnútri `WORKDIR`.
 
 ---
 
-## `EXPOSE` — Document Ports
+## `EXPOSE` — dokumentovanie portov
 
-`EXPOSE` **documents** which port the application listens on. It does **not** publish the port — that's done with `docker run -p`:
+`EXPOSE` **dokumentuje**, na ktorom porte aplikácia počúva. Port však **nepublikuje** — to sa robí pomocou `docker run -p`:
 
 ```dockerfile
 EXPOSE 5000
@@ -49,82 +49,82 @@ EXPOSE 8080/tcp
 EXPOSE 8125/udp
 ```
 
-It serves as documentation for users of your image and is used by `docker run -P` (publish all exposed ports to random host ports).
+Slúži ako dokumentácia pre používateľov vášho image a využíva ho `docker run -P` (publikovanie všetkých exposnutých portov na náhodné porty hostiteľa).
 
 ---
 
 ## `ENTRYPOINT` vs `CMD`
 
-Both define what runs when a container starts, but they behave differently:
+Obe definujú, čo sa spustí pri štarte kontajnera, ale správajú sa odlišne:
 
-### `CMD` — Default Command (Can Be Overridden)
+### `CMD` — predvolený príkaz (možno prepísať)
 
 ```dockerfile
 CMD ["python", "app.py"]
 ```
 
-The user can override it completely:
+Používateľ ho môže úplne prepísať:
 
 ```terminal:execute
 command: docker run --rm my-nginx:v1 echo "I replaced the default CMD"
 ```
 
-### `ENTRYPOINT` — Fixed Executable
+### `ENTRYPOINT` — pevne daný spustiteľný program
 
 ```dockerfile
 ENTRYPOINT ["python"]
 CMD ["app.py"]
 ```
 
-The user **cannot** easily override the entrypoint. `CMD` becomes the default **argument**.
+Používateľ **nemôže** entrypoint jednoducho prepísať. `CMD` sa stáva predvoleným **argumentom**.
 
-**Open the demo Dockerfile:**
+**Otvorte demo Dockerfile:**
 
 ```editor:open-file
 file: ~/instructions-demo/entrypoint/Dockerfile
 ```
 
-The comments explain how `ENTRYPOINT` and `CMD` work together. Build and run:
+Komentáre vysvetľujú, ako `ENTRYPOINT` a `CMD` spolupracujú. Zostavte a spustite:
 
 ```terminal:execute
 command: cd ~/instructions-demo/entrypoint && docker build -t ep-test . && docker run --rm ep-test
 ```
 
-**Override only the CMD argument:**
+**Prepíšte iba argument CMD:**
 
 ```terminal:execute
 command: docker run --rm ep-test "print('Hello from entrypoint!')"
 ```
 
-The entrypoint (`python -c`) stays fixed; only the argument changes.
+Entrypoint (`python -c`) zostáva pevný; mení sa iba argument.
 
-### When to Use Which
+### Kedy použiť ktorú
 
-| Use Case | Recommendation |
+| Prípad použitia | Odporúčanie |
 |----------|----------------|
-| General application | `CMD ["python", "app.py"]` |
-| CLI tool wrapper | `ENTRYPOINT ["mytool"]` + `CMD ["--help"]` |
-| Need both fixed + overridable | `ENTRYPOINT` + `CMD` combo |
+| Bežná aplikácia | `CMD ["python", "app.py"]` |
+| Obal (wrapper) pre CLI nástroj | `ENTRYPOINT ["mytool"]` + `CMD ["--help"]` |
+| Potreba pevnej aj prepísateľnej časti | kombinácia `ENTRYPOINT` + `CMD` |
 
 ---
 
-## `ENV` — Environment Variables
+## `ENV` — premenné prostredia
 
-Sets environment variables available both during build **and** at runtime.
+Nastavuje premenné prostredia dostupné počas buildu **aj** pri behu (runtime).
 
-**Open the demo Dockerfile:**
+**Otvorte demo Dockerfile:**
 
 ```editor:open-file
 file: ~/instructions-demo/env/Dockerfile
 ```
 
-**Build and run:**
+**Zostavte a spustite:**
 
 ```terminal:execute
 command: cd ~/instructions-demo/env && docker build -t env-test . && docker run --rm env-test
 ```
 
-The container prints the values set by `ENV`. Now **override at runtime:**
+Kontajner vypíše hodnoty nastavené cez `ENV`. Teraz ich **prepíšte pri behu (runtime):**
 
 ```terminal:execute
 command: docker run --rm -e APP_ENV=development env-test
@@ -132,44 +132,44 @@ command: docker run --rm -e APP_ENV=development env-test
 
 ---
 
-## `ARG` — Build-Time Variables
+## `ARG` — premenné počas buildu
 
-`ARG` defines variables that exist **only during the build** — they are not available at runtime.
+`ARG` definuje premenné, ktoré existujú **iba počas buildu** — pri behu (runtime) nie sú dostupné.
 
-**Open the demo Dockerfile:**
+**Otvorte demo Dockerfile:**
 
 ```editor:open-file
 file: ~/instructions-demo/arg/Dockerfile
 ```
 
-Read the comments — they explain the key difference from `ENV`. Build with a `--build-arg`:
+Prečítajte si komentáre — vysvetľujú kľúčový rozdiel oproti `ENV`. Zostavte s parametrom `--build-arg`:
 
 ```terminal:execute
 command: cd ~/instructions-demo/arg && docker build -t arg-test --build-arg BUILD_DATE=$(date +%Y-%m-%d) . && docker run --rm arg-test
 ```
 
-Notice that `BUILD_DATE` is **not available** at runtime, but it was used during the build to set the label.
+Všimnite si, že `BUILD_DATE` **nie je dostupný** pri behu (runtime), ale počas buildu sa použil na nastavenie labelu.
 
-**Check the label:**
+**Skontrolujte label:**
 
 ```terminal:execute
 command: docker inspect arg-test --format '{{index .Config.Labels "build_date"}}'
 ```
 
-### `ARG` vs `ENV` Summary
+### Zhrnutie `ARG` vs `ENV`
 
-| Feature | `ARG` | `ENV` |
+| Vlastnosť | `ARG` | `ENV` |
 |---------|-------|-------|
-| Available during build | Yes | Yes |
-| Available at runtime | No | Yes |
-| Set from CLI | `--build-arg` | `-e` |
-| Stored in image | No | Yes |
+| Dostupné počas buildu | Áno | Áno |
+| Dostupné pri behu (runtime) | Nie | Áno |
+| Nastavenie z CLI | `--build-arg` | `-e` |
+| Uložené v image | Nie | Áno |
 
 ---
 
-## `LABEL` — Image Metadata
+## `LABEL` — metadáta image
 
-Adds metadata to your image as key-value pairs:
+Pridáva do image metadáta ako dvojice kľúč-hodnota:
 
 ```dockerfile
 LABEL maintainer="team@example.com"
@@ -177,7 +177,7 @@ LABEL version="1.0"
 LABEL description="My production web server"
 ```
 
-**Inspect labels:**
+**Zobrazte labely:**
 
 ```terminal:execute
 command: docker inspect my-nginx:v1 --format '{{json .Config.Labels}}' | python3 -m json.tool 2>/dev/null || docker inspect my-nginx:v1 --format '{{json .Config.Labels}}'
@@ -185,51 +185,51 @@ command: docker inspect my-nginx:v1 --format '{{json .Config.Labels}}' | python3
 
 ---
 
-## `.dockerignore` — Exclude Files from Build Context
+## `.dockerignore` — vylúčenie súborov z build kontextu
 
-Like `.gitignore`, a `.dockerignore` file excludes files from being sent to the Docker daemon.
+Podobne ako `.gitignore`, súbor `.dockerignore` vylučuje súbory z odosielania Docker daemonu.
 
-**First, open the Dockerfile for this demo:**
+**Najprv otvorte Dockerfile pre toto demo:**
 
 ```editor:open-file
 file: ~/instructions-demo/ignore/Dockerfile
 ```
 
-It simply copies everything from the build context into `/app/` and lists it. Let's create some test files:
+Jednoducho skopíruje všetko z build kontextu do `/app/` a vypíše obsah. Vytvorme si niekoľko testovacích súborov:
 
 ```terminal:execute
 command: cd ~/instructions-demo/ignore && echo "needed" > app.py && echo "secret" > password.txt && mkdir -p .git && echo "git data" > .git/config && echo "big file" > huge-log.txt
 ```
 
-**Build without .dockerignore — everything is copied:**
+**Build bez .dockerignore — skopíruje sa všetko:**
 
 ```terminal:execute
 command: cd ~/instructions-demo/ignore && docker build -t noignore-test . && docker run --rm noignore-test
 ```
 
-All files ended up in the image — including `password.txt`! Now let's add a `.dockerignore` file:
+V image skončili všetky súbory — vrátane `password.txt`! Teraz pridajme súbor `.dockerignore`:
 
-**Open the prepared .dockerignore (with comments explaining each pattern):**
+**Otvorte pripravený .dockerignore (s komentármi, ktoré vysvetľujú jednotlivé vzory):**
 
 ```editor:open-file
 file: ~/instructions-demo/ignore/dockerignore
 ```
 
-**Activate it by copying to `.dockerignore`:**
+**Aktivujte ho skopírovaním do `.dockerignore`:**
 
 ```terminal:execute
 command: cp ~/instructions-demo/ignore/dockerignore ~/instructions-demo/ignore/.dockerignore
 ```
 
-**Rebuild — excluded files are gone:**
+**Znova zostavte — vylúčené súbory sú preč:**
 
 ```terminal:execute
 command: cd ~/instructions-demo/ignore && docker build -t ignore-test . && docker run --rm ignore-test
 ```
 
-Only `app.py` remains. The `.git` directory, `.txt` files, and `Dockerfile` itself are excluded.
+Zostáva len `app.py`. Adresár `.git`, súbory `.txt` aj samotný `Dockerfile` sú vylúčené.
 
-### Common `.dockerignore` Patterns
+### Bežné vzory `.dockerignore`
 
 ```
 .git
@@ -248,20 +248,20 @@ __pycache__
 
 ## `COPY` vs `ADD`
 
-Both copy files into the image, but they differ:
+Obe kopírujú súbory do image, ale líšia sa:
 
-| Feature | `COPY` | `ADD` |
+| Vlastnosť | `COPY` | `ADD` |
 |---------|--------|-------|
-| Copy local files | Yes | Yes |
-| Auto-extract `.tar.gz` | No | Yes |
-| Download from URL | No | Yes |
-| Recommended | **Yes** | Only when you need extraction |
+| Kopírovanie lokálnych súborov | Áno | Áno |
+| Automatické rozbalenie `.tar.gz` | Nie | Áno |
+| Stiahnutie z URL | Nie | Áno |
+| Odporúčané | **Áno** | Iba keď potrebujete rozbalenie |
 
-> **Best practice:** Always use `COPY` unless you specifically need `ADD`'s tar extraction feature.
+> **Osvedčený postup:** Vždy používajte `COPY`, pokiaľ konkrétne nepotrebujete funkciu rozbaľovania tar archívov od `ADD`.
 
 ---
 
-## Cleanup
+## Vyčistenie (cleanup)
 
 ```terminal:execute
 command: docker rmi workdir-test ep-test env-test arg-test noignore-test ignore-test 2>/dev/null; rm -rf ~/instructions-demo

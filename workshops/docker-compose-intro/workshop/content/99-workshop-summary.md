@@ -1,40 +1,40 @@
-# Workshop Summary
+# Zhrnutie workshopu
 
-Congratulations! You've completed the **Docker Compose Introduction** workshop.
-
----
-
-## What You Learned
-
-Throughout this workshop, you practiced the following skills:
-
-### Compose Fundamentals
-- Understanding the purpose of Docker Compose and the `compose.yaml` file format
-- Defining services, networks, and volumes in a declarative YAML file
-- Using `docker compose up -d` and `docker compose down` to manage application stacks
-
-### Multi-Container Applications
-- Building stacks with multiple services (web, database, cache)
-- Using `depends_on` with health checks for proper startup ordering
-- Leveraging Compose's automatic DNS for inter-service communication
-
-### Essential Commands
-- Managing services with `ps`, `logs`, `exec`, `run`, `stop`, `start`, `restart`
-- Pulling images, recreating containers, and validating configuration
-- Pausing and unpausing services
-
-### Configuration & Data
-- Setting environment variables inline, via `.env` files, and with `env_file`
-- Using named volumes for persistent data across container restarts
-- Understanding `docker compose down -v` for clean resets
-
-### Scaling & Profiles
-- Scaling services horizontally with `--scale` and `deploy.replicas`
-- Using profiles to selectively activate optional services
+Gratulujeme! Dokončili ste workshop **Docker Compose Introduction**.
 
 ---
 
-## Quick Reference Card
+## Čo ste sa naučili
+
+Počas tohto workshopu ste si precvičili nasledujúce zručnosti:
+
+### Základy Compose
+- Pochopenie účelu Docker Compose a formátu súboru `compose.yaml`
+- Definovanie services, networks a volumes v deklaratívnom YAML súbore
+- Používanie `docker compose up -d` a `docker compose down` na správu stackov aplikácií
+
+### Viackontajnerové aplikácie
+- Budovanie stackov s viacerými services (web, databáza, cache)
+- Používanie `depends_on` so health checkmi pre správne poradie spúšťania
+- Využitie automatického DNS Compose na komunikáciu medzi services
+
+### Základné príkazy
+- Správa services pomocou `ps`, `logs`, `exec`, `run`, `stop`, `start`, `restart`
+- Sťahovanie images, opätovné vytváranie kontajnerov a overovanie konfigurácie
+- Pozastavenie a obnovenie services
+
+### Konfigurácia a dáta
+- Nastavenie environment variables inline, cez `.env` súbory a pomocou `env_file`
+- Používanie named volumes na perzistentné dáta medzi reštartmi kontajnerov
+- Pochopenie `docker compose down -v` pre čisté resetovanie
+
+### Škálovanie a profiles
+- Horizontálne škálovanie services pomocou `--scale` a `deploy.replicas`
+- Používanie profiles na selektívnu aktiváciu voliteľných services
+
+---
+
+## Karta rýchleho prehľadu
 
 ```
 # Lifecycle
@@ -68,20 +68,20 @@ docker compose --profile <p> up -d   # Activate profile
 
 ---
 
-## Next Steps
+## Ďalšie kroky
 
-To continue your Docker learning journey, consider exploring:
+Ak chcete pokračovať vo svojej ceste učenia sa Dockera, zvážte preskúmanie:
 
-- **Docker Networking, Ports & Storage** — Deep dive into networking, port mapping, bind mounts, and volumes
-- **Docker Compose in Production** — Using `docker compose` with custom images built from Dockerfiles
-- **Docker Swarm** — Orchestrating containers across multiple hosts
-- **Kubernetes** — Container orchestration at scale
+- **Docker Networking, Ports & Storage** — Hlbší pohľad na networking, mapovanie portov, bind mounts a volumes
+- **Docker Compose in Production** — Používanie `docker compose` s vlastnými images postavenými z Dockerfiles
+- **Docker Swarm** — Orchestrácia kontajnerov naprieč viacerými hostiteľmi
+- **Kubernetes** — Orchestrácia kontajnerov vo veľkom rozsahu
 
 ---
 
-## Final Cleanup
+## Záverečné vyčistenie
 
-Make sure all workshop resources are removed:
+Uistite sa, že všetky prostriedky workshopu sú odstránené:
 
 ```terminal:execute
 command: docker compose -f ~/first-compose/compose.yaml down 2>/dev/null; docker compose -f ~/multi-app/compose.yaml down -v 2>/dev/null; docker compose -f ~/env-volumes/compose.yaml down -v 2>/dev/null; docker compose -f ~/compose-commands/compose.yaml down 2>/dev/null; docker compose -f ~/scaling-demo/compose.yaml --profile debug --profile monitoring down 2>/dev/null; echo "All workshop resources cleaned up!"
@@ -91,4 +91,4 @@ command: docker compose -f ~/first-compose/compose.yaml down 2>/dev/null; docker
 command: rm -rf ~/first-compose ~/multi-app ~/env-volumes ~/compose-commands ~/scaling-demo
 ```
 
-Thank you for completing this workshop!
+Ďakujeme, že ste dokončili tento workshop!

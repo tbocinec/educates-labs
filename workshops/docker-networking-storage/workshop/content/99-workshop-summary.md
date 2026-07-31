@@ -1,34 +1,34 @@
-# Workshop Summary
+# Zhrnutie workshopu
 
-Congratulations! You have completed the **Docker: Networking, Ports & Storage** workshop. Let's review the key concepts and skills you've acquired.
-
----
-
-## What You Learned
-
-### Port Mapping
-- `-p HOST:CONTAINER` maps ports between host and container
-- Containers are isolated by default — port mapping exposes services
-- Multiple containers can use the same internal port on different host ports
-- Use `-p 127.0.0.1:PORT:PORT` to restrict access to localhost only
-
-### Volumes & Data Persistence
-- **Volumes** (`-v name:/path`) persist data beyond container lifecycle
-- Volumes can be **shared** between multiple containers
-- `docker cp` copies files between host and container (one-time copy)
-- **Bind mounts** (`-v /host:/container`) provide live sync for development (requires direct Docker daemon access)
-- Use `:ro` for **read-only** mounts
-
-### Networking
-- **User-defined bridge networks** provide automatic DNS resolution
-- Containers on the same network communicate by **name**
-- Containers on different networks are **isolated** by default
-- `docker network connect/disconnect` manages network memberships
-- **Host networking** removes isolation but eliminates NAT overhead
+Gratulujeme! Absolvovali ste workshop **Docker: Networking, Ports & Storage**. Zhrňme si kľúčové koncepty a zručnosti, ktoré ste získali.
 
 ---
 
-## Quick Reference Card
+## Čo ste sa naučili
+
+### Mapovanie portov
+- `-p HOST:CONTAINER` mapuje porty medzi hostiteľom a kontajnerom
+- Kontajnery sú predvolene izolované — mapovanie portov sprístupňuje služby
+- Viacero kontajnerov môže používať ten istý interný port na rôznych host portoch
+- Použite `-p 127.0.0.1:PORT:PORT` na obmedzenie prístupu iba na localhost
+
+### Volumes a perzistencia dát
+- **Volumes** (`-v name:/path`) uchovávajú dáta nad rámec životného cyklu kontajnera
+- Volumes sa dajú **zdieľať** medzi viacerými kontajnermi
+- `docker cp` kopíruje súbory medzi hostiteľom a kontajnerom (jednorazová kópia)
+- **Bind mounts** (`-v /host:/container`) poskytujú živú synchronizáciu pre vývoj (vyžadujú priamy prístup k Docker daemonu)
+- Použite `:ro` pre **read-only** pripojenia
+
+### Sieťovanie
+- **Používateľom definované bridge siete** poskytujú automatické DNS rozlíšenie
+- Kontajnery na tej istej sieti komunikujú podľa **mena**
+- Kontajnery na rôznych sieťach sú predvolene **izolované**
+- `docker network connect/disconnect` spravuje členstvo v sieťach
+- **Host networking** odstraňuje izoláciu, ale eliminuje réžiu NAT
+
+---
+
+## Karta rýchlej referencie
 
 ```
 # Port Mapping
@@ -61,15 +61,15 @@ docker system prune --volumes  # Remove all unused resources
 
 ---
 
-## Next Steps
+## Ďalšie kroky
 
-| Topic | Description |
+| Téma | Popis |
 |-------|-------------|
-| **Docker Compose** | Define multi-container applications with networking and volumes in a single YAML file |
-| **Dockerfiles** | Build custom images with `FROM`, `RUN`, `COPY`, `CMD`, and other instructions |
-| **Multi-Stage Builds** | Optimize image sizes by separating build and runtime environments |
-| **Container Orchestration** | Scale and manage containers with Kubernetes or Docker Swarm |
+| **Docker Compose** | Definujte viackontajnerové aplikácie so sieťovaním a volumes v jednom YAML súbore |
+| **Dockerfiles** | Zostavte vlastné images pomocou inštrukcií `FROM`, `RUN`, `COPY`, `CMD` a ďalších |
+| **Multi-Stage Builds** | Optimalizujte veľkosť images oddelením build a runtime prostredia |
+| **Container Orchestration** | Škálujte a spravujte kontajnery pomocou Kubernetes alebo Docker Swarm |
 
 ---
 
-**Thank you for completing this workshop!**
+**Ďakujeme, že ste absolvovali tento workshop!**

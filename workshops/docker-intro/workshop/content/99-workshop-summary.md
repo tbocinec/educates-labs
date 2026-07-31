@@ -1,72 +1,72 @@
-# Workshop Summary
+# Zhrnutie workshopu
 
-Congratulations! You have completed the **Introduction to Docker** workshop. Let's review the key concepts and skills you've acquired.
-
----
-
-## What You Learned
-
-### Docker Fundamentals
-- Docker uses a **client-server architecture** with the Docker client, daemon, and registries
-- **Images** are read-only templates; **containers** are running instances of images
-- Docker commands follow the pattern: `docker [management-command] [sub-command] [options]`
-
-### Running Containers
-- `docker run` creates and starts a container from an image
-- Use `-d` for **detached** (background) mode
-- Use `--rm` to **auto-remove** containers on exit
-- Use `--name` to assign **meaningful names** to containers
-
-### Container Lifecycle
-- **Stop** (`docker stop`) sends SIGTERM for graceful shutdown
-- **Start** (`docker start`) restarts a stopped container
-- **Restart** (`docker restart`) bounces a container
-- **Pause/Unpause** freezes and resumes container processes
-- **Kill** (`docker kill`) sends SIGKILL for immediate termination
-- **Remove** (`docker rm`) deletes a stopped container; use `-f` for a running one
-
-### Executing Commands
-- `docker exec` runs commands in a running container
-- `-it` flags provide an **interactive shell** session
-- `-u` specifies the **user**, `-w` sets the **working directory**
-- Exiting an exec shell does **not** stop the container
-
-### Logs
-- `docker logs` retrieves container output
-- `-f` **follows** logs in real time
-- `--tail N` limits output to the last N lines
-- `--since` and `--until` filter by time
-
-### Configuration
-- `-e` sets **environment variables** inside the container
-- `--env-file` loads variables from a file
-- Different images use different configuration mechanisms
-
-### Image Management
-- `docker pull` downloads images from registries
-- `docker history` shows image layers
-- `docker inspect` reveals image metadata
-- Alpine-based images are significantly smaller
+Gratulujeme! Absolvovali ste workshop **Introduction to Docker**. Zopakujme si kľúčové pojmy a zručnosti, ktoré ste získali.
 
 ---
 
-## Next Steps
+## Čo ste sa naučili
 
-Now that you understand Docker fundamentals, here are recommended paths for continued learning:
+### Základy Dockeru
+- Docker používa architektúru typu **klient-server** s Docker klientom, daemonom a registries
+- **Images** sú read-only šablóny; **containers** sú bežiace inštancie images
+- Príkazy Dockeru majú tvar: `docker [management-command] [sub-command] [options]`
 
-| Topic | Description |
+### Spúšťanie containers
+- `docker run` vytvorí a spustí container z image
+- Prepínač `-d` slúži pre režim na pozadí (**detached**)
+- Prepínač `--rm` na automatické odstránenie (**auto-remove**) containera po ukončení
+- Prepínač `--name` na priradenie **zmysluplných názvov** containers
+
+### Životný cyklus containera
+- **Stop** (`docker stop`) posiela SIGTERM pre čisté ukončenie
+- **Start** (`docker start`) spustí zastavený container
+- **Restart** (`docker restart`) container zastaví a znova spustí
+- **Pause/Unpause** zmrazí a obnoví procesy containera
+- **Kill** (`docker kill`) posiela SIGKILL pre okamžité ukončenie
+- **Remove** (`docker rm`) odstráni zastavený container; pre bežiaci použite `-f`
+
+### Vykonávanie príkazov
+- `docker exec` spúšťa príkazy v bežiacom containeri
+- Prepínače `-it` poskytujú interaktívnu shell reláciu (**interactive shell**)
+- Prepínač `-u` určuje **používateľa**, `-w` nastavuje **pracovný adresár**
+- Ukončenie exec shellu container **nezastaví**
+
+### Logy
+- `docker logs` získa výstup containera
+- Prepínač `-f` **sleduje (follow)** logy v reálnom čase
+- Prepínač `--tail N` obmedzí výstup na posledných N riadkov
+- Prepínače `--since` a `--until` filtrujú podľa času
+
+### Konfigurácia
+- Prepínač `-e` nastavuje **environment variables** vo vnútri containera
+- Prepínač `--env-file` načíta premenné zo súboru
+- Rôzne images používajú rôzne konfiguračné mechanizmy
+
+### Správa images
+- `docker pull` sťahuje images z registries
+- `docker history` zobrazuje vrstvy image
+- `docker inspect` odhalí metadáta image
+- Images postavené na Alpine sú výrazne menšie
+
+---
+
+## Ďalšie kroky
+
+Teraz, keď rozumiete základom Dockeru, tu sú odporúčané smery pre ďalšie vzdelávanie:
+
+| Téma | Popis |
 |-------|-------------|
-| **Docker: Networking, Ports & Storage** | Port mapping, volumes, persistent data, and container networking |
-| **Dockerfiles** | Build custom images with `FROM`, `RUN`, `COPY`, `CMD`, and other instructions |
-| **Docker Compose** | Define and manage multi-container applications with a single YAML file |
-| **Multi-Stage Builds** | Optimize image sizes by separating build and runtime environments |
-| **Container Orchestration** | Scale and manage containers with Kubernetes or Docker Swarm |
-| **CI/CD with Docker** | Integrate Docker into continuous integration and delivery pipelines |
-| **Container Security** | Image scanning, rootless containers, seccomp profiles, and AppArmor |
+| **Docker: Networking, Ports & Storage** | Mapovanie portov, volumes, perzistentné dáta a sieťovanie containers |
+| **Dockerfiles** | Zostavovanie vlastných images pomocou `FROM`, `RUN`, `COPY`, `CMD` a ďalších inštrukcií |
+| **Docker Compose** | Definovanie a správa viackontajnerových aplikácií jediným YAML súborom |
+| **Multi-Stage Builds** | Optimalizácia veľkosti images oddelením build a runtime prostredia |
+| **Orchestrácia containers** | Škálovanie a správa containers pomocou Kubernetes alebo Docker Swarm |
+| **CI/CD s Dockerom** | Integrácia Dockeru do pipeline pre kontinuálnu integráciu a doručovanie |
+| **Bezpečnosť containers** | Skenovanie images, rootless containers, seccomp profily a AppArmor |
 
 ---
 
-## Quick Reference Card
+## Karta rýchleho prehľadu
 
 ```
 # Images
@@ -93,4 +93,4 @@ docker system prune --volumes  # Remove all unused resources
 
 ---
 
-**Thank you for completing this workshop!**
+**Ďakujeme, že ste absolvovali tento workshop!**

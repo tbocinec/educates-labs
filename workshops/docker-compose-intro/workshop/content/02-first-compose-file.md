@@ -1,108 +1,108 @@
-# Your First Compose File
+# Váš prvý Compose súbor
 
-Let's create and run your very first Docker Compose application — a simple Nginx web server.
+Vytvorme a spustime vašu úplne prvú Docker Compose aplikáciu — jednoduchý Nginx webový server.
 
 ---
 
-## Creating the Project Directory
+## Vytvorenie adresára projektu
 
-We have prepared a Compose file for you. Let's copy it to a working directory and examine it:
+Pripravili sme pre vás Compose súbor. Skopírujme ho do pracovného adresára a preskúmajme ho:
 
 ```terminal:execute
 command: mkdir -p ~/first-compose && cp ~/exercises/first-compose/compose.yaml ~/first-compose/
 ```
 
-**Open the file in the Editor tab to review it:**
+**Otvorte súbor v záložke Editor a prezrite si ho:**
 
 ```editor:open-file
 file: ~/first-compose/compose.yaml
 ```
 
-This is the simplest possible Compose file — it defines a single service called `web` that runs Nginx and maps port 8080 on the host to port 80 in the container.
+Toto je najjednoduchší možný Compose súbor — definuje jednu service s názvom `web`, ktorá spúšťa Nginx a mapuje port 8080 na hostiteľovi na port 80 v kontajneri.
 
 ---
 
-## Starting the Application
+## Spustenie aplikácie
 
 ```terminal:execute
 command: cd ~/first-compose && docker compose up -d
 ```
 
-The `-d` flag runs all services in **detached mode** (background). Without it, logs would stream to your terminal and block it.
+Flag `-d` spúšťa všetky services v **detached mode** (na pozadí). Bez neho by sa logy vypisovali do terminálu a blokovali ho.
 
-Compose will:
-1. Create a default **network** for the project
-2. Pull the `nginx:latest` image (if not already available)
-3. Create and start the `web` container
+Compose vykoná:
+1. Vytvorí predvolenú **network** pre projekt
+2. Stiahne image `nginx:latest` (ak ešte nie je dostupný)
+3. Vytvorí a spustí kontajner `web`
 
 ---
 
-## Verifying the Application
+## Overenie aplikácie
 
-**Check running services:**
+**Skontrolujte bežiace services:**
 
 ```terminal:execute
 command: cd ~/first-compose && docker compose ps
 ```
 
-You should see the `web` service with status `running` and the port mapping `0.0.0.0:8080->80/tcp`.
+Mali by ste vidieť service `web` so stavom `running` a mapovaním portu `0.0.0.0:8080->80/tcp`.
 
-**Test the web server:**
+**Otestujte webový server:**
 
 ```terminal:execute
 command: curl -s http://localhost:8080 | head -5
 ```
 
-You can also click the **Web App** tab at the top to see the Nginx welcome page in your browser.
+Môžete tiež kliknúť na záložku **Web App** hore a zobraziť uvítaciu stránku Nginx vo svojom prehliadači.
 
 ---
 
-## Stopping the Application
+## Zastavenie aplikácie
 
 ```terminal:execute
 command: cd ~/first-compose && docker compose down
 ```
 
-`docker compose down` stops and removes:
-- All containers defined in the Compose file
-- The default network created by Compose
+`docker compose down` zastaví a odstráni:
+- Všetky kontajnery definované v Compose súbore
+- Predvolenú network vytvorenú Compose
 
-> **Note:** Named volumes are **not** removed by default. Use `docker compose down -v` to also remove volumes.
+> **Poznámka:** Named volumes sa predvolene **neodstraňujú**. Použite `docker compose down -v` na odstránenie aj volumes.
 
-**Verify everything is cleaned up:**
+**Overte, že je všetko vyčistené:**
 
 ```terminal:execute
 command: docker ps -a --filter "name=first-compose"
 ```
 
-No containers remain.
+Žiadne kontajnery nezostali.
 
 ---
 
-## The `up` and `down` Cycle
+## Cyklus `up` a `down`
 
-This is the fundamental Docker Compose workflow:
+Toto je základný pracovný postup Docker Compose:
 
 ```
 docker compose up -d     # Start the entire stack
 docker compose down       # Stop and remove everything
 ```
 
-It's that simple. You will use this cycle throughout the rest of this workshop.
+Je to také jednoduché. Tento cyklus budete používať počas celého zvyšku tohto workshopu.
 
 ---
 
-## Recreating After Changes
+## Opätovné vytvorenie po zmenách
 
-If you modify the `compose.yaml` file, just run `up` again — Compose detects what changed and only recreates the affected services.
+Ak upravíte súbor `compose.yaml`, stačí znova spustiť `up` — Compose zistí, čo sa zmenilo, a znova vytvorí iba dotknuté services.
 
-**Let's apply an updated version that adds a container name and a restart policy:**
+**Aplikujme aktualizovanú verziu, ktorá pridáva container name a restart policy:**
 
 ```terminal:execute
 command: cp ~/exercises/first-compose/compose-updated.yaml ~/first-compose/compose.yaml
 ```
 
-**Open the updated file in the Editor — notice the two new lines:**
+**Otvorte aktualizovaný súbor v Editore — všimnite si dva nové riadky:**
 
 ```editor:open-file
 file: ~/first-compose/compose.yaml
@@ -118,13 +118,13 @@ file: ~/first-compose/compose.yaml
 text: restart: unless-stopped
 ```
 
-Now apply the changes:
+Teraz aplikujte zmeny:
 
 ```terminal:execute
 command: cd ~/first-compose && docker compose up -d
 ```
 
-Compose recreates only the `web` service because its configuration changed.
+Compose znova vytvorí iba service `web`, pretože sa zmenila jej konfigurácia.
 
 ```terminal:execute
 command: docker ps --filter "name=my-web"
@@ -132,7 +132,7 @@ command: docker ps --filter "name=my-web"
 
 ---
 
-## Cleanup
+## Vyčistenie
 
 ```terminal:execute
 command: cd ~/first-compose && docker compose down

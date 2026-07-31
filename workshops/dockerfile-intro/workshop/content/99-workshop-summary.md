@@ -1,23 +1,23 @@
-# Workshop Summary
+# Zhrnutie workshopu
 
-Congratulations! You've learned how to write efficient, production-ready Dockerfiles.
+Gratulujeme! Naučili ste sa písať efektívne Dockerfile pripravené do produkcie.
 
 ---
 
-## What You Learned
+## Čo ste sa naučili
 
-| Chapter | Key Concepts |
+| Kapitola | Kľúčové koncepty |
 |---------|-------------|
-| **Dockerfile Basics** | `FROM`, `RUN`, `COPY`, `CMD`, build context |
-| **First Image** | `docker build`, `-t` tagging, `docker run -p` |
-| **Image Layers** | Layer caching, cache invalidation, ordering |
-| **Instructions Deep Dive** | `WORKDIR`, `EXPOSE`, `ENTRYPOINT` vs `CMD`, `ENV`, `ARG`, `.dockerignore` |
-| **Best Practices** | Slim base images, non-root user, combined `RUN`, pip `--no-cache-dir` |
-| **Multi-Stage Builds** | Build vs runtime stages, `COPY --from`, dramatic size reduction |
+| **Základy Dockerfile** | `FROM`, `RUN`, `COPY`, `CMD`, build kontext |
+| **Prvý image** | `docker build`, tagovanie cez `-t`, `docker run -p` |
+| **Vrstvy image** | Caching vrstiev, invalidácia cache, poradie |
+| **Podrobný pohľad na inštrukcie** | `WORKDIR`, `EXPOSE`, `ENTRYPOINT` vs `CMD`, `ENV`, `ARG`, `.dockerignore` |
+| **Osvedčené postupy** | Slim base images, používateľ mimo root, spájané `RUN`, pip `--no-cache-dir` |
+| **Multi-stage builds** | Build a runtime stage, `COPY --from`, výrazné zmenšenie veľkosti |
 
 ---
 
-## Dockerfile Quick Reference
+## Rýchla referencia Dockerfile
 
 ```dockerfile
 # Base image
@@ -58,12 +58,12 @@ CMD ["python", "app.py"]
 
 ---
 
-## Image Size Reference
+## Referencia veľkostí image
 
-| Approach | Typical Size |
+| Prístup | Typická veľkosť |
 |----------|-------------|
-| `ubuntu` + install manually | 400-800 MB |
-| `python:3.12` (full) | ~350 MB |
+| `ubuntu` + ručná inštalácia | 400-800 MB |
+| `python:3.12` (plný) | ~350 MB |
 | `python:3.12-slim` | ~130 MB |
 | `python:3.12-alpine` | ~50 MB |
 | Go multi-stage → `alpine` | ~15 MB |
@@ -71,9 +71,9 @@ CMD ["python", "app.py"]
 
 ---
 
-## Final Cleanup
+## Záverečné vyčistenie (cleanup)
 
-Remove all images and containers created during this workshop:
+Odstráňte všetky images a kontajnery vytvorené počas tohto workshopu:
 
 ```terminal:execute
 command: docker stop $(docker ps -q) 2>/dev/null; docker system prune -af 2>/dev/null; echo "Cleanup complete!"
@@ -81,12 +81,12 @@ command: docker stop $(docker ps -q) 2>/dev/null; docker system prune -af 2>/dev
 
 ---
 
-## Next Steps
+## Ďalšie kroky
 
-Continue your Docker learning journey:
+Pokračujte vo svojej ceste učenia sa Dockeru:
 
-- **Docker Compose** — Define and run multi-container applications
-- **Docker Networking & Storage** — Connect containers and persist data
-- **Container registries** — Push and pull images from Docker Hub, GHCR, or private registries
-- **CI/CD pipelines** — Automate building and deploying images
-
+- **Docker Compose** — definujte a spúšťajte viackontajnerové aplikácie
+- **Docker Networking & Storage** — prepájajte kontajnery a uchovávajte dáta
+- **Kontajnerové registry** — push a pull images z Docker Hubu, GHCR alebo súkromných registry
+- **CI/CD pipelines** — automatizujte zostavovanie a nasadzovanie images
+```

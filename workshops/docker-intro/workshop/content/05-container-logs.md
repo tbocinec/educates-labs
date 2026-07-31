@@ -1,18 +1,18 @@
-# Working with Container Logs
+# Práca s logmi containers
 
-Logs are the primary mechanism for observing what happens inside a container. Docker captures everything written to **stdout** and **stderr** by the container's main process and makes it available through the `docker logs` command.
+Logy sú hlavným nástrojom na pozorovanie toho, čo sa deje vo vnútri containera. Docker zachytáva všetko, čo hlavný proces containera zapíše na **stdout** a **stderr**, a sprístupňuje to cez príkaz `docker logs`.
 
 ---
 
-## Setting Up a Container That Generates Logs
+## Príprava containera, ktorý generuje logy
 
-Let's start an Nginx container and generate some log output:
+Spustime Nginx container a vytvorme nejaký log výstup:
 
 ```terminal:execute
 command: docker run -d --name log-demo -p 8080:80 nginx:latest
 ```
 
-**Generate some traffic to produce log entries:**
+**Vygenerujte nejakú prevádzku, aby vznikli záznamy v logu:**
 
 ```terminal:execute
 command: for i in $(seq 1 10); do curl -s -o /dev/null http://localhost:8080; done
@@ -20,86 +20,86 @@ command: for i in $(seq 1 10); do curl -s -o /dev/null http://localhost:8080; do
 
 ---
 
-## Viewing Logs
+## Zobrazenie logov
 
-**View all logs from the container:**
+**Zobrazte všetky logy z containera:**
 
 ```terminal:execute
 command: docker logs log-demo
 ```
 
-You should see Nginx access log entries showing the HTTP requests we just made.
+Mali by ste vidieť záznamy z access logu Nginxu zobrazujúce HTTP požiadavky, ktoré sme práve vykonali.
 
 ---
 
-## Following Logs in Real Time
+## Sledovanie logov v reálnom čase
 
-The `-f` (follow) flag streams new log entries as they arrive — similar to `tail -f`:
+Prepínač `-f` (follow) streamuje nové záznamy logu tak, ako prichádzajú — podobne ako `tail -f`:
 
 ```terminal:execute
 command: docker logs -f log-demo
 ```
 
-While the log stream is active, generate more traffic from the second terminal:
+Kým je stream logu aktívny, vygenerujte z druhého terminálu ďalšiu prevádzku:
 
 ```terminal:execute
 command: curl http://localhost:8080
 session: 2
 ```
 
-You'll see new entries appear in real time. **Press `Ctrl+C`** to stop following logs.
+Nové záznamy uvidíte pribúdať v reálnom čase. **Stlačením `Ctrl+C`** sledovanie logov ukončíte.
 
 ---
 
-## Showing Timestamps
+## Zobrazenie časových značiek (timestamps)
 
-Add the `-t` flag to prefix each log line with a precise timestamp:
+Pridaním prepínača `-t` sa pred každý riadok logu doplní presná časová značka:
 
 ```terminal:execute
 command: docker logs -t log-demo
 ```
 
-Timestamps are in ISO 8601 format and are invaluable for correlating events across multiple containers.
+Časové značky sú vo formáte ISO 8601 a sú neoceniteľné pri korelovaní udalostí naprieč viacerými containers.
 
 ---
 
-## Tail: Limiting Log Output
+## Tail: obmedzenie výstupu logu
 
-For containers that produce a large volume of logs, use `--tail` to show only the most recent entries:
+Pri containers, ktoré produkujú veľký objem logov, použite `--tail` na zobrazenie iba najnovších záznamov:
 
-**Show only the last 5 log lines:**
+**Zobrazte iba posledných 5 riadkov logu:**
 
 ```terminal:execute
 command: docker logs --tail 5 log-demo
 ```
 
-**Combine with follow to see new entries starting from the last 3 lines:**
+**Skombinujte s follow, aby ste videli nové záznamy počnúc od posledných 3 riadkov:**
 
 ```terminal:execute
 command: docker logs --tail 3 -f log-demo
 ```
 
-Press `Ctrl+C` to stop.
+Stlačením `Ctrl+C` sledovanie ukončíte.
 
 ---
 
-## Filtering Logs by Time
+## Filtrovanie logov podľa času
 
-The `--since` and `--until` flags filter logs by time:
+Prepínače `--since` a `--until` filtrujú logy podľa času:
 
-**Show logs from the last 30 seconds:**
+**Zobrazte logy za posledných 30 sekúnd:**
 
 ```terminal:execute
 command: docker logs --since 30s log-demo
 ```
 
-**Show logs from the last 2 minutes:**
+**Zobrazte logy za posledné 2 minúty:**
 
 ```terminal:execute
 command: docker logs --since 2m log-demo
 ```
 
-You can also use absolute timestamps:
+Použiť môžete aj absolútne časové značky:
 
 ```
 docker logs --since "2026-02-10T10:00:00" log-demo
@@ -108,23 +108,23 @@ docker logs --until "2026-02-10T10:30:00" log-demo
 
 ---
 
-## Combining Logs with grep
+## Kombinovanie logov s grep
 
-Since Docker logs output to stdout, you can pipe them through standard Unix tools for advanced filtering:
+Keďže Docker vypisuje logy na stdout, môžete ich posunúť cez štandardné Unixové nástroje na pokročilé filtrovanie:
 
-**Find only GET requests:**
+**Nájdite iba GET požiadavky:**
 
 ```terminal:execute
 command: docker logs log-demo 2>&1 | grep "GET"
 ```
 
-**Count the number of log lines:**
+**Spočítajte počet riadkov logu:**
 
 ```terminal:execute
 command: docker logs log-demo 2>&1 | wc -l
 ```
 
-> **Note:** Nginx writes access logs to **stdout** and error logs to **stderr**. The `2>&1` redirects stderr to stdout so both streams are captured by `grep`.
+> **Poznámka:** Nginx zapisuje access logy na **stdout** a error logy na **stderr**. Zápis `2>&1` presmeruje stderr na stdout, takže `grep` zachytí oba streamy.
 
 ---
 

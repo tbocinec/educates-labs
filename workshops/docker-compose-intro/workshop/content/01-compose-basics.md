@@ -1,12 +1,12 @@
-# What is Docker Compose?
+# Čo je Docker Compose?
 
-Docker Compose is a tool for defining and running multi-container applications. It uses a declarative YAML file to describe your application's services, networks, and volumes — then starts everything with a single command.
+Docker Compose je nástroj na definovanie a spúšťanie viackontajnerových aplikácií. Používa deklaratívny YAML súbor na opis services, networks a volumes vašej aplikácie — a následne spustí všetko jediným príkazom.
 
 ---
 
-## Why Docker Compose?
+## Prečo Docker Compose?
 
-Consider launching a typical web application with `docker run`:
+Predstavte si spustenie typickej webovej aplikácie pomocou `docker run`:
 
 ```
 # Create a network
@@ -28,7 +28,7 @@ docker run -d --name web --network myapp \
   nginx:latest
 ```
 
-That's four separate commands, and you have to remember the exact flags, network names, and volume names every time. With Docker Compose, the same stack becomes a single file:
+To sú štyri samostatné príkazy a zakaždým si musíte pamätať presné flagy, názvy networks a názvy volumes. S Docker Compose sa ten istý stack stane jediným súborom:
 
 ```yaml
 services:
@@ -53,55 +53,55 @@ volumes:
   pgdata:
 ```
 
-And you start it all with: `docker compose up -d`
+A všetko to spustíte pomocou: `docker compose up -d`
 
 ---
 
-## Compose File Structure
+## Štruktúra Compose súboru
 
-A Compose file has three top-level sections:
+Compose súbor má tri hlavné sekcie:
 
-| Section | Purpose |
+| Sekcia | Účel |
 |---------|---------|
-| **services** | The containers that make up your application |
-| **volumes** | Named volumes for persistent data |
-| **networks** | Custom networks (optional — Compose creates a default network automatically) |
+| **services** | Kontajnery, ktoré tvoria vašu aplikáciu |
+| **volumes** | Named volumes pre perzistentné dáta |
+| **networks** | Vlastné networks (voliteľné — Compose automaticky vytvorí predvolenú network) |
 
-The default filename is `compose.yaml` (or `docker-compose.yml` for older versions).
+Predvolený názov súboru je `compose.yaml` (alebo `docker-compose.yml` pre staršie verzie).
 
 ---
 
-## Verifying Compose is Available
+## Overenie dostupnosti Compose
 
-Let's confirm Docker Compose is installed:
+Overme, že je Docker Compose nainštalovaný:
 
 ```terminal:execute
 command: docker compose version
 ```
 
-Docker Compose v2 is integrated directly into the Docker CLI as a plugin (`docker compose`) — there's no need for a separate `docker-compose` binary.
+Docker Compose v2 je integrovaný priamo do Docker CLI ako plugin (`docker compose`) — nie je potrebný samostatný binárny súbor `docker-compose`.
 
 ---
 
 ## Compose vs Docker CLI
 
-| Feature | Docker CLI | Docker Compose |
+| Vlastnosť | Docker CLI | Docker Compose |
 |---------|-----------|----------------|
-| **Scope** | Single container | Entire application stack |
-| **Configuration** | Command-line flags | Declarative YAML file |
-| **Networking** | Manual (`docker network create`) | Automatic (default network per project) |
-| **Reproducibility** | Hard to replicate exact flags | File can be version-controlled |
-| **Lifecycle** | Manage containers individually | `up` / `down` for entire stack |
+| **Rozsah** | Jeden kontajner | Celý stack aplikácie |
+| **Konfigurácia** | Flagy na príkazovom riadku | Deklaratívny YAML súbor |
+| **Networking** | Manuálny (`docker network create`) | Automatický (predvolená network na projekt) |
+| **Reprodukovateľnosť** | Ťažko replikovať presné flagy | Súbor možno verzovať |
+| **Životný cyklus** | Spravovať kontajnery jednotlivo | `up` / `down` pre celý stack |
 
 ---
 
-## The Compose Project
+## Compose projekt
 
-When you run `docker compose up`, Compose creates a **project**. By default, the project name is derived from the directory name. All resources (containers, networks, volumes) are prefixed with the project name to avoid conflicts.
+Keď spustíte `docker compose up`, Compose vytvorí **projekt**. Predvolene sa názov projektu odvodí od názvu adresára. Všetky prostriedky (kontajnery, networks, volumes) majú predponu s názvom projektu, aby sa predišlo konfliktom.
 
-For example, in a directory called `myapp`:
-- Container names: `myapp-web-1`, `myapp-db-1`
-- Network name: `myapp_default`
-- Volume name: `myapp_pgdata`
+Napríklad v adresári s názvom `myapp`:
+- Názvy kontajnerov: `myapp-web-1`, `myapp-db-1`
+- Názov network: `myapp_default`
+- Názov volume: `myapp_pgdata`
 
-You will see this naming convention in action throughout this workshop.
+Túto konvenciu pomenovania uvidíte v praxi počas celého workshopu.

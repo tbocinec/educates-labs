@@ -1,17 +1,17 @@
-# Dockerfile Basics
+# Základy Dockerfile
 
-A **Dockerfile** is a text file containing a series of instructions that Docker uses to build an image. Each instruction creates a **layer** in the final image.
+**Dockerfile** je textový súbor obsahujúci sériu inštrukcií, ktoré Docker používa na zostavenie (build) image. Každá inštrukcia vytvára v image jednu **vrstvu (layer)**.
 
 ---
 
-## The Build Process
+## Proces zostavenia (build)
 
-When you run `docker build`, Docker:
+Keď spustíte `docker build`, Docker:
 
-1. Reads the Dockerfile
-2. Executes each instruction **in order**, from top to bottom
-3. Creates a new **image layer** for each instruction
-4. Produces the final image consisting of all layers stacked together
+1. Prečíta Dockerfile
+2. Vykoná každú inštrukciu **v poradí**, zhora nadol
+3. Pre každú inštrukciu vytvorí novú **vrstvu image (layer)**
+4. Vytvorí výsledný image zložený zo všetkých vrstiev naskladaných na sebe
 
 ```
 ┌─────────────────────────────┐
@@ -26,13 +26,13 @@ When you run `docker build`, Docker:
 
 ---
 
-## Core Instructions
+## Základné inštrukcie
 
-Here are the most commonly used Dockerfile instructions:
+Tu sú najčastejšie používané inštrukcie Dockerfile:
 
-### `FROM` — Base Image
+### `FROM` — základný image (base image)
 
-Every Dockerfile **must start** with a `FROM` instruction. It sets the base image:
+Každý Dockerfile **musí začínať** inštrukciou `FROM`. Nastavuje základný image (base image):
 
 ```dockerfile
 FROM nginx:latest
@@ -40,22 +40,22 @@ FROM python:3.12-slim
 FROM alpine:latest
 ```
 
-> Always use a **specific tag** (e.g., `python:3.12-slim`) instead of `latest` for reproducible builds.
+> Vždy používajte **konkrétny tag** (napr. `python:3.12-slim`) namiesto `latest`, aby boli buildy reprodukovateľné.
 
-### `RUN` — Execute Commands
+### `RUN` — vykonanie príkazov
 
-Runs a command **during the build** and saves the result as a new layer:
+Spustí príkaz **počas buildu** a výsledok uloží ako novú vrstvu:
 
 ```dockerfile
 RUN apt-get update && apt-get install -y curl
 RUN pip install flask
 ```
 
-Each `RUN` creates a layer. Combine related commands with `&&` to minimize layers.
+Každý `RUN` vytvára vrstvu. Súvisiace príkazy spájajte pomocou `&&`, aby ste minimalizovali počet vrstiev.
 
-### `COPY` — Copy Files
+### `COPY` — kopírovanie súborov
 
-Copies files from your **build context** (local directory) into the image:
+Kopíruje súbory z vášho **build kontextu** (lokálneho adresára) do image:
 
 ```dockerfile
 COPY index.html /usr/share/nginx/html/
@@ -63,22 +63,22 @@ COPY app.py /app/
 COPY . /app/
 ```
 
-### `CMD` — Default Command
+### `CMD` — predvolený príkaz
 
-Specifies the command to run when a container **starts** from this image:
+Určuje príkaz, ktorý sa spustí pri **štarte** kontajnera z tohto image:
 
 ```dockerfile
 CMD ["python", "app.py"]
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-> There can be only **one** `CMD` instruction. If you specify multiple, only the last one takes effect.
+> Môže existovať iba **jedna** inštrukcia `CMD`. Ak ich uvediete viac, uplatní sa iba posledná.
 
 ---
 
-## Build Context
+## Build kontext
 
-When you run `docker build .`, the `.` refers to the **build context** — the directory whose contents are sent to the Docker daemon. Only files within the build context can be used in `COPY` instructions.
+Keď spustíte `docker build .`, znak `.` označuje **build kontext** — adresár, ktorého obsah sa odošle Docker daemonu. V inštrukciách `COPY` možno použiť iba súbory v rámci build kontextu.
 
 ```
 project/
@@ -88,25 +88,25 @@ project/
 └── node_modules/     ← Also sent (unless excluded!)
 ```
 
-> Large directories in the build context slow down builds. Use `.dockerignore` to exclude unnecessary files (covered later).
+> Veľké adresáre v build kontexte spomaľujú buildy. Na vylúčenie nepotrebných súborov použite `.dockerignore` (preberieme neskôr).
 
 ---
 
-## Dockerfile Reference Table
+## Referenčná tabuľka Dockerfile
 
-| Instruction | Purpose | Build / Runtime |
+| Inštrukcia | Účel | Build / Runtime |
 |-------------|---------|-----------------|
-| `FROM` | Set base image | Build |
-| `RUN` | Execute command during build | Build |
-| `COPY` | Copy files into image | Build |
-| `ADD` | Copy files (with URL/tar support) | Build |
-| `WORKDIR` | Set working directory | Build |
-| `EXPOSE` | Document container port | Build (metadata) |
-| `ENV` | Set environment variable | Both |
-| `ARG` | Set build-time variable | Build |
-| `CMD` | Default run command | Runtime |
-| `ENTRYPOINT` | Main executable | Runtime |
-| `USER` | Set runtime user | Runtime |
-| `LABEL` | Add metadata | Build (metadata) |
+| `FROM` | Nastaví base image | Build |
+| `RUN` | Vykoná príkaz počas buildu | Build |
+| `COPY` | Skopíruje súbory do image | Build |
+| `ADD` | Skopíruje súbory (s podporou URL/tar) | Build |
+| `WORKDIR` | Nastaví pracovný adresár | Build |
+| `EXPOSE` | Zdokumentuje port kontajnera | Build (metadáta) |
+| `ENV` | Nastaví premennú prostredia | Oboje |
+| `ARG` | Nastaví premennú počas buildu | Build |
+| `CMD` | Predvolený spúšťací príkaz | Runtime |
+| `ENTRYPOINT` | Hlavný spustiteľný program | Runtime |
+| `USER` | Nastaví runtime používateľa | Runtime |
+| `LABEL` | Pridá metadáta | Build (metadáta) |
 
-We will explore each instruction throughout this workshop.
+Každú inštrukciu preskúmame v priebehu tohto workshopu.

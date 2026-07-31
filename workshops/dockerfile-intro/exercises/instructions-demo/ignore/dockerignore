@@ -10,3 +10,4 @@
 
 # Docker build files (not needed inside the image)
 Dockerfile
+.dockerignore

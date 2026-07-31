@@ -1,34 +1,34 @@
-# Building Your First Image
+# Vytvorenie prvého image
 
-Let's build your first custom Docker image — a personalized Nginx web server.
+Poďme zostaviť váš prvý vlastný Docker image — personalizovaný Nginx webový server.
 
 ---
 
-## Examining the Project
+## Preskúmanie projektu
 
-Copy the prepared exercise files:
+Skopírujte pripravené súbory cvičenia:
 
 ```terminal:execute
 command: cp -r ~/exercises/first-image ~/first-image && cd ~/first-image
 ```
 
-**Open the Dockerfile in the Editor:**
+**Otvorte Dockerfile v editore:**
 
 ```editor:open-file
 file: ~/first-image/Dockerfile
 ```
 
-This Dockerfile has just two instructions:
+Tento Dockerfile má iba dve inštrukcie:
 
 ```dockerfile
 FROM nginx:latest
 COPY index.html /usr/share/nginx/html/index.html
 ```
 
-- `FROM nginx:latest` — starts from the official Nginx image
-- `COPY index.html ...` — replaces the default welcome page with our custom HTML
+- `FROM nginx:latest` — vychádza z oficiálneho Nginx image
+- `COPY index.html ...` — nahradí predvolenú uvítaciu stránku naším vlastným HTML
 
-**Take a look at the custom HTML page:**
+**Pozrite sa na vlastnú HTML stránku:**
 
 ```editor:open-file
 file: ~/first-image/index.html
@@ -36,33 +36,33 @@ file: ~/first-image/index.html
 
 ---
 
-## Building the Image
+## Zostavenie image
 
 ```terminal:execute
 command: cd ~/first-image && docker build -t my-nginx:v1 .
 ```
 
-Let's break down the command:
+Rozoberme si tento príkaz:
 
-| Part | Meaning |
+| Časť | Význam |
 |------|---------|
-| `docker build` | Build an image from a Dockerfile |
-| `-t my-nginx:v1` | Tag the image as `my-nginx` with version `v1` |
-| `.` | Use the current directory as build context |
+| `docker build` | Zostaví image z Dockerfile |
+| `-t my-nginx:v1` | Označí image ako `my-nginx` s verziou `v1` |
+| `.` | Použije aktuálny adresár ako build kontext |
 
-Watch the output — you can see Docker executing each instruction and creating layers.
+Sledujte výstup — vidíte, ako Docker vykonáva jednotlivé inštrukcie a vytvára vrstvy.
 
 ---
 
-## Running the Image
+## Spustenie image
 
 ```terminal:execute
 command: docker run -d --name my-web -p 8080:80 my-nginx:v1
 ```
 
-Click the **App Preview** tab at the top to see your custom page in the browser.
+Kliknutím na záložku **App Preview** hore uvidíte svoju vlastnú stránku v prehliadači.
 
-**Or test with curl:**
+**Alebo otestujte pomocou curl:**
 
 ```terminal:execute
 command: curl -s http://localhost:8080 | head -10
@@ -70,45 +70,45 @@ command: curl -s http://localhost:8080 | head -10
 
 ---
 
-## Listing Your Images
+## Zobrazenie vašich images
 
 ```terminal:execute
 command: docker images my-nginx
 ```
 
-You can see the image name, tag (`v1`), image ID, creation time, and size.
+Vidíte názov image, tag (`v1`), ID image, čas vytvorenia a veľkosť.
 
 ---
 
-## Image Tags
+## Tagy image
 
-Tags are version labels for your images. Let's build another version:
+Tagy sú označenia verzií vašich images. Poďme zostaviť ďalšiu verziu:
 
-**Modify the HTML page — change the title:**
+**Upravte HTML stránku — zmeňte nadpis:**
 
 ```terminal:execute
 command: sed -i 's/My First Docker Image/My Improved Image v2/' ~/first-image/index.html && sed -i 's/Hello from Docker!/Hello from Docker v2!/' ~/first-image/index.html
 ```
 
-**Build a new version:**
+**Zostavte novú verziu:**
 
 ```terminal:execute
 command: cd ~/first-image && docker build -t my-nginx:v2 .
 ```
 
-**Now you have two versions:**
+**Teraz máte dve verzie:**
 
 ```terminal:execute
 command: docker images my-nginx
 ```
 
-Both `v1` and `v2` exist side by side. You can run either version at any time.
+Verzie `v1` aj `v2` existujú vedľa seba. Ktorúkoľvek verziu môžete kedykoľvek spustiť.
 
 ---
 
-## Tagging Existing Images
+## Pridávanie tagov k existujúcim images
 
-You can add additional tags to an existing image without rebuilding:
+K existujúcemu image môžete pridať ďalšie tagy bez opätovného zostavenia:
 
 ```terminal:execute
 command: docker tag my-nginx:v2 my-nginx:latest
@@ -118,24 +118,24 @@ command: docker tag my-nginx:v2 my-nginx:latest
 command: docker images my-nginx
 ```
 
-Notice that `v2` and `latest` have the **same image ID** — they point to the same image. Tags are just labels.
+Všimnite si, že `v2` a `latest` majú **rovnaké ID image** — ukazujú na ten istý image. Tagy sú len označenia.
 
 ---
 
-## Pushing to a Registry (Concept)
+## Push do registry (koncept)
 
-In a real workflow, you would push your image to a registry so others can use it:
+V reálnom workflowe by ste image poslali (push) do registry, aby ho mohli používať aj ostatní:
 
 ```
 docker tag my-nginx:v2 registry.example.com/my-nginx:v2
 docker push registry.example.com/my-nginx:v2
 ```
 
-Common registries include Docker Hub, GitHub Container Registry (ghcr.io), and private registries.
+Medzi bežné registry patria Docker Hub, GitHub Container Registry (ghcr.io) a súkromné registry.
 
 ---
 
-## Cleanup
+## Vyčistenie (cleanup)
 
 ```terminal:execute
 command: docker stop my-web && docker rm my-web

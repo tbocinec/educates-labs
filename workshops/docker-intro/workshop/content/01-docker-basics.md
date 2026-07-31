@@ -1,28 +1,28 @@
-# Docker Basics & Architecture
+# Základy a architektúra Dockeru
 
-Before we dive into running containers, let's understand what Docker is and how it works under the hood.
-
----
-
-## What is Docker?
-
-**Docker** is an open-source platform that automates the deployment, scaling, and management of applications using **containerization**. A container is a lightweight, standalone, executable package that includes everything needed to run a piece of software — code, runtime, system tools, libraries, and settings.
-
-Unlike virtual machines, containers share the host operating system's kernel, making them significantly more efficient in terms of resource usage and startup time.
+Skôr než sa pustíme do spúšťania containers, pochopme, čo Docker je a ako funguje v pozadí.
 
 ---
 
-## Docker Architecture
+## Čo je Docker?
 
-Docker follows a **client-server architecture** with three core components:
+**Docker** je open-source platforma, ktorá automatizuje nasadzovanie, škálovanie a správu aplikácií pomocou **kontajnerizácie (containerization)**. Container je odľahčený, samostatný a spustiteľný balík, ktorý obsahuje všetko potrebné na spustenie softvéru — kód, runtime, systémové nástroje, knižnice a nastavenia.
 
-| Component | Description |
+Na rozdiel od virtuálnych strojov zdieľajú containers kernel hostiteľského operačného systému, čo ich robí výrazne efektívnejšími z hľadiska spotreby zdrojov aj rýchlosti spúšťania.
+
+---
+
+## Architektúra Dockeru
+
+Docker využíva architektúru typu **klient-server** s tromi hlavnými komponentmi:
+
+| Komponent | Popis |
 |-----------|-------------|
-| **Docker Client** | The CLI tool (`docker`) you use to interact with Docker. It sends commands to the Docker daemon. |
-| **Docker Daemon** (`dockerd`) | The background service that manages Docker objects — images, containers, networks, and volumes. |
-| **Docker Registry** | A storage and distribution system for Docker images. **Docker Hub** is the default public registry. |
+| **Docker Client** | CLI nástroj (`docker`), ktorý používate na prácu s Dockerom. Odosiela príkazy Docker daemonu. |
+| **Docker Daemon** (`dockerd`) | Služba bežiaca na pozadí, ktorá spravuje objekty Dockeru — images, containers, siete a volumes. |
+| **Docker Registry** | Systém na ukladanie a distribúciu Docker images. **Docker Hub** je predvolený verejný registry. |
 
-### How They Work Together
+### Ako spolupracujú
 
 ```
 ┌──────────────┐     REST API     ┌──────────────────┐
@@ -43,65 +43,65 @@ Docker follows a **client-server architecture** with three core components:
 
 ---
 
-## Key Concepts
+## Kľúčové pojmy
 
 ### Images vs Containers
 
-- **Image** — A read-only template containing the application code, runtime, libraries, and dependencies. Think of it as a *blueprint* or a *class* in object-oriented programming.
-- **Container** — A running instance of an image. Think of it as an *object* instantiated from a class. You can create multiple containers from the same image.
+- **Image** — read-only šablóna obsahujúca kód aplikácie, runtime, knižnice a závislosti. Predstavte si ju ako *plán (blueprint)* alebo *triedu (class)* v objektovo orientovanom programovaní.
+- **Container** — bežiaca inštancia image. Predstavte si ho ako *objekt* vytvorený z triedy. Z rovnakej image môžete vytvoriť viacero containers.
 
-### Docker Registry and Docker Hub
+### Docker Registry a Docker Hub
 
-- A **registry** is a service that stores Docker images. 
-- **Docker Hub** (`hub.docker.com`) is the default public registry with millions of pre-built images.
-- Images follow the naming convention: `registry/repository:tag` (e.g., `docker.io/library/nginx:latest`).
+- **Registry** je služba, ktorá ukladá Docker images.
+- **Docker Hub** (`hub.docker.com`) je predvolený verejný registry s miliónmi vopred pripravených images.
+- Images sa pomenúvajú podľa konvencie: `registry/repository:tag` (napr. `docker.io/library/nginx:latest`).
 
 ---
 
-## Verifying Docker Installation
+## Overenie inštalácie Dockeru
 
-Let's confirm Docker is available and working in your environment:
+Overme si, že Docker je vo vašom prostredí dostupný a funguje:
 
-**Check the Docker version:**
+**Zistite verziu Dockeru:**
 
 ```terminal:execute
 command: docker version
 ```
 
-This displays both the client and server (daemon) version information.
+Tento príkaz zobrazí informácie o verzii klienta aj servera (daemon).
 
-**View detailed system information:**
+**Zobrazte podrobné systémové informácie:**
 
 ```terminal:execute
 command: docker info
 ```
 
-This command reveals the number of containers, images, storage driver, and other system-level details about your Docker installation.
+Tento príkaz odhalí počet containers, images, storage driver a ďalšie systémové detaily o vašej inštalácii Dockeru.
 
 ---
 
-## Docker Command Structure
+## Štruktúra príkazov Dockeru
 
-Docker commands follow a consistent pattern:
+Príkazy Dockeru majú konzistentný tvar:
 
 ```
 docker [management-command] [sub-command] [options] [arguments]
 ```
 
-For example:
-- `docker container ls` — List running containers
-- `docker image pull nginx` — Pull the nginx image
-- `docker container run --name web nginx` — Run a container named "web" from the nginx image
+Napríklad:
+- `docker container ls` — vypíše bežiace containers
+- `docker image pull nginx` — stiahne image nginx
+- `docker container run --name web nginx` — spustí container s názvom "web" z image nginx
 
-You can also use the **shorthand** syntax:
-- `docker ps` (same as `docker container ls`)
-- `docker pull nginx` (same as `docker image pull nginx`)
-- `docker run nginx` (same as `docker container run nginx`)
+Môžete použiť aj **skrátenú** syntax:
+- `docker ps` (to isté ako `docker container ls`)
+- `docker pull nginx` (to isté ako `docker image pull nginx`)
+- `docker run nginx` (to isté ako `docker container run nginx`)
 
-**View all available commands:**
+**Zobrazte všetky dostupné príkazy:**
 
 ```terminal:execute
 command: docker --help
 ```
 
-Throughout this workshop, we will use both the full and shorthand command forms so you become familiar with both styles.
+Počas celého workshopu budeme používať plný aj skrátený tvar príkazov, aby ste si zvykli na oba štýly.

@@ -1,18 +1,18 @@
-# Essential Compose Commands
+# Základné Compose príkazy
 
-Now that you've built and run multi-container applications, let's master the full set of `docker compose` commands for managing your stacks.
+Teraz, keď ste postavili a spustili viackontajnerové aplikácie, poďme si osvojiť kompletnú sadu príkazov `docker compose` na správu vašich stackov.
 
 ---
 
-## Setting Up a Practice Stack
+## Príprava cvičného stacku
 
-Copy the prepared Compose file:
+Skopírujte pripravený Compose súbor:
 
 ```terminal:execute
 command: mkdir -p ~/compose-commands && cp ~/exercises/compose-commands/compose.yaml ~/compose-commands/
 ```
 
-**Review the Compose file in the Editor tab:**
+**Prezrite si Compose súbor v záložke Editor:**
 
 ```editor:open-file
 file: ~/compose-commands/compose.yaml
@@ -24,15 +24,15 @@ command: cd ~/compose-commands && docker compose up -d
 
 ---
 
-## Listing Services
+## Zobrazenie services
 
-**Show running services:**
+**Zobrazte bežiace services:**
 
 ```terminal:execute
 command: cd ~/compose-commands && docker compose ps
 ```
 
-**Show all services (including stopped):**
+**Zobrazte všetky services (vrátane zastavených):**
 
 ```terminal:execute
 command: cd ~/compose-commands && docker compose ps -a
@@ -40,86 +40,86 @@ command: cd ~/compose-commands && docker compose ps -a
 
 ---
 
-## Viewing Logs
+## Zobrazenie logov
 
-**Stream logs from all services:**
+**Streamujte logy zo všetkých services:**
 
 ```terminal:execute
 command: cd ~/compose-commands && docker compose logs --tail 10
 ```
 
-The `--tail 10` flag shows only the last 10 lines per service. Without it, you may get a lot of output.
+Flag `--tail 10` zobrazí iba posledných 10 riadkov na service. Bez neho môžete dostať veľa výstupu.
 
-**View logs from a specific service:**
+**Zobrazte logy konkrétnej service:**
 
 ```terminal:execute
 command: cd ~/compose-commands && docker compose logs web --tail 5
 ```
 
-**Follow logs in real-time (Ctrl+C to stop):**
+**Sledujte logy v reálnom čase (Ctrl+C na zastavenie):**
 
 ```terminal:execute
 command: cd ~/compose-commands && docker compose logs -f web --tail 3
 session: 2
 ```
 
-Generate some log entries by making a request:
+Vygenerujte nejaké záznamy v logu odoslaním požiadavky:
 
 ```terminal:execute
 command: curl -s http://localhost:8080 > /dev/null && echo "Request sent!"
 ```
 
-You should see the access log entry appear in Terminal 2. Press **Ctrl+C** in Terminal 2 to stop following.
+V Termináli 2 by ste mali vidieť, ako sa objaví záznam v access logu. Stlačením **Ctrl+C** v Termináli 2 zastavíte sledovanie.
 
 ---
 
-## Executing Commands Inside Containers
+## Spúšťanie príkazov vnútri kontajnerov
 
-**Run an interactive shell inside a service:**
+**Spustite interaktívny shell vnútri service:**
 
 ```terminal:execute
 command: cd ~/compose-commands && docker compose exec web bash -c 'echo "Hello from $(hostname)"'
 ```
 
-**Run a command in the database service:**
+**Spustite príkaz v databázovej service:**
 
 ```terminal:execute
 command: cd ~/compose-commands && docker compose exec db psql -U demo -d demo -c '\l'
 ```
 
-**Run a one-off command with `run` (creates a new container):**
+**Spustite jednorazový príkaz pomocou `run` (vytvorí nový kontajner):**
 
 ```terminal:execute
 command: cd ~/compose-commands && docker compose run --rm cache redis-cli --version
 ```
 
-> **`exec` vs `run`:** `exec` runs a command inside an **existing, running** container. `run` creates a **new** container for the command. Use `--rm` with `run` to auto-remove it when done.
+> **`exec` vs `run`:** `exec` spúšťa príkaz vnútri **existujúceho, bežiaceho** kontajnera. `run` vytvorí **nový** kontajner pre príkaz. Použite `--rm` s `run`, aby sa kontajner po dokončení automaticky odstránil.
 
 ---
 
-## Stopping, Starting, and Restarting
+## Zastavenie, spustenie a reštart
 
-**Stop services (without removing containers):**
+**Zastavte services (bez odstránenia kontajnerov):**
 
 ```terminal:execute
 command: cd ~/compose-commands && docker compose stop web
 ```
 
-**Check the stopped service:**
+**Skontrolujte zastavenú service:**
 
 ```terminal:execute
 command: cd ~/compose-commands && docker compose ps -a
 ```
 
-The `web` service shows as "exited" while others remain running.
+Service `web` sa zobrazuje ako "exited", zatiaľ čo ostatné naďalej bežia.
 
-**Start the stopped service:**
+**Spustite zastavenú service:**
 
 ```terminal:execute
 command: cd ~/compose-commands && docker compose start web
 ```
 
-**Restart a service (stop + start):**
+**Reštartujte service (stop + start):**
 
 ```terminal:execute
 command: cd ~/compose-commands && docker compose restart cache
@@ -127,15 +127,15 @@ command: cd ~/compose-commands && docker compose restart cache
 
 ---
 
-## Pulling and Recreating
+## Sťahovanie a opätovné vytváranie
 
-**Pull the latest images for all services:**
+**Stiahnite najnovšie images pre všetky services:**
 
 ```terminal:execute
 command: cd ~/compose-commands && docker compose pull
 ```
 
-**Recreate containers without pulling (useful after config changes):**
+**Znova vytvorte kontajnery bez sťahovania (užitočné po zmenách konfigurácie):**
 
 ```terminal:execute
 command: cd ~/compose-commands && docker compose up -d --force-recreate
@@ -143,21 +143,21 @@ command: cd ~/compose-commands && docker compose up -d --force-recreate
 
 ---
 
-## Viewing Configuration
+## Zobrazenie konfigurácie
 
-**Validate and display the resolved Compose file:**
+**Overte a zobrazte vyriešený Compose súbor:**
 
 ```terminal:execute
 command: cd ~/compose-commands && docker compose config
 ```
 
-This shows the fully resolved YAML after processing variables, defaults, and merges. Useful for debugging configuration issues.
+Toto zobrazí úplne vyriešený YAML po spracovaní premenných, predvolených hodnôt a zlúčení. Užitočné pri ladení problémov s konfiguráciou.
 
 ---
 
-## Pausing and Unpausing
+## Pozastavenie a obnovenie
 
-**Pause all processes in a service (freeze without stopping):**
+**Pozastavte všetky procesy v service (zmrazí bez zastavenia):**
 
 ```terminal:execute
 command: cd ~/compose-commands && docker compose pause web
@@ -167,7 +167,7 @@ command: cd ~/compose-commands && docker compose pause web
 command: curl -s --max-time 3 http://localhost:8080 || echo "Connection timed out — web is paused!"
 ```
 
-**Unpause:**
+**Obnovte (unpause):**
 
 ```terminal:execute
 command: cd ~/compose-commands && docker compose unpause web
@@ -179,26 +179,26 @@ command: curl -s http://localhost:8080 | head -3
 
 ---
 
-## Command Quick Reference
+## Rýchly prehľad príkazov
 
-| Command | Description |
+| Príkaz | Popis |
 |---------|-------------|
-| `docker compose up -d` | Start all services in background |
-| `docker compose down` | Stop and remove all containers + networks |
-| `docker compose ps` | List running services |
-| `docker compose logs` | View service logs |
-| `docker compose exec <svc> <cmd>` | Run command in running container |
-| `docker compose run --rm <svc> <cmd>` | Run one-off command in new container |
-| `docker compose stop [svc]` | Stop service(s) without removing |
-| `docker compose start [svc]` | Start stopped service(s) |
-| `docker compose restart [svc]` | Restart service(s) |
-| `docker compose pull` | Pull latest images |
-| `docker compose config` | Validate and display resolved config |
-| `docker compose pause/unpause` | Freeze/unfreeze service processes |
+| `docker compose up -d` | Spustí všetky services na pozadí |
+| `docker compose down` | Zastaví a odstráni všetky kontajnery + networks |
+| `docker compose ps` | Zobrazí bežiace services |
+| `docker compose logs` | Zobrazí logy services |
+| `docker compose exec <svc> <cmd>` | Spustí príkaz v bežiacom kontajneri |
+| `docker compose run --rm <svc> <cmd>` | Spustí jednorazový príkaz v novom kontajneri |
+| `docker compose stop [svc]` | Zastaví service bez odstránenia |
+| `docker compose start [svc]` | Spustí zastavené services |
+| `docker compose restart [svc]` | Reštartuje services |
+| `docker compose pull` | Stiahne najnovšie images |
+| `docker compose config` | Overí a zobrazí vyriešenú konfiguráciu |
+| `docker compose pause/unpause` | Zmrazí/rozmrazí procesy service |
 
 ---
 
-## Cleanup
+## Vyčistenie
 
 ```terminal:execute
 command: cd ~/compose-commands && docker compose down

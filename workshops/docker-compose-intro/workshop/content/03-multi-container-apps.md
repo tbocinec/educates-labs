@@ -1,12 +1,12 @@
-# Multi-Container Applications
+# Viackontajnerové aplikácie
 
-The real power of Docker Compose is orchestrating **multiple services** that work together. In this section, you'll build a complete application stack with a web frontend, a backend API, and a database.
+Skutočná sila Docker Compose spočíva v orchestrácii **viacerých services**, ktoré spolupracujú. V tejto časti postavíte kompletný stack aplikácie s webovým frontendom, backendovým API a databázou.
 
 ---
 
-## The Application Stack
+## Stack aplikácie
 
-We'll create a stack with three services:
+Vytvoríme stack s tromi services:
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -24,108 +24,108 @@ We'll create a stack with three services:
 
 ---
 
-## Creating the Project
+## Vytvorenie projektu
 
-Copy the prepared Compose file to a working directory:
+Skopírujte pripravený Compose súbor do pracovného adresára:
 
 ```terminal:execute
 command: mkdir -p ~/multi-app && cp ~/exercises/multi-app/compose.yaml ~/multi-app/
 ```
 
-This is a larger Compose file. **Open it in the Editor tab to review the full structure:**
+Toto je väčší Compose súbor. **Otvorte ho v záložke Editor a prezrite si celú štruktúru:**
 
 ```editor:open-file
 file: ~/multi-app/compose.yaml
 ```
 
-**Highlight the health check definition:**
+**Zvýraznite definíciu health check:**
 
 ```editor:select-matching-text
 file: ~/multi-app/compose.yaml
 text: healthcheck
 ```
 
-**Highlight the dependency configuration:**
+**Zvýraznite konfiguráciu závislostí:**
 
 ```editor:select-matching-text
 file: ~/multi-app/compose.yaml
 text: depends_on
 ```
 
-Let's examine the key concepts:
+Preskúmajme kľúčové koncepty:
 
-### `depends_on` with Health Checks
+### `depends_on` so health checkmi
 
-The `depends_on` directive controls **startup order**. Combined with `condition: service_healthy`, Compose waits until the dependency passes its health check before starting the dependent service.
+Direktíva `depends_on` riadi **poradie spúšťania**. V kombinácii s `condition: service_healthy` Compose počká, kým závislosť neprejde svojím health checkom, a až potom spustí závislú service.
 
-Without health checks, `depends_on` only guarantees the container has **started** — not that the service inside is ready. The health check ensures the database is actually accepting connections before the web tier starts.
+Bez health checkov `depends_on` garantuje iba to, že sa kontajner **spustil** — nie že je service vnútri pripravená. Health check zabezpečí, že databáza skutočne prijíma spojenia predtým, než sa spustí webová vrstva.
 
-### Named Volumes
+### Named volumes
 
-The `pgdata` volume is declared at the bottom of the file. Compose creates it automatically and mounts it into the `db` container. Data persists across `docker compose down` (unless you use the `-v` flag).
+Volume `pgdata` je deklarovaný na konci súboru. Compose ho automaticky vytvorí a pripojí do kontajnera `db`. Dáta pretrvávajú aj po `docker compose down` (pokiaľ nepoužijete flag `-v`).
 
 ---
 
-## Starting the Stack
+## Spustenie stacku
 
 ```terminal:execute
 command: cd ~/multi-app && docker compose up -d
 ```
 
-Watch Compose pull images, create the network, start services in dependency order, and wait for health checks to pass.
+Sledujte, ako Compose sťahuje images, vytvára network, spúšťa services v poradí podľa závislostí a čaká na úspešné health checky.
 
-**Check the status of all services:**
+**Skontrolujte stav všetkých services:**
 
 ```terminal:execute
 command: cd ~/multi-app && docker compose ps
 ```
 
-All three services should show `running (healthy)` status.
+Services `db` a `cache` by mali mať stav `running (healthy)`. Service `web` (Nginx) nemá definovaný health check, takže sa zobrazí jednoducho ako `running`.
 
 ---
 
-## Verifying Service Connectivity
+## Overenie konektivity medzi services
 
-Services on the same Compose network can reach each other by **service name**. Let's verify:
+Services na tej istej Compose network sa navzájom dosiahnu podľa **názvu service**. Overme si to:
 
-**From the web container, connect to Redis by name:**
+**Z kontajnera web sa pripojte k Redisu podľa názvu:**
 
 ```terminal:execute
 command: docker compose -f ~/multi-app/compose.yaml exec web bash -c 'apt-get update -qq > /dev/null 2>&1 && apt-get install -y -qq redis-tools > /dev/null 2>&1 && redis-cli -h cache ping'
 ```
 
-**From the web container, connect to PostgreSQL by name:**
+**Z kontajnera web sa pripojte k PostgreSQL podľa názvu:**
 
 ```terminal:execute
 command: docker compose -f ~/multi-app/compose.yaml exec web bash -c 'apt-get install -y -qq postgresql-client > /dev/null 2>&1 && PGPASSWORD=secret123 psql -h db -U workshop -d myapp -c "SELECT 1 as connected;"'
 ```
 
-Both services are reachable by their Compose service names (`cache`, `db`) — no IP addresses needed. Compose creates a DNS entry for each service automatically.
+Obe services sú dosiahnuteľné podľa svojich Compose názvov (`cache`, `db`) — bez potreby akýchkoľvek IP adries. Compose automaticky vytvorí DNS záznam pre každú service.
 
 ---
 
-## Inspecting the Network
+## Preskúmanie network
 
-Compose creates a default network named after the project directory:
+Compose vytvorí predvolenú network pomenovanú podľa adresára projektu:
 
 ```terminal:execute
 command: docker network ls --filter "name=multi-app"
 ```
 
-**Inspect the network to see all connected containers:**
+**Preskúmajte network, aby ste videli všetky pripojené kontajnery:**
 
 ```terminal:execute
 command: docker network inspect multi-app_default --format '{{range .Containers}}{{.Name}}: {{.IPv4Address}}{{"\n"}}{{end}}'
 ```
 
-All three containers share the same network and can communicate freely.
+Všetky tri kontajnery zdieľajú rovnakú network a môžu medzi sebou voľne komunikovať.
 
 ---
 
-## Cleanup
+## Vyčistenie
 
 ```terminal:execute
 command: cd ~/multi-app && docker compose down -v
 ```
 
-The `-v` flag also removes the `pgdata` volume since we don't need the data anymore.
+Flag `-v` odstráni aj volume `pgdata`, keďže dáta už nepotrebujeme.

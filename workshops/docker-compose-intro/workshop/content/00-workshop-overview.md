@@ -1,46 +1,46 @@
-# Workshop Overview
+# Prehľad workshopu
 
-Welcome to the **Introduction to Docker Compose** workshop! Docker Compose is the standard tool for defining and running multi-container Docker applications. Instead of managing each container individually with long `docker run` commands, you describe your entire application stack in a single YAML file and bring it up with one command.
-
----
-
-## What You Will Learn
-
-By the end of this workshop, you will be able to:
-
-- **Understand** what Docker Compose is and when to use it
-- **Write** a `compose.yaml` file to define services, networks, and volumes
-- **Launch** multi-container applications with a single command
-- **Manage** service lifecycle using Compose CLI commands
-- **Configure** services with environment variables and env files
-- **Persist** data using named volumes in Compose
-- **Leverage** automatic service discovery and DNS-based networking
-- **Scale** services and use profiles for optional components
+Vitajte na workshope **Introduction to Docker Compose**! Docker Compose je štandardný nástroj na definovanie a spúšťanie viackontajnerových Docker aplikácií. Namiesto samostatnej správy každého kontajnera pomocou dlhých príkazov `docker run` opíšete celý stack svojej aplikácie v jedinom YAML súbore a spustíte ho jediným príkazom.
 
 ---
 
-## Prerequisites
+## Čo sa naučíte
 
-This workshop assumes you are familiar with:
+Na konci tohto workshopu budete vedieť:
 
-- Running containers with `docker run`
-- Basic container lifecycle (`docker stop`, `start`, `rm`)
+- **Pochopiť**, čo je Docker Compose a kedy ho použiť
+- **Napísať** súbor `compose.yaml` na definovanie services, networks a volumes
+- **Spustiť** viackontajnerové aplikácie jediným príkazom
+- **Spravovať** životný cyklus services pomocou Compose CLI príkazov
+- **Nakonfigurovať** services pomocou environment variables a env súborov
+- **Zachovať** dáta pomocou named volumes v Compose
+- **Využiť** automatické service discovery a DNS-based networking
+- **Naškálovať** services a použiť profiles pre voliteľné komponenty
+
+---
+
+## Predpoklady
+
+Tento workshop predpokladá, že poznáte:
+
+- Spúšťanie kontajnerov pomocou `docker run`
+- Základný životný cyklus kontajnera (`docker stop`, `start`, `rm`)
 - Environment variables (`-e`)
-- Docker images and tags
+- Docker images a tagy
 
-If you haven't completed the **Introduction to Docker** workshop yet, we recommend doing that first.
-
----
-
-## Workshop Environment
-
-Your workshop environment comes pre-configured with:
-
-- **Docker Engine** and **Docker Compose** — ready to use
-- **Terminal** — split-pane terminal for running commands
-- **Editor** — accessible via the **Editor** tab for creating and editing files
-- **Web App** tab — a browser tab to view services exposed on port 8080
+Ak ste ešte neabsolvovali workshop **Introduction to Docker**, odporúčame začať ním.
 
 ---
 
-**Let's get started!**
+## Prostredie workshopu
+
+Vaše prostredie workshopu je vopred nakonfigurované s:
+
+- **Docker Engine** a **Docker Compose** — pripravené na použitie
+- **Terminal** — terminál s rozdelenou obrazovkou na spúšťanie príkazov
+- **Editor** — prístupný cez záložku **Editor** na vytváranie a úpravu súborov
+- **Web App** — záložka prehliadača na zobrazenie services vystavených na porte 8080
+
+---
+
+**Poďme na to!**

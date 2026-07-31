@@ -3,8 +3,8 @@ kind: Workshop
 metadata:
   name: "docker-compose-intro"
 spec:
-  title: "Introduction to Docker Compose"
-  description: "A hands-on workshop covering Docker Compose fundamentals — defining multi-container applications in YAML, managing service lifecycle, networking between services, environment configuration, volumes, and essential Compose CLI commands."
+  title: "Úvod do Docker Compose"
+  description: "Praktický workshop pokrývajúci základy Docker Compose — definovanie viackontajnerových aplikácií v YAML, správu životného cyklu services, networking medzi services, konfiguráciu environment, volumes a základné Compose CLI príkazy."
   url: https://github.com/tbocinec/educates-labs
   publish:
     image: "$(image_repository)/docker-compose-intro-files:$(workshop_version)"
@@ -28,9 +28,9 @@ spec:
 
   session:
     namespaces:
-      budget: x-large
+      budget: large
     resources:
-      memory: 2Gi
+      memory: 1536Mi
     applications:
       terminal:
         enabled: true
@@ -41,9 +41,9 @@ spec:
         enabled: false
       docker:
         enabled: true
-        memory: 4Gi
+        memory: 3Gi
       registry:
-        enabled: true
+        enabled: false
       vcluster:
         enabled: false
     ingresses:

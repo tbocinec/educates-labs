@@ -1,45 +1,45 @@
-# Workshop Overview
+# Prehľad workshopu
 
-Welcome to the **Introduction to Docker** workshop! This hands-on lab will take you through the fundamentals of Docker — the industry-standard platform for building, shipping, and running applications in containers.
-
----
-
-## What You Will Learn
-
-By the end of this workshop, you will be able to:
-
-- **Understand** Docker's core architecture and how it differs from traditional virtualization
-- **Pull** Docker images from public registries
-- **Run** containers from images in both foreground and background modes
-- **Manage** the full container lifecycle — start, stop, restart, pause, and remove
-- **Execute** commands inside running containers using interactive and non-interactive modes
-- **Inspect** container logs for debugging and monitoring
-- **Configure** containers using environment variables
-- **Explore** image layers, tags, and registries
+Vitajte na workshope **Introduction to Docker**! Toto praktické cvičenie vás prevedie základmi Dockeru — priemyselného štandardu pre zostavovanie, distribúciu a spúšťanie aplikácií v kontajneroch (containers).
 
 ---
 
-## Workshop Environment
+## Čo sa naučíte
 
-Your workshop environment comes pre-configured with:
+Po absolvovaní tohto workshopu budete vedieť:
 
-- **Docker Engine** — ready to use from the terminal
-- **Terminal** — split-pane terminal for running commands
-- **Editor** — accessible via the **Editor** tab for viewing files
-
----
-
-## Prerequisites
-
-This workshop assumes:
-
-- Basic familiarity with the **Linux command line** (navigating directories, running commands)
-- **No prior Docker experience** is required — we start from scratch
+- **Pochopiť** základnú architektúru Dockeru a to, ako sa líši od tradičnej virtualizácie
+- **Stiahnuť (pull)** Docker images z verejných registries
+- **Spustiť** containers z images v režime popredia (foreground) aj na pozadí (detached)
+- **Spravovať** celý životný cyklus containera — start, stop, restart, pause a remove
+- **Vykonávať** príkazy vo vnútri bežiacich containers v interaktívnom aj neinteraktívnom režime
+- **Skúmať** logy containerov na účely ladenia (debugging) a monitorovania
+- **Konfigurovať** containers pomocou environment variables
+- **Preskúmať** vrstvy (layers), tagy a registries images
 
 ---
 
-## How to Use This Workshop
+## Prostredie workshopu
 
-Throughout this workshop you will encounter executable command blocks. Simply click on them to execute the command in the terminal. You can also type commands manually if you prefer.
+Vaše prostredie workshopu je vopred nakonfigurované a obsahuje:
 
-**Let's get started!**
+- **Docker Engine** — pripravený na použitie z terminálu
+- **Terminál** — terminál s rozdeleným zobrazením (split-pane) na spúšťanie príkazov
+- **Editor** — dostupný cez záložku **Editor** na prezeranie súborov
+
+---
+
+## Predpoklady
+
+Tento workshop predpokladá:
+
+- Základnú znalosť **príkazového riadka Linuxu** (pohyb medzi adresármi, spúšťanie príkazov)
+- **Žiadne predchádzajúce skúsenosti s Dockerom** nie sú potrebné — začíname od úplných základov
+
+---
+
+## Ako používať tento workshop
+
+Počas celého workshopu narazíte na spustiteľné bloky príkazov. Stačí na ne kliknúť a príkaz sa vykoná v termináli. Ak chcete, môžete príkazy aj napísať ručne.
+
+**Poďme na to!**

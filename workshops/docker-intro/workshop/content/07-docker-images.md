@@ -1,44 +1,44 @@
-# Exploring Docker Images
+# Skúmanie Docker images
 
-Docker images are the foundation of containers. In this section, you will learn how to search for images, understand image layers, work with tags, and inspect image metadata.
+Docker images sú základom containers. V tejto časti sa naučíte, ako vyhľadávať images, pochopíte vrstvy (layers) images, budete pracovať s tagmi a skúmať metadáta images.
 
 ---
 
-## Searching for Images
+## Vyhľadávanie images
 
-**Search Docker Hub for images from the command line:**
+**Vyhľadajte images na Docker Hube z príkazového riadka:**
 
 ```terminal:execute
 command: docker search nginx --limit 5
 ```
 
-The output shows image names, descriptions, star ratings, and whether they are official images. **Official images** are curated and maintained by Docker in partnership with upstream maintainers.
+Výstup zobrazuje názvy images, popisy, hodnotenia hviezdičkami a to, či ide o oficiálne images. **Oficiálne images** sú kurátorované a udržiavané Dockerom v spolupráci s pôvodnými (upstream) správcami.
 
-**Search for a database image:**
+**Vyhľadajte image databázy:**
 
 ```terminal:execute
 command: docker search postgres --limit 5
 ```
 
-> **Tip:** For more detailed information (available tags, Dockerfile, documentation), visit [Docker Hub](https://hub.docker.com) directly.
+> **Tip:** Podrobnejšie informácie (dostupné tagy, Dockerfile, dokumentácia) nájdete priamo na [Docker Hube](https://hub.docker.com).
 
 ---
 
-## Listing Local Images
+## Výpis lokálnych images
 
-**View all locally available images:**
+**Zobrazte všetky lokálne dostupné images:**
 
 ```terminal:execute
 command: docker images
 ```
 
-**Filter images by repository name:**
+**Filtrujte images podľa názvu repository:**
 
 ```terminal:execute
 command: docker images nginx
 ```
 
-**Show image IDs only (useful for scripting):**
+**Zobrazte iba image ID** (užitočné pri skriptovaní):
 
 ```terminal:execute
 command: docker images -q
@@ -46,15 +46,15 @@ command: docker images -q
 
 ---
 
-## Understanding Image Tags
+## Porozumenie tagom images
 
-Tags identify specific versions of an image. The format is `repository:tag`:
+Tagy identifikujú konkrétne verzie image. Formát je `repository:tag`:
 
-- `nginx:latest` — The most recent version (default if no tag specified)
-- `nginx:1.27` — A specific minor version
-- `nginx:1.27-alpine` — A variant built on Alpine Linux (smaller size)
+- `nginx:latest` — najnovšia verzia (predvolená, ak nie je uvedený žiadny tag)
+- `nginx:1.27` — konkrétna minor verzia
+- `nginx:1.27-alpine` — variant postavený na Alpine Linuxe (menšia veľkosť)
 
-**Pull multiple tags of the same image to compare:**
+**Stiahnite viacero tagov tej istej image na porovnanie:**
 
 ```terminal:execute
 command: docker pull nginx:latest
@@ -64,37 +64,37 @@ command: docker pull nginx:latest
 command: docker pull nginx:alpine
 ```
 
-**Compare sizes:**
+**Porovnajte veľkosti:**
 
 ```terminal:execute
 command: docker images nginx
 ```
 
-The `alpine` variant is significantly smaller because Alpine Linux is a minimal distribution (~7 MB base). Choosing the right base image tag is an important decision for production deployments.
+Variant `alpine` je výrazne menší, pretože Alpine Linux je minimálna distribúcia (~7 MB základ). Výber správneho tagu základnej image je dôležité rozhodnutie pri nasadzovaní do produkcie.
 
 ---
 
-## Inspecting Image Details
+## Skúmanie detailov image
 
-The `docker inspect` command reveals detailed metadata about an image:
+Príkaz `docker inspect` odhalí podrobné metadáta o image:
 
 ```terminal:execute
 command: docker inspect nginx:latest --format '{{.Os}}/{{.Architecture}}'
 ```
 
-**View exposed ports defined in the image:**
+**Zobrazte porty (exposed ports) definované v image:**
 
 ```terminal:execute
 command: docker inspect nginx:latest --format '{{json .Config.ExposedPorts}}' | python3 -m json.tool
 ```
 
-**View the default command:**
+**Zobrazte predvolený príkaz:**
 
 ```terminal:execute
 command: docker inspect nginx:latest --format '{{json .Config.Cmd}}' | python3 -m json.tool
 ```
 
-**View all environment variables baked into the image:**
+**Zobrazte všetky environment variables zabudované v image:**
 
 ```terminal:execute
 command: docker inspect nginx:latest --format '{{range .Config.Env}}{{println .}}{{end}}'
@@ -102,43 +102,43 @@ command: docker inspect nginx:latest --format '{{range .Config.Env}}{{println .}
 
 ---
 
-## Understanding Image Layers
+## Porozumenie vrstvám image (layers)
 
-Docker images are built from a stack of **read-only layers**. Each layer represents a filesystem change (adding files, installing packages, etc.). This layer architecture enables:
+Docker images sú zostavené zo stohu **read-only vrstiev (layers)**. Každá vrstva predstavuje zmenu vo filesysteme (pridanie súborov, inštalácia balíkov a pod.). Táto architektúra vrstiev umožňuje:
 
-- **Efficient storage** — Layers shared between images are stored only once
-- **Fast builds** — Only changed layers need to be rebuilt
-- **Fast pulls** — Only missing layers need to be downloaded
+- **Efektívne ukladanie** — vrstvy zdieľané medzi images sa ukladajú len raz
+- **Rýchle zostavovanie (builds)** — prebudovať treba len zmenené vrstvy
+- **Rýchle sťahovanie (pulls)** — stiahnuť treba len chýbajúce vrstvy
 
-**View the layers (history) of an image:**
+**Zobrazte vrstvy (históriu) image:**
 
 ```terminal:execute
 command: docker history nginx:latest
 ```
 
-Each row represents a layer. The `CREATED BY` column shows the Dockerfile instruction that produced it. Notice that some layers are very small (just metadata changes) while others are larger (installing packages).
+Každý riadok predstavuje jednu vrstvu. Stĺpec `CREATED BY` ukazuje inštrukciu z Dockerfile, ktorá ju vytvorila. Všimnite si, že niektoré vrstvy sú veľmi malé (len zmeny metadát), zatiaľ čo iné sú väčšie (inštalácia balíkov).
 
-**Compare the history of the Alpine variant:**
+**Porovnajte históriu variantu Alpine:**
 
 ```terminal:execute
 command: docker history nginx:alpine
 ```
 
-The Alpine variant has fewer and smaller layers.
+Variant Alpine má menej a menších vrstiev.
 
 ---
 
-## Disk Usage
+## Využitie disku
 
-Docker images can consume significant disk space over time. Check your Docker disk usage:
+Docker images môžu časom zaberať značné miesto na disku. Skontrolujte využitie disku Dockerom:
 
 ```terminal:execute
 command: docker system df
 ```
 
-This shows the space used by images, containers, volumes, and build cache. The `RECLAIMABLE` column indicates how much space can be freed.
+Toto zobrazí miesto použité images, containers, volumes a build cache. Stĺpec `RECLAIMABLE` udáva, koľko miesta je možné uvoľniť.
 
-**For a more detailed breakdown:**
+**Pre podrobnejší rozpis:**
 
 ```terminal:execute
 command: docker system df -v
@@ -146,25 +146,25 @@ command: docker system df -v
 
 ---
 
-## Pulling Images from Other Registries
+## Sťahovanie images z iných registries
 
-While Docker Hub is the default registry, you can pull images from any OCI-compatible registry:
+Hoci je Docker Hub predvolený registry, images môžete sťahovať z akéhokoľvek OCI-kompatibilného registry:
 
 ```
 docker pull ghcr.io/owner/image:tag       # GitHub Container Registry
 docker pull quay.io/owner/image:tag        # Red Hat Quay
-docker pull registry.example.com/image:tag # Private registry
+docker pull registry.example.com/image:tag # Súkromný registry
 ```
 
-The full image reference format is: `registry/repository:tag`
+Úplný formát odkazu na image je: `registry/repository:tag`
 
-When no registry is specified, Docker defaults to `docker.io/library/`.
+Ak nie je uvedený žiadny registry, Docker predvolene použije `docker.io/library/`.
 
 ---
 
-## Tagging Images
+## Tagovanie images
 
-You can create additional tags (aliases) for an image without duplicating data:
+Pre image môžete vytvoriť ďalšie tagy (aliasy) bez duplikovania dát:
 
 ```terminal:execute
 command: docker tag nginx:latest my-nginx:v1
@@ -174,19 +174,19 @@ command: docker tag nginx:latest my-nginx:v1
 command: docker images | grep -E "nginx|my-nginx"
 ```
 
-Notice that `my-nginx:v1` has the **same Image ID** as `nginx:latest` — it's just another pointer to the same image layers.
+Všimnite si, že `my-nginx:v1` má **rovnaké Image ID** ako `nginx:latest` — je to len ďalší ukazovateľ na tie isté vrstvy image.
 
 ---
 
-## Removing Images
+## Odstraňovanie images
 
-**Remove an image by name:**
+**Odstráňte image podľa názvu:**
 
 ```terminal:execute
 command: docker rmi my-nginx:v1
 ```
 
-**Remove dangling images** (untagged layers left behind after rebuilds):
+**Odstráňte dangling images** (netagované vrstvy, ktoré zostali po prebudovaní):
 
 ```terminal:execute
 command: docker images -f "dangling=true"
@@ -196,4 +196,4 @@ command: docker images -f "dangling=true"
 command: docker image prune -f
 ```
 
-> **Note:** You cannot remove an image if any container (even a stopped one) is using it. Remove the container first, then the image.
+> **Poznámka:** Image nie je možné odstrániť, ak ju používa akýkoľvek container (aj zastavený). Najprv odstráňte container, potom image.

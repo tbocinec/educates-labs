@@ -3,8 +3,8 @@ kind: Workshop
 metadata:
   name: "docker-networking-storage"
 spec:
-  title: "Docker: Networking, Ports & Storage"
-  description: "An intermediate hands-on workshop covering Docker port mapping, volumes, persistent data, bind mounts, docker cp, and container networking — including user-defined bridge networks, DNS resolution, network isolation, and host networking."
+  title: "Docker: Sieťovanie, porty a úložisko"
+  description: "Pokročilý praktický workshop pokrývajúci mapovanie portov v Dockeri, volumes, perzistentné dáta, bind mounts, docker cp a sieťovanie kontajnerov — vrátane používateľom definovaných bridge sietí, DNS rozlíšenia, izolácie sietí a host networkingu."
   url: https://github.com/tbocinec/educates-labs
   publish:
     image: "$(image_repository)/docker-networking-storage-files:$(workshop_version)"
@@ -26,9 +26,9 @@ spec:
       
   session:
     namespaces:
-      budget: x-large
+      budget: large
     resources:
-      memory: 2Gi
+      memory: 1536Mi
     applications:
       terminal:
         enabled: true
@@ -39,9 +39,9 @@ spec:
         enabled: false
       docker:
         enabled: true
-        memory: 3Gi
+        memory: 2Gi
       registry:
-        enabled: true
+        enabled: false
       vcluster:
         enabled: false
     ingresses:

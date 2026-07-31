@@ -1,12 +1,12 @@
-# Dockerfile Best Practices
+# Osvedčené postupy pre Dockerfile
 
-Now that you know the instructions, let's learn how to write **production-quality** Dockerfiles. We'll compare a poorly written Dockerfile with an optimized one.
+Teraz, keď poznáte jednotlivé inštrukcie, poďme sa naučiť písať Dockerfile v **produkčnej kvalite**. Porovnáme zle napísaný Dockerfile s optimalizovaným.
 
 ---
 
-## Setup
+## Príprava
 
-**Copy the exercise files:**
+**Skopírujte súbory cvičenia:**
 
 ```terminal:execute
 command: cp -r ~/exercises/best-practices ~/best-practices && cd ~/best-practices
@@ -14,48 +14,48 @@ command: cp -r ~/exercises/best-practices ~/best-practices && cd ~/best-practice
 
 ---
 
-## The "Bad" Dockerfile
+## "Zlý" Dockerfile
 
-Let's start with a Dockerfile that works but violates several best practices:
+Začnime Dockerfile, ktorý síce funguje, ale porušuje viacero osvedčených postupov:
 
 ```editor:open-file
 file: ~/best-practices/Dockerfile.bad
 ```
 
-**Build it:**
+**Zostavte ho:**
 
 ```terminal:execute
 command: cd ~/best-practices && docker build -t app-bad -f Dockerfile.bad .
 ```
 
-**Run it:**
+**Spustite ho:**
 
 ```terminal:execute
 command: docker run --rm app-bad
 ```
 
-**Check the image size:**
+**Skontrolujte veľkosť image:**
 
 ```terminal:execute
 command: docker images app-bad --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
 ```
 
-This image is **large** — several hundred MB. Let's understand why and what we can improve.
+Tento image je **veľký** — niekoľko stoviek MB. Poďme pochopiť prečo a čo môžeme zlepšiť.
 
 ---
 
-## Problem 1: Too Many Layers
+## Problém 1: príliš veľa vrstiev
 
-Each `RUN` instruction creates a separate layer:
+Každá inštrukcia `RUN` vytvára samostatnú vrstvu:
 
 ```editor:select-matching-text
 file: ~/best-practices/Dockerfile.bad
 text: RUN apt-get update
 ```
 
-There are **5 separate `RUN`** instructions. Each one adds a layer with its own overhead. The `apt-get update` cache is stored in one layer, and subsequent installs can't benefit from combining them.
+Nachádza sa tu **5 samostatných inštrukcií `RUN`**. Každá pridáva vrstvu s vlastnou réžiou. Cache z `apt-get update` je uložená v jednej vrstve a nasledujúce inštalácie z ich spojenia nemôžu ťažiť.
 
-**Best practice:** Combine related `RUN` commands with `&&`:
+**Osvedčený postup:** Súvisiace príkazy `RUN` spájajte pomocou `&&`:
 
 ```dockerfile
 RUN apt-get update && \
@@ -64,35 +64,35 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 ```
 
-This creates a **single layer** and the cleanup (`rm -rf`) actually saves space because it happens in the same layer.
+Takto vznikne **jediná vrstva** a čistenie (`rm -rf`) skutočne šetrí miesto, pretože prebieha v tej istej vrstve.
 
-> **Important:** If you run `apt-get update` and `rm -rf /var/lib/apt/lists/*` in separate `RUN` instructions, the cleanup has no effect — the data is already preserved in the previous layer.
+> **Dôležité:** Ak spustíte `apt-get update` a `rm -rf /var/lib/apt/lists/*` v samostatných inštrukciách `RUN`, čistenie nemá žiadny efekt — dáta sú už zachované v predchádzajúcej vrstve.
 
 ---
 
-## Problem 2: Wrong Base Image
+## Problém 2: nesprávny base image
 
 ```editor:select-matching-text
 file: ~/best-practices/Dockerfile.bad
 text: FROM ubuntu
 ```
 
-Using `ubuntu:24.04` for a Python app is wasteful:
-- It includes tools you don't need (bash completion, documentation, etc.)
-- You have to manually install Python and pip
-- The resulting image is much larger
+Použitie `ubuntu:24.04` pre Python aplikáciu je plytvanie:
+- Obsahuje nástroje, ktoré nepotrebujete (dopĺňanie príkazov v bashi, dokumentáciu atď.)
+- Python a pip si musíte inštalovať ručne
+- Výsledný image je oveľa väčší
 
-**Best practice:** Use a **purpose-built** base image:
+**Osvedčený postup:** Použite **účelovo zostavený** base image:
 
-| Instead of... | Use... | Why |
+| Namiesto... | Použite... | Prečo |
 |---------------|--------|-----|
-| `ubuntu` + install python | `python:3.12-slim` | Python pre-installed, much smaller |
-| `ubuntu` + install node | `node:22-alpine` | Node pre-installed, tiny base |
-| `ubuntu` + install java | `eclipse-temurin:21-jre` | JRE only, optimized |
+| `ubuntu` + inštalácia python | `python:3.12-slim` | Python predinštalovaný, oveľa menší |
+| `ubuntu` + inštalácia node | `node:22-alpine` | Node predinštalovaný, drobný base |
+| `ubuntu` + inštalácia java | `eclipse-temurin:21-jre` | Iba JRE, optimalizované |
 
 ---
 
-## Problem 3: No Specific Tag
+## Problém 3: chýbajúci konkrétny tag
 
 ```dockerfile
 # Bad  — "latest" can change unexpectedly
@@ -105,99 +105,99 @@ FROM python:3.12
 FROM python:3.12-slim
 ```
 
-> **Best practice:** Always use a **specific version tag**. Avoid `:latest` in production Dockerfiles.
+> **Osvedčený postup:** Vždy používajte **konkrétny tag verzie**. V produkčných Dockerfile sa vyhýbajte `:latest`.
 
 ---
 
-## Problem 4: Running as Root
+## Problém 4: beh pod používateľom root
 
 ```terminal:execute
 command: docker run --rm app-bad whoami
 ```
 
-The container runs as **root**. If an attacker exploits the application, they get root access inside the container.
+Kontajner beží ako **root**. Ak útočník zneužije aplikáciu, získa vo vnútri kontajnera root prístup.
 
 ---
 
-## The "Good" Dockerfile
+## "Dobrý" Dockerfile
 
-Now let's look at the optimized version:
+Teraz sa pozrime na optimalizovanú verziu:
 
 ```editor:open-file
 file: ~/best-practices/Dockerfile.good
 ```
 
-**Key improvements:**
+**Kľúčové vylepšenia:**
 
 ```editor:select-matching-text
 file: ~/best-practices/Dockerfile.good
 text: FROM python
 ```
 
-1. **Smaller base image** — `python:3.12-slim` instead of `ubuntu:24.04`
+1. **Menší base image** — `python:3.12-slim` namiesto `ubuntu:24.04`
 
 ```editor:select-matching-text
 file: ~/best-practices/Dockerfile.good
 text: groupadd -r appuser
 ```
 
-2. **Non-root user** — Creates and switches to `appuser`
+2. **Používateľ mimo root** — vytvorí používateľa `appuser` a prepne sa naň
 
 ```editor:select-matching-text
 file: ~/best-practices/Dockerfile.good
 text: COPY requirements.txt
 ```
 
-3. **Smart COPY order** — Dependencies first, code second (for caching)
+3. **Šikovné poradie COPY** — najprv závislosti, potom kód (kvôli cachingu)
 
 ```editor:select-matching-text
 file: ~/best-practices/Dockerfile.good
 text: --no-cache-dir
 ```
 
-4. **No pip cache** — Smaller image with `--no-cache-dir`
+4. **Bez pip cache** — menší image vďaka `--no-cache-dir`
 
-**Build it:**
+**Zostavte ho:**
 
 ```terminal:execute
 command: cd ~/best-practices && docker build -t app-good -f Dockerfile.good .
 ```
 
-**Run it:**
+**Spustite ho:**
 
 ```terminal:execute
-command: docker run --rm -p 8080:5000 app-good
+command: docker run --rm -d -p 8080:5000 --name app-good app-good
 ```
 
-Click the **App Preview** tab to see the running application. Notice it reports "Running as user: **appuser**" — not root!
+Kliknutím na záložku **App Preview** uvidíte bežiacu aplikáciu. Všimnite si, že hlási "Running as user: **appuser**" — nie root!
 
-**Stop the container:**
+**Zastavte kontajner:**
 
 ```terminal:execute
-command: docker stop $(docker ps -q --filter ancestor=app-good) 2>/dev/null
+command: docker stop app-good
 ```
 
 ---
 
-## Compare Image Sizes
+## Porovnanie veľkostí image
 
 ```terminal:execute
 command: docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}" | grep -E 'app-bad|app-good'
 ```
 
-The "good" image is typically **3-5x smaller** than the "bad" one!
+"Dobrý" image je zvyčajne **3- až 5-krát menší** než "zlý"!
 
 ---
 
-## Verify Security
+## Overenie bezpečnosti
 
-**Bad image — runs as root:**
+**Zlý image — beží ako root:**
 
 ```terminal:execute
 command: docker run --rm app-bad whoami
 ```
 
-**Good image — runs as non-root:**
+**Dobrý image — beží mimo root:**
 
 ```terminal:execute
 command: docker run --rm app-good whoami
@@ -205,25 +205,24 @@ command: docker run --rm app-good whoami
 
 ---
 
-## Best Practices Checklist
+## Kontrolný zoznam osvedčených postupov
 
-| Practice | Why |
+| Postup | Prečo |
 |----------|-----|
-| Use **specific base image tags** | Reproducible builds |
-| Use **slim/alpine** variants | Smaller images, less attack surface |
-| **Combine `RUN`** commands | Fewer layers, effective cleanup |
-| **`COPY` before `RUN`** for deps | Better layer caching |
-| Use **`--no-cache-dir`** for pip | Smaller images |
-| Clean up in the **same `RUN`** | Actually reduces layer size |
-| Run as **non-root** user | Security best practice |
-| Use **`.dockerignore`** | Faster builds, no secrets in image |
-| Use **`COPY`** instead of `ADD` | Explicit, no surprises |
+| Používať **konkrétne tagy base image** | Reprodukovateľné buildy |
+| Používať varianty **slim/alpine** | Menšie images, menšia plocha na útok |
+| **Spájať príkazy `RUN`** | Menej vrstiev, účinné čistenie |
+| **`COPY` pred `RUN`** pri závislostiach | Lepší caching vrstiev |
+| Používať **`--no-cache-dir`** pre pip | Menšie images |
+| Čistiť v **rovnakom `RUN`** | Skutočne zmenší veľkosť vrstvy |
+| Bežať pod používateľom **mimo root** | Bezpečnostný osvedčený postup |
+| Používať **`.dockerignore`** | Rýchlejšie buildy, žiadne tajomstvá v image |
+| Používať **`COPY`** namiesto `ADD` | Explicitné, bez prekvapení |
 
 ---
 
-## Cleanup
+## Vyčistenie (cleanup)
 
 ```terminal:execute
-command: docker stop $(docker ps -q --filter ancestor=app-good) 2>/dev/null; docker rmi app-bad app-good 2>/dev/null; rm -rf ~/best-practices
+command: docker stop app-good 2>/dev/null; docker rmi app-bad app-good 2>/dev/null; rm -rf ~/best-practices
 ```
-

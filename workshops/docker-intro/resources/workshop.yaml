@@ -3,8 +3,8 @@ kind: Workshop
 metadata:
   name: "docker-intro"
 spec:
-  title: "Introduction to Docker"
-  description: "A comprehensive hands-on workshop covering Docker fundamentals — pulling images, running containers, executing commands inside containers, managing container lifecycle, inspecting logs, working with environment variables, and exploring Docker images."
+  title: "Úvod do Dockeru"
+  description: "Komplexný praktický workshop pokrývajúci základy Dockeru — sťahovanie images, spúšťanie containers, vykonávanie príkazov vo vnútri containers, správu životného cyklu containera, prezeranie logov, prácu s environment variables a skúmanie Docker images."
   url: https://github.com/tbocinec/educates-labs
   publish:
     image: "$(image_repository)/docker-intro-files:$(workshop_version)"
@@ -26,9 +26,9 @@ spec:
       
   session:
     namespaces:
-      budget: x-large
+      budget: large
     resources:
-      memory: 2Gi
+      memory: 1536Mi
     applications:
       terminal:
         enabled: true
@@ -39,8 +39,8 @@ spec:
         enabled: false
       docker:
         enabled: true
-        memory: 3Gi
+        memory: 2Gi
       registry:
-        enabled: true
+        enabled: false
       vcluster:
         enabled: false

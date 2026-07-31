@@ -1,32 +1,32 @@
-# Understanding Image Layers
+# Pochopenie vrstiev image (layers)
 
-Every instruction in a Dockerfile creates a **layer**. Understanding layers is key to writing efficient Dockerfiles with fast builds.
+Každá inštrukcia v Dockerfile vytvára jednu **vrstvu (layer)**. Pochopenie vrstiev je kľúčom k písaniu efektívnych Dockerfile s rýchlymi buildmi.
 
 ---
 
-## Visualizing Layers
+## Vizualizácia vrstiev
 
-Let's build a Python application image and examine its layers.
+Poďme zostaviť image Python aplikácie a preskúmať jeho vrstvy.
 
-**Copy the exercise files:**
+**Skopírujte súbory cvičenia:**
 
 ```terminal:execute
 command: cp -r ~/exercises/layers-demo ~/layers-demo && cd ~/layers-demo
 ```
 
-**Open the Dockerfile in the Editor:**
+**Otvorte Dockerfile v editore:**
 
 ```editor:open-file
 file: ~/layers-demo/Dockerfile
 ```
 
-**Open the application code:**
+**Otvorte kód aplikácie:**
 
 ```editor:open-file
 file: ~/layers-demo/app.py
 ```
 
-**Build the image:**
+**Zostavte image:**
 
 ```terminal:execute
 command: cd ~/layers-demo && docker build -t layers-demo:v1 .
@@ -34,19 +34,19 @@ command: cd ~/layers-demo && docker build -t layers-demo:v1 .
 
 ---
 
-## Inspecting Layers with `docker history`
+## Skúmanie vrstiev pomocou `docker history`
 
 ```terminal:execute
 command: docker history layers-demo:v1
 ```
 
-Each row is a layer. You can see:
-- The instruction that created it
-- The size it added to the image
-- Layers from the base image (`python:3.12-slim`)
-- Layers from your Dockerfile (`COPY`, `RUN pip install`, etc.)
+Každý riadok je jedna vrstva. Vidíte:
+- Inštrukciu, ktorá ju vytvorila
+- Veľkosť, ktorú pridala do image
+- Vrstvy zo základného image (`python:3.12-slim`)
+- Vrstvy z vášho Dockerfile (`COPY`, `RUN pip install` atď.)
 
-**For a cleaner view:**
+**Pre prehľadnejší pohľad:**
 
 ```terminal:execute
 command: docker history layers-demo:v1 --format "table {{.CreatedBy}}\t{{.Size}}" --no-trunc | head -10
@@ -54,48 +54,48 @@ command: docker history layers-demo:v1 --format "table {{.CreatedBy}}\t{{.Size}}
 
 ---
 
-## Layer Caching
+## Caching vrstiev
 
-Docker **caches** each layer. If an instruction hasn't changed, Docker reuses the cached layer instead of rebuilding it. This makes subsequent builds much faster.
+Docker **cachuje** každú vrstvu. Ak sa inštrukcia nezmenila, Docker použije cachovanú vrstvu namiesto jej opätovného zostavenia. Vďaka tomu sú ďalšie buildy oveľa rýchlejšie.
 
-**Build again without changes:**
+**Zostavte znova bez akýchkoľvek zmien:**
 
 ```terminal:execute
 command: cd ~/layers-demo && docker build -t layers-demo:v1 .
 ```
 
-Notice the output says `CACHED` for every step — nothing was rebuilt.
+Všimnite si, že výstup uvádza `CACHED` pri každom kroku — nič sa nezostavovalo nanovo.
 
 ---
 
-## Cache Invalidation
+## Invalidácia cache
 
-When a layer changes, **all subsequent layers** are invalidated and rebuilt. This is the most important concept for build performance.
+Keď sa vrstva zmení, **všetky nasledujúce vrstvy** sa zneplatnia a zostavia nanovo. Toto je najdôležitejší koncept pre výkon buildu.
 
-**Change only the application code:**
+**Zmeňte iba kód aplikácie:**
 
 ```terminal:execute
 command: sed -i 's/image layers/image layers v2/' ~/layers-demo/app.py
 ```
 
-**Rebuild:**
+**Znova zostavte:**
 
 ```terminal:execute
 command: cd ~/layers-demo && docker build -t layers-demo:v2 .
 ```
 
-Watch the output carefully:
-- `COPY requirements.txt .` → **CACHED** (requirements didn't change)
-- `RUN pip install ...` → **CACHED** (requirements didn't change)
-- `COPY app.py .` → **rebuilt** (app.py changed)
+Pozorne sledujte výstup:
+- `COPY requirements.txt .` → **CACHED** (requirements sa nezmenili)
+- `RUN pip install ...` → **CACHED** (requirements sa nezmenili)
+- `COPY app.py .` → **zostavené nanovo** (app.py sa zmenil)
 
-Only the layers **after** the change are rebuilt. The expensive `pip install` step was skipped
+Nanovo sa zostavia iba vrstvy **za** zmenou. Nákladný krok `pip install` sa preskočil.
 
 ---
 
-## Why Order Matters
+## Prečo záleží na poradí
 
-This is why our Dockerfile copies `requirements.txt` **before** `app.py`:
+Práve preto náš Dockerfile kopíruje `requirements.txt` **pred** `app.py`:
 
 ```dockerfile
 COPY requirements.txt .          # ← Changes rarely
@@ -103,49 +103,49 @@ RUN pip install -r requirements.txt  # ← Expensive, cached when deps unchanged
 COPY app.py .                    # ← Changes often
 ```
 
-If we had copied everything at once:
+Ak by sme skopírovali všetko naraz:
 
 ```dockerfile
 COPY . .                         # ← ANY file change invalidates this
 RUN pip install -r requirements.txt  # ← Rebuilds every time
 ```
 
-> **Rule of thumb:** Put instructions that change **rarely** at the top, and instructions that change **frequently** at the bottom.
+> **Pravidlo:** Inštrukcie, ktoré sa menia **zriedka**, dávajte navrch, a inštrukcie, ktoré sa menia **často**, dávajte naspodok.
 
 
 ---
 
-## Layer Sharing Between Images
+## Zdieľanie vrstiev medzi images
 
-Layers are **shared** between images that use the same base. Let's verify:
+Vrstvy sú **zdieľané** medzi images, ktoré používajú rovnaký base image. Overme si to:
 
 ```terminal:execute
 command: docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}" | grep -E 'layers-demo|my-nginx'
 ```
 
-**Check actual disk usage:**
+**Skontrolujte skutočné využitie disku:**
 
 ```terminal:execute
 command: docker system df -v 2>/dev/null 
 ```
 
-Shared layers (like the base image) are stored only once on disk, even if multiple images reference them.
+Zdieľané vrstvy (napríklad base image) sú na disku uložené iba raz, aj keď na ne odkazuje viacero images.
 
 ---
 
-## Summary
+## Zhrnutie
 
-| Concept | Description |
+| Koncept | Popis |
 |---------|-------------|
-| **Layers** | Each Dockerfile instruction creates a layer |
-| **Caching** | Unchanged layers are reused from cache |
-| **Invalidation** | Changing a layer invalidates all layers below it |
-| **Ordering** | Place rarely-changing instructions first |
-| **Sharing** | Images with the same base share layers on disk |
+| **Vrstvy (layers)** | Každá inštrukcia Dockerfile vytvára vrstvu |
+| **Caching** | Nezmenené vrstvy sa použijú z cache |
+| **Invalidácia** | Zmena vrstvy zneplatní všetky vrstvy pod ňou |
+| **Poradie** | Zriedka sa meniace inštrukcie dávajte ako prvé |
+| **Zdieľanie** | Images s rovnakým base zdieľajú vrstvy na disku |
 
 ---
 
-## Cleanup
+## Vyčistenie (cleanup)
 
 ```terminal:execute
 command: docker rmi layers-demo:v1 layers-demo:v2 2>/dev/null; rm -rf ~/layers-demo
