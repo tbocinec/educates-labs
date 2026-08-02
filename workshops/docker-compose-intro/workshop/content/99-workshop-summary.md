@@ -84,7 +84,7 @@ Ak chcete pokračovať vo svojej ceste učenia sa Dockera, zvážte preskúmanie
 Uistite sa, že všetky prostriedky workshopu sú odstránené:
 
 ```terminal:execute
-command: docker compose -f ~/first-compose/compose.yaml down 2>/dev/null; docker compose -f ~/multi-app/compose.yaml down -v 2>/dev/null; docker compose -f ~/env-volumes/compose.yaml down -v 2>/dev/null; docker compose -f ~/compose-commands/compose.yaml down 2>/dev/null; docker compose -f ~/scaling-demo/compose.yaml --profile debug --profile monitoring down 2>/dev/null; echo "All workshop resources cleaned up!"
+command: docker compose -f ~/first-compose/compose.yaml down 2>/dev/null; docker compose -f ~/multi-app/compose.yaml down -v 2>/dev/null; docker compose -f ~/env-volumes/compose.yaml down -v 2>/dev/null; docker compose -f ~/compose-commands/compose.yaml down 2>/dev/null; docker compose -f ~/scaling-demo/compose.yaml --profile debug --profile monitoring down 2>/dev/null; echo 'All workshop resources cleaned up!'
 ```
 
 ```terminal:execute

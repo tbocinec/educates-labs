@@ -87,13 +87,13 @@ Všimnite si, že `my-nginx` (foreground container, ktorý ste zastavili predtý
 Nie všetky containers bežia ako dlhotrvajúce služby. Môžete spustiť container, ktorý vykoná jediný príkaz a potom skončí:
 
 ```terminal:execute
-command: docker run --rm alpine:latest echo "Hello from Docker!"
+command: docker run --rm alpine:latest echo 'Hello from Docker!'
 ```
 
 Rozoberme si jednotlivé prepínače:
 - `--rm` — automaticky odstráni container po jeho ukončení (cleanup)
 - `alpine:latest` — image minimálnej Linuxovej distribúcie (iba ~7 MB)
-- `echo "Hello from Docker!"` — príkaz, ktorý sa vykoná vo vnútri containera
+- `echo 'Hello from Docker!'` — príkaz, ktorý sa vykoná vo vnútri containera
 
 Container sa spustí, vypíše správu a okamžite sa odstráni.
 

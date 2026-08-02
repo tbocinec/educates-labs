@@ -93,7 +93,7 @@ command: cd ~/instructions-demo/entrypoint && docker build -t ep-test . && docke
 **Prepíšte iba argument CMD:**
 
 ```terminal:execute
-command: docker run --rm ep-test "print('Hello from entrypoint!')"
+command: docker run --rm ep-test 'print("Hello from entrypoint!")'
 ```
 
 Entrypoint (`python -c`) zostáva pevný; mení sa iba argument.

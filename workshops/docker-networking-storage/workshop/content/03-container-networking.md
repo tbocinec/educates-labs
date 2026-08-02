@@ -51,7 +51,7 @@ command: docker exec net-demo1 ping -c 3 $(docker inspect net-demo2 --format '{{
 Kontajnery na predvolenom bridge dokážu komunikovať cez IP adresy, ale **DNS rozlíšenie mien nefunguje** na predvolenom bridge.
 
 ```terminal:execute
-command: docker exec net-demo1 ping -c 1 net-demo2 2>&1 || echo "DNS resolution failed on default bridge — this is expected!"
+command: docker exec net-demo1 ping -c 1 net-demo2 2>&1 || echo 'DNS resolution failed on default bridge — this is expected!'
 ```
 
 ---
@@ -141,7 +141,7 @@ command: docker run -d --name isolated-app --network backend-net alpine:latest s
 **Test: `isolated-app` (backend-net) nedokáže dosiahnuť `test-client` (workshop-net):**
 
 ```terminal:execute
-command: docker exec isolated-app ping -c 1 -W 2 test-client 2>&1 || echo "Cannot reach test-client across networks — this is expected!"
+command: docker exec isolated-app ping -c 1 -W 2 test-client 2>&1 || echo 'Cannot reach test-client across networks — this is expected!'
 ```
 
 **Ale `isolated-app` dokáže dosiahnuť `web-app` (ktorý je na oboch sieťach):**

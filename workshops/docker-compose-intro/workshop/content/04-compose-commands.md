@@ -66,7 +66,7 @@ session: 2
 Vygenerujte nejaké záznamy v logu odoslaním požiadavky:
 
 ```terminal:execute
-command: curl -s http://localhost:8080 > /dev/null && echo "Request sent!"
+command: curl -s http://localhost:8080 > /dev/null && echo 'Request sent!'
 ```
 
 V Termináli 2 by ste mali vidieť, ako sa objaví záznam v access logu. Stlačením **Ctrl+C** v Termináli 2 zastavíte sledovanie.
@@ -164,7 +164,7 @@ command: cd ~/compose-commands && docker compose pause web
 ```
 
 ```terminal:execute
-command: curl -s --max-time 3 http://localhost:8080 || echo "Connection timed out — web is paused!"
+command: curl -s --max-time 3 http://localhost:8080 || echo 'Connection timed out — web is paused!'
 ```
 
 **Obnovte (unpause):**

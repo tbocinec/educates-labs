@@ -31,7 +31,7 @@ command: docker run -d --name ephemeral-demo nginx:latest
 **Skúste prečítať dáta:**
 
 ```terminal:execute
-command: docker exec ephemeral-demo cat /tmp/mydata.txt 2>&1 || echo "File not found — data was lost!"
+command: docker exec ephemeral-demo cat /tmp/mydata.txt 2>&1 || echo 'File not found — data was lost!'
 ```
 
 Súbor je preč. Toto je očakávané správanie — nový kontajner štartuje z čistej vrstvy image.
