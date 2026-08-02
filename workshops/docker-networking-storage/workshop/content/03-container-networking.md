@@ -123,7 +123,7 @@ command: docker network connect backend-net web-app
 **Overte, že kontajner má rozhrania na oboch sieťach:**
 
 ```terminal:execute
-command: docker inspect web-app --format '{{range $net, $conf := .NetworkSettings.Networks}}{{$net}}: {{$conf.IPAddress}}{{println}}{{end}}'
+command: docker inspect web-app --format '{{range $net, $conf := .NetworkSettings.Networks}}{{$net}} = {{$conf.IPAddress}}{{println}}{{end}}'
 ```
 
 Kontajner má teraz IP adresu na `workshop-net` aj `backend-net`.
@@ -163,7 +163,7 @@ command: docker network disconnect backend-net web-app
 **Overte, že kontajner už nie je na sieti backend-net:**
 
 ```terminal:execute
-command: docker inspect web-app --format '{{range $net, $conf := .NetworkSettings.Networks}}{{$net}}: {{$conf.IPAddress}}{{println}}{{end}}'
+command: docker inspect web-app --format '{{range $net, $conf := .NetworkSettings.Networks}}{{$net}} = {{$conf.IPAddress}}{{println}}{{end}}'
 ```
 
 ---

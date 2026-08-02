@@ -115,7 +115,7 @@ command: docker network ls --filter "name=multi-app"
 **Preskúmajte network, aby ste videli všetky pripojené kontajnery:**
 
 ```terminal:execute
-command: docker network inspect multi-app_default --format '{{range .Containers}}{{.Name}}: {{.IPv4Address}}{{"\n"}}{{end}}'
+command: docker network inspect multi-app_default --format '{{range .Containers}}{{.Name}} = {{.IPv4Address}}{{"\n"}}{{end}}'
 ```
 
 Všetky tri kontajnery zdieľajú rovnakú network a môžu medzi sebou voľne komunikovať.
