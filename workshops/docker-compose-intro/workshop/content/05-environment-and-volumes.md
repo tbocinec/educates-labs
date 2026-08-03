@@ -146,6 +146,14 @@ Volumes zachovávajú dáta aj po skončení životného cyklu kontajnerov.
 
 Náš Compose súbor už používa named volume `dbdata`. Overme si perzistenciu dát.
 
+**Začnime s čistou databázou a počkajme, kým PostgreSQL naozaj prijíma spojenia ako `admin`:**
+
+```terminal:execute
+command: cd ~/env-volumes && docker compose down -v && docker compose up -d && until docker compose exec -T db psql -U admin -d production -c 'SELECT 1' >/dev/null 2>&1; do sleep 1; done
+```
+
+> **Poznámka:** Kľúčové je počkať na pripravenosť — `docker compose up -d` vráti riadenie hneď po štarte kontajnera, ale PostgreSQL potrebuje ešte pár sekúnd na inicializáciu databázy (vytvorenie roly `admin` a databázy `production`). Cyklus čaká, kým `psql` skutočne prejde.
+
 **Vložte nejaké dáta do PostgreSQL:**
 
 ```terminal:execute
@@ -154,8 +162,10 @@ command: cd ~/env-volumes && docker compose exec db psql -U admin -d production 
 
 > **Poznámka:** Prihlasovacie údaje `admin` / `production` pochádzajú zo súboru `.env` (`DB_USER`, `DB_NAME`). PostgreSQL nevyžaduje heslo pri lokálnom pripojení vnútri kontajnera.
 
+**Reštartujte kontajnery (volume ponecháme) a počkajte na pripravenosť:**
+
 ```terminal:execute
-command: cd ~/env-volumes && docker compose down && docker compose up -d
+command: cd ~/env-volumes && docker compose down && docker compose up -d && until docker compose exec -T db psql -U admin -d production -c 'SELECT 1' >/dev/null 2>&1; do sleep 1; done
 ```
 
 **Skontrolujte, že dáta pretrvali:**
