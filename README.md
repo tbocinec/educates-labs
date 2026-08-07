@@ -1,88 +1,147 @@
 # Educates Labs
 
-This repository contains interactive workshops built for [Educates](https://educates.dev/), a platform for creating and delivering hands-on learning experiences.
+A collection of interactive, hands-on workshops built for
+**[Educates](https://educates.dev/)** — the open-source training platform that
+gives every learner a browser-based terminal, editor and (per workshop) Docker,
+Kubernetes or app dashboards, with no local setup.
 
-## Available Workshops
+- Educates project & docs: <https://educates.dev/> · <https://docs.educates.dev/>
+- Educates on GitHub: <https://github.com/educates/educates-training-platform>
 
-### 1. Kafka Introduction (`kafka-intro`)
-An introductory workshop covering Apache Kafka fundamentals, including:
-- Docker Compose setup
-- Kafka CLI tools
-- Basic producer and consumer operations
+Each workshop is a self-contained module (instructions + setup + resource
+definition) that can be deployed on its own or grouped into a training portal.
 
-### 2. Kafka UI Workshop (`kafka-ui`)
-A comprehensive workshop focusing on Kafka UI management:
-- Kafka installation and setup
-- Kafka UI configuration
-- Topic creation and management
-- Message publishing and monitoring
-- UI exploration and features
+> **Note:** the Docker workshops are written in **Slovak** (technical terms kept
+> in English); the Kubernetes, Kafka and Grafana workshops are in **English**.
 
-## Prerequisites
+## Available workshops
 
-- [Docker](https://docs.docker.com/get-docker/) installed and running
-- [Educates CLI](https://docs.educates.dev/getting-started/installing-educates-cli) installed
-- Kubernetes cluster (for deploying workshops)
+### 🐳 Docker (SK)
+| Workshop | Description |
+|----------|-------------|
+| `docker-intro` | Docker fundamentals — pulling images, running containers, exec, lifecycle, logs, env variables. |
+| `dockerfile-intro` | Writing Dockerfiles — layers & caching, key instructions, best practices, multi-stage builds. |
+| `docker-compose-intro` | Multi-container apps with Compose — services, networking, env & `.env`, volumes, scaling & profiles. |
+| `docker-networking-storage` | Port mapping, volumes & persistent data, `docker cp`, bind mounts, user-defined networks & isolation. |
 
-## Quick Start
+### ☸️ Kubernetes
+| Workshop | Description |
+|----------|-------------|
+| `kubernetes-intro` | Kubernetes basics — `kubectl`, Pods, Deployments, rollouts/rollbacks, ConfigMaps, labels & selectors. |
+| `kubernetes-services-storage` | Services & networking, Secrets, persistent storage with PV/PVC. |
 
-### Installing Educates CLI
+### 📨 Apache Kafka
+| Workshop | Description |
+|----------|-------------|
+| `kafka-base` | Kafka sandbox with auto-start, JDK 21 and editor — a base for experimenting. |
+| `kafka-linux-install` | Install & configure Kafka in KRaft mode on Ubuntu, then scale to a multi-broker cluster. |
+| `kafka-cli-tools` | Master the essential Kafka CLI tools on a 3-node cluster, basics → production scenarios. |
+| `kafka-intro-java` | Kafka with Java producer/consumer applications. |
+| `kafka-producers-essentials` | Producer fundamentals — `ProducerRecord`, keys, partitioning, sync/async, acks. |
+| `kafka-consumers-essentials` | Producer & consumer essentials with hands-on Java exercises. |
+| `kafka-consumers` | Consumer deep dive — consumer-group patterns using humidity-sensor data. |
+| `kafka-connect` | Stream data from PostgreSQL into Kafka with the Kafka Connect JDBC source connector. |
+| `kafka-schema-registry` | Data governance — Avro schemas, evolution, compatibility modes, contract-based messaging. |
+| `kafka-monitoring` | Monitoring & observability with JMX/Kafka Exporter, Prometheus and Grafana. |
+| `kafka-flink-mold-alert` | Stream processing with Flink + Kafka — a real-time humidity/mold alerting system. |
+
+### 📊 Grafana
+| Workshop | Description |
+|----------|-------------|
+| `grafana-intro` | Install, start and access Grafana; build a first dashboard. |
+| `grafana-intro-docker` | Run Grafana via official Docker images and Docker Compose. |
+| `grafana-data-sources` | Connect Grafana to Prometheus, InfluxDB and ClickHouse. |
+| `grafana-alerting` | End-to-end alerting with Grafana Unified Alerting and ClickHouse. |
+| `grafana-loki` | Log aggregation with Loki + Promtail, visualised in Grafana. |
+
+### 👋 Misc
+| Workshop | Description |
+|----------|-------------|
+| `ahoj-healthineers` | A minimal welcome workshop demonstrating the Educates basics. |
+
+## How workshops are published & deployed
+
+### Publishing (CI)
+Pushing a version tag (`X.Y`, e.g. `0.31`) triggers the
+[`publish-workshops`](.github/workflows/publish-workshops.yaml) GitHub Action
+([educates/educates-github-actions](https://github.com/educates/educates-github-actions)),
+which for every workshop:
+
+1. builds the workshop **content image** and pushes it to GHCR
+   (`ghcr.io/<owner>/<workshop>-files:<tag>`), and
+2. attaches a self-contained **`<workshop>.yaml`** to the GitHub
+   [Release](../../releases) for that tag.
 
 ```bash
-# Install Educates CLI (example for Linux/macOS)
-curl -s https://docs.educates.dev/install.sh | bash
+git tag 0.32 && git push origin 0.32     # CI publishes images + release YAMLs
 ```
 
-### Deploying a Workshop
+### Deploying to an Educates cluster
+You need an Educates platform running on a Kubernetes cluster
+([installation guide](https://docs.educates.dev/en/stable/installation-guides/)).
 
-To deploy any workshop from this repository, navigate to the workshop directory and use the `educates deploy-workshop` command:
-
+**A single workshop** (from a published release) — the CLI creates a portal and
+deploys it:
 ```bash
-# Deploy the Kafka Introduction workshop
-cd kafka-intro
-educates deploy-workshop resources/workshop.yaml
-
-# Deploy the Kafka UI workshop
-cd kafka-ui
-educates deploy-workshop resources/workshop.yaml
+educates deploy-workshop -f https://github.com/<owner>/educates-labs/releases/download/0.31/docker-intro.yaml
 ```
 
-### Accessing Workshops
-
-After deployment, the CLI will provide you with a URL to access your workshop session.
-
-## Workshop Development
-
-Each workshop follows the standard Educates structure:
-- `resources/workshop.yaml` - Workshop configuration and metadata
-- `workshop/config.yaml` - Workshop runtime configuration
-- `workshop/content/` - Workshop content in Markdown format
-
-## Useful Links
-
-- 📚 [Educates Documentation](https://docs.educates.dev/)
-- 🌐 [Educates Website](https://educates.dev/)
-- 🏗️ [Educates GitHub Repository](https://github.com/vmware-tanzu-labs/educates-training-platform)
-- 📖 [Workshop Development Guide](https://docs.educates.dev/workshop-content/)
-
-
-
-## Common Commands
-
+**A portal with several workshops** — apply the Workshop definitions, then a
+`TrainingPortal` that lists them **by name** (Educates 3.7+):
 ```bash
-# List available workshops
-educates list-workshops
-
-# Deploy workshop
-educates deploy-workshop <workshop-file>
-
-# Delete workshop
-educates delete-workshop <workshop-name>
-
-# Get workshop sessions
-educates list-sessions
-
-# Delete all workshops
-educates delete-workshops
+REL=https://github.com/<owner>/educates-labs/releases/download/0.31
+kubectl apply -f $REL/docker-intro.yaml -f $REL/kubernetes-intro.yaml
+```
+```yaml
+apiVersion: training.educates.dev/v1beta1
+kind: TrainingPortal
+metadata:
+  name: my-portal
+spec:
+  portal:
+    sessions: { maximum: 20 }
+    registration: { type: anonymous }
+  workshops:
+    - name: docker-intro
+    - name: kubernetes-intro
 ```
 
+**Locally, while authoring** — build and serve straight from the source tree:
+```bash
+educates deploy-workshop -f workshops/docker-intro/resources/workshop.yaml
+```
+
+## Repository structure
+
+```
+workshops/<name>/
+  resources/workshop.yaml   # Workshop resource: title, session apps, resources, content image
+  workshop/config.yaml      # pathway: modules, order, durations
+  workshop/content/*.md     # lesson content (clickable terminal/editor actions)
+  workshop/setup.d/*.sh     # optional per-session setup scripts
+  exercises/                # optional starter files used by the workshop
+```
+
+## Contributing
+
+Contributions are very welcome — **if you'd like to add or improve a workshop,
+open a PR and we'll be happy to review it!** 🎉
+
+1. Start from the template: `educates new-workshop -n my-workshop` (or copy an
+   existing workshop directory).
+2. Keep the standard layout above; put clickable commands in `terminal:execute`
+   blocks and make each step clean up after itself.
+3. Test locally: `educates deploy-workshop -f workshops/<name>/resources/workshop.yaml`.
+4. Open a pull request describing the workshop and what it teaches.
+
+Bug reports and fixes (typos, broken steps, clearer explanations) are just as
+welcome as new workshops.
+
+## Useful links
+
+- Educates — <https://educates.dev/>
+- Educates documentation — <https://docs.educates.dev/>
+- Educates platform (GitHub) — <https://github.com/educates/educates-training-platform>
+- Educates GitHub Actions — <https://github.com/educates/educates-github-actions>
+- Installing the Educates CLI — <https://docs.educates.dev/en/stable/getting-started/installing-cli.html>
+- Workshop configuration reference — <https://docs.educates.dev/en/stable/custom-resources/workshop-definition.html>
