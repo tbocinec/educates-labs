@@ -31,7 +31,7 @@ A hands-on workshop covering Kubernetes basics — kubectl commands, Pods, Deplo
 
 ## Features
 
-- Kubernetes Dashboard enabled for visual cluster management
+- Headlamp web UI enabled for visual cluster management
 - Pre-built exercise YAML files with inline comments
 - Integrated code editor for viewing and editing manifests
 - Split terminal for running multiple commands

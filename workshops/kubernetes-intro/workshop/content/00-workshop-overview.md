@@ -23,7 +23,7 @@ Your workshop environment provides:
 
 - **Two terminals** (split layout) — run commands side by side
 - **Code editor** — view and edit YAML manifests
-- **Kubernetes Dashboard** — visual cluster monitoring (Console tab)
+- **Headlamp** — a web UI for visual cluster monitoring (Headlamp tab)
 - **Pre-built exercise files** — YAML manifests in the `exercises/` directory
 
 The terminals are already configured with `kubectl` and have access to your dedicated Kubernetes namespace: `{{ session_namespace }}`.

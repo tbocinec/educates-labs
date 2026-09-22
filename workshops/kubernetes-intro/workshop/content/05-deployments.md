@@ -182,14 +182,18 @@ command: kubectl rollout status deployment nginx-deployment
 
 This shows whether the Deployment has finished rolling out all its Pods.
 
-## The Kubernetes Dashboard
+## The Headlamp UI
 
-Switch to the **Console** tab to see the Kubernetes Dashboard. You can visualize your Deployment, its ReplicaSet, and individual Pods in a graphical interface.
+Switch to the **Headlamp** tab to see your namespace in a web UI. You can visualize your Deployment, its ReplicaSet, and individual Pods in a graphical interface.
 
-The Dashboard provides:
+Headlamp provides:
 - Resource overview and health status
 - Real-time events and logs
-- YAML/JSON resource details
+- YAML/JSON resource details, with an editor
+
+Open **Workloads → Deployments** and click `nginx-deployment`. The detail page
+shows the same information as `kubectl describe`, plus a live view of the Pods
+the Deployment owns.
 
 ## Summary
 
