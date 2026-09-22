@@ -1,0 +1,39 @@
+# =============================================================
+# pod-bad-key.yaml — a Pod that fails on configuration
+# =============================================================
+# The image pulls fine. The ConfigMap exists. And the Pod still
+# never starts, with status CreateContainerConfigError.
+#
+# The kubelet resolves every ConfigMap and Secret reference
+# BEFORE starting the container. If a key is missing, there is
+# nothing to start — and therefore no logs to read.
+#
+# YOUR FIX: the ConfigMap defines "app_mode", not "mode".
+#
+# Docs: https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
+# =============================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-app
+  labels:
+    app: config-app
+spec:
+  containers:
+  - name: app
+    image: nginx:1.27
+    env:
+    - name: APP_MODE
+      valueFrom:
+        configMapKeyRef:
+          name: app-settings
+          # <-- Wrong key. The ConfigMap has "app_mode".
+          key: mode
+    resources:
+      requests:
+        memory: 64Mi
+        cpu: 50m
+      limits:
+        memory: 128Mi
+        cpu: 200m

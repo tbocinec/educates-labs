@@ -1,0 +1,62 @@
+# =============================================================
+# pod-fixed.yaml — the same worker, with its config mounted
+# =============================================================
+# The crash in pod-crashloop.yaml was not a Kubernetes problem.
+# The app genuinely needed /etc/worker/config.yaml and nobody
+# gave it one.
+#
+# Here the config lives in a ConfigMap, mounted as a file. The
+# worker finds it and keeps running.
+#
+# The lesson: "CrashLoopBackOff" is a symptom, not a cause. The
+# cause was in the application's own log line.
+#
+# Docs: https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
+# =============================================================
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: worker-config
+data:
+  config.yaml: |
+    interval: 10s
+    mode: production
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: worker-fixed
+  labels:
+    app: worker-fixed
+spec:
+  containers:
+  - name: worker
+    image: busybox:1.36
+    command: ["/bin/sh", "-c"]
+    args:
+    - |
+      echo 'starting worker...'
+      if [ ! -f /etc/worker/config.yaml ]; then
+        echo 'FATAL: cannot open /etc/worker/config.yaml' >&2
+        exit 1
+      fi
+      echo 'config loaded:'
+      cat /etc/worker/config.yaml
+      echo 'worker running, press Ctrl-C to stop'
+      while true; do sleep 30; done
+    volumeMounts:
+    - name: config
+      mountPath: /etc/worker
+      readOnly: true
+    resources:
+      requests:
+        memory: 32Mi
+        cpu: 25m
+      limits:
+        memory: 64Mi
+        cpu: 100m
+  volumes:
+  - name: config
+    configMap:
+      name: worker-config

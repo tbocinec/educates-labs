@@ -29,6 +29,12 @@ definition) that can be deployed on its own or grouped into a training portal.
 |----------|-------------|
 | `kubernetes-intro` | Kubernetes basics — `kubectl`, Pods, Deployments, rollouts/rollbacks, ConfigMaps, labels & selectors. |
 | `kubernetes-services-storage` | Services & networking, Secrets, persistent storage with PV/PVC. |
+| `kubernetes-troubleshooting` | Diagnosing broken workloads — `ImagePullBackOff`, `CrashLoopBackOff`, `OOMKilled`, unschedulable Pods, Services with no endpoints. (60 min) |
+
+### ⎈ Helm
+| Workshop | Description |
+|----------|-------------|
+| `helm-intro` | Charts, releases and values; installing, upgrading, rolling back, and building your own chart. (60 min) |
 
 ### 📨 Apache Kafka
 | Workshop | Description |
@@ -110,6 +116,17 @@ spec:
 ```bash
 educates deploy-workshop -f workshops/docker-intro/resources/workshop.yaml
 ```
+
+> **Publish the files image first.** `deploy-workshop` applies the Workshop
+> definition but does *not* build the `<workshop>-files` image it references —
+> that is CI's job. On a local cluster the session then starts with no
+> `~/exercises` and a `vendir` error in the workshop container log. Run this from
+> the workshop directory first:
+> ```bash
+> cd workshops/<name> && educates publish-workshop --workshop-file resources/workshop.yaml
+> ```
+> It pushes to the local registry (`localhost:5001`), after which sessions get
+> their files. Re-run it after every content change, then recreate the session.
 
 ## Repository structure
 

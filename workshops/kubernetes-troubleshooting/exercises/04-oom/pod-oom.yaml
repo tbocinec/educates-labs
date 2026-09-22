@@ -1,0 +1,51 @@
+# =============================================================
+# pod-oom.yaml — a container that exceeds its memory limit
+# =============================================================
+# This writes 200 MB into a memory-backed volume (tmpfs) while
+# holding a 64 Mi memory limit. Files written to a "medium:
+# Memory" emptyDir count against the container's memory, so the
+# kernel's OOM killer steps in.
+#
+# What you will see:
+#   - reason:    OOMKilled
+#   - exit code: 137   (128 + SIGKILL)
+#   - logs:      EMPTY
+#
+# That last one is the fingerprint. The process was killed
+# instantly and had no chance to log a thing.
+#
+# Docs: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+# =============================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: memory-hog
+  labels:
+    app: memory-hog
+spec:
+  restartPolicy: Never
+  containers:
+  - name: hog
+    image: busybox:1.36
+    command: ["/bin/sh", "-c"]
+    args:
+    - |
+      echo 'filling memory...'
+      dd if=/dev/zero of=/cache/fill bs=1M count=200
+      echo 'done'
+    volumeMounts:
+    - name: cache
+      mountPath: /cache
+    resources:
+      requests:
+        memory: 64Mi
+        cpu: 50m
+      limits:
+        # <-- 64 Mi, while the command writes 200 MB.
+        memory: 64Mi
+        cpu: 200m
+  volumes:
+  - name: cache
+    emptyDir:
+      medium: Memory

@@ -1,0 +1,36 @@
+# =============================================================
+# pod-nodeselector.yaml — a Pod no node can satisfy
+# =============================================================
+# The scheduler looks for a node labelled disktype=ultra-fast-ssd.
+# No such node exists, so the Pod stays Pending forever.
+#
+# Note what does NOT happen: no error, no warning on apply, no
+# restarts. The object is perfectly valid. It simply never runs.
+#
+# The scheduler explains itself in the Pod's events:
+#
+#     kubectl describe pod picky-app | grep -A8 Events:
+#
+# Docs: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+# =============================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: picky-app
+  labels:
+    app: picky-app
+spec:
+  # <-- No node in this cluster carries this label.
+  nodeSelector:
+    disktype: ultra-fast-ssd
+  containers:
+  - name: app
+    image: nginx:1.27
+    resources:
+      requests:
+        memory: 64Mi
+        cpu: 50m
+      limits:
+        memory: 128Mi
+        cpu: 200m

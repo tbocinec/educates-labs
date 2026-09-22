@@ -1,0 +1,38 @@
+# =============================================================
+# pod-too-big.yaml — rejected before it exists
+# =============================================================
+# This one never becomes a Pod at all. "kubectl apply" returns an
+# error and nothing is created.
+#
+# Your namespace has a LimitRange capping a single Pod at 8Gi of
+# memory, and a ResourceQuota capping the namespace total. This
+# manifest asks for 32Gi, so admission refuses it outright.
+#
+# The lesson: if apply printed an error, do not go looking for a
+# Pod to describe. The error text IS the diagnosis.
+#
+# Inspect the rules with:
+#     kubectl describe limitrange
+#     kubectl describe resourcequota
+#
+# Docs: https://kubernetes.io/docs/concepts/policy/limit-range/
+# =============================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: greedy-app
+  labels:
+    app: greedy-app
+spec:
+  containers:
+  - name: app
+    image: nginx:1.27
+    resources:
+      requests:
+        memory: 16Gi
+        cpu: 1
+      limits:
+        # <-- Far above what this namespace permits.
+        memory: 32Gi
+        cpu: 2

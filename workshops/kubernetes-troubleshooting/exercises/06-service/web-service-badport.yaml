@@ -1,0 +1,30 @@
+# =============================================================
+# web-service-badport.yaml — right Pods, wrong door
+# =============================================================
+# This Service selects correctly (app=web), so "kubectl get
+# endpoints" shows two Pod IPs and everything looks connected.
+#
+# Traffic still fails, because targetPort points at 8080 and
+# nginx listens on 80.
+#
+#   port       = what clients call on the Service
+#   targetPort = the container port traffic is forwarded to
+#
+# They are allowed to differ, which is exactly why this mistake
+# is easy to make and invisible in the Pod list.
+#
+# Docs: https://kubernetes.io/docs/concepts/services-networking/service/
+# =============================================================
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-badport
+spec:
+  type: ClusterIP
+  selector:
+    app: web
+  ports:
+  - port: 80
+    # <-- Nothing is listening on 8080 inside the container.
+    targetPort: 8080

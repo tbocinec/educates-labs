@@ -1,0 +1,19 @@
+# =============================================================
+# configmap.yaml — the settings the app is supposed to read
+# =============================================================
+# Note the key name carefully: it is "app_mode", with an
+# underscore. The Pod in pod-bad-key.yaml asks for "mode".
+#
+# Kubernetes does not guess, normalise, or fall back — a key
+# reference either matches exactly or the container never starts.
+#
+# Docs: https://kubernetes.io/docs/concepts/configuration/configmap/
+# =============================================================
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-settings
+data:
+  app_mode: production
+  log_level: info

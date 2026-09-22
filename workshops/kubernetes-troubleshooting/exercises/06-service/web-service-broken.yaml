@@ -1,0 +1,31 @@
+# =============================================================
+# web-service-broken.yaml — a Service that selects nothing
+# =============================================================
+# The Pods are labelled app=web. This Service looks for
+# app=webapp. One letter, and the Service has zero backends.
+#
+# Kubernetes will not warn you. An empty selection is a legal
+# state — maybe the Pods haven't been created yet. So the Service
+# sits there, accepting connections and routing them nowhere.
+#
+# The one command that exposes it:
+#
+#     kubectl get endpoints web-service
+#
+# YOUR FIX: change "webapp" to "web" below.
+#
+# Docs: https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/
+# =============================================================
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+spec:
+  type: ClusterIP
+  selector:
+    # <-- Wrong. The Pods carry app=web.
+    app: webapp
+  ports:
+  - port: 80
+    targetPort: 80

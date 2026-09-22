@@ -1,0 +1,30 @@
+# =============================================================
+# pod-nodeselector-fixed.yaml — the impossible demand removed
+# =============================================================
+# Same Pod, without the nodeSelector. The scheduler now has
+# candidates and places it immediately.
+#
+# In production you would either label the nodes that really do
+# have the hardware, or drop the constraint if it was never true
+# to begin with.
+#
+# Docs: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+# =============================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: picky-app-fixed
+  labels:
+    app: picky-app-fixed
+spec:
+  containers:
+  - name: app
+    image: nginx:1.27
+    resources:
+      requests:
+        memory: 64Mi
+        cpu: 50m
+      limits:
+        memory: 128Mi
+        cpu: 200m

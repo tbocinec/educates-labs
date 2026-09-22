@@ -1,0 +1,43 @@
+# =============================================================
+# podinfo-values.yaml — overrides for the podinfo chart
+# =============================================================
+# Every key here exists in the chart's own values.yaml. Check for
+# yourself with:
+#
+#     helm show values podinfo/podinfo
+#
+# Anything not listed here keeps the chart's default. That is the
+# whole point of a values file: describe only what differs.
+#
+# Apply it with:
+#     helm upgrade my-app podinfo/podinfo -f ~/exercises/podinfo-values.yaml
+#
+# Docs: https://helm.sh/docs/chart_template_guide/values_files/
+# =============================================================
+
+replicaCount: 2
+
+# A message the app echoes back — handy for proving that your
+# values actually reached the running container.
+ui:
+  message: "Hello from the Helm workshop!"
+
+# Keep well inside the namespace quota. Without limits the
+# namespace LimitRange would apply its defaults instead.
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 192Mi
+
+# The chart can create an Ingress. Left off here because it needs
+# a hostname and TLS setup that differ per cluster.
+ingress:
+  enabled: false
+
+# Autoscaling needs metrics-server. Off by default so the chart
+# behaves the same on every cluster.
+autoscaling:
+  enabled: false

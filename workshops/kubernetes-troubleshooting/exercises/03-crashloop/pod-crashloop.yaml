@@ -1,0 +1,42 @@
+# =============================================================
+# pod-crashloop.yaml — a worker that dies on startup
+# =============================================================
+# This container starts successfully, runs for five seconds,
+# fails to find its config file, and exits with code 1.
+#
+# Kubernetes restarts it. It fails again. After a few rounds the
+# status becomes CrashLoopBackOff, and the restart delay grows
+# (10s, 20s, 40s ... up to 5 minutes).
+#
+# The important part: the useful output belongs to the container
+# that ALREADY DIED. Use:
+#
+#     kubectl logs worker --previous
+#
+# Docs: https://kubernetes.io/docs/tasks/debug/debug-application/debug-pods/
+# =============================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: worker
+  labels:
+    app: worker
+spec:
+  containers:
+  - name: worker
+    image: busybox:1.36
+    command: ["/bin/sh", "-c"]
+    args:
+    - |
+      echo 'starting worker...'
+      sleep 5
+      echo 'FATAL: cannot open /etc/worker/config.yaml' >&2
+      exit 1
+    resources:
+      requests:
+        memory: 32Mi
+        cpu: 25m
+      limits:
+        memory: 64Mi
+        cpu: 100m

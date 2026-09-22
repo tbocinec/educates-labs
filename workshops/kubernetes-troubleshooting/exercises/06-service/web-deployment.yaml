@@ -1,0 +1,45 @@
+# =============================================================
+# web-deployment.yaml — a perfectly healthy application
+# =============================================================
+# There is nothing wrong with this file. Both replicas will run,
+# stay ready, and never restart.
+#
+# It is here so you can see that "kubectl get pods" looking
+# perfect tells you NOTHING about whether the Service in front of
+# it works.
+#
+# Note the label the Pods carry: app=web. Remember it when you
+# read web-service-broken.yaml.
+#
+# Docs: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+# =============================================================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    app: web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.27
+        ports:
+        # <-- The container listens on 80. Remember this too.
+        - containerPort: 80
+        resources:
+          requests:
+            memory: 64Mi
+            cpu: 50m
+          limits:
+            memory: 128Mi
+            cpu: 200m

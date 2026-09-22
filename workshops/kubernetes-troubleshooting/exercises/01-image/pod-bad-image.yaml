@@ -1,0 +1,35 @@
+# =============================================================
+# pod-bad-image.yaml — a Pod that can never start
+# =============================================================
+# Someone handed you this manifest. It looks perfectly reasonable,
+# and Kubernetes will accept it without complaint.
+#
+# The Pod will sit in ImagePullBackOff forever, because the image
+# tag below does not exist in the registry.
+#
+# Remember: BackOff means "retrying with growing delays", not
+# "gave up". A typo here quietly burns a Pod slot all day.
+#
+# Docs: https://kubernetes.io/docs/concepts/containers/images/
+# =============================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-server
+  labels:
+    app: web-server
+spec:
+  containers:
+  - name: nginx
+    # <-- This tag does not exist. nginx ships 1.27, not 1.99.
+    image: nginx:1.99-does-not-exist
+    ports:
+    - containerPort: 80
+    resources:
+      requests:
+        memory: 64Mi
+        cpu: 50m
+      limits:
+        memory: 128Mi
+        cpu: 200m

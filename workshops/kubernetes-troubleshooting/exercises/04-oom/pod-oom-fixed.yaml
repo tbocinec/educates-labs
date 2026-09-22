@@ -1,0 +1,48 @@
+# =============================================================
+# pod-oom-fixed.yaml — the same work, with an honest limit
+# =============================================================
+# The workload genuinely needs about 200 MB, so the limit was
+# the thing that was wrong — not the application.
+#
+# Be careful with this conclusion in real life. If an app LEAKS
+# memory, raising the limit only delays the crash. Check actual
+# usage first:
+#
+#     kubectl top pod            (needs metrics-server)
+#
+# Docs: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+# =============================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: memory-hog-fixed
+  labels:
+    app: memory-hog-fixed
+spec:
+  restartPolicy: Never
+  containers:
+  - name: hog
+    image: busybox:1.36
+    command: ["/bin/sh", "-c"]
+    args:
+    - |
+      echo 'filling memory...'
+      dd if=/dev/zero of=/cache/fill bs=1M count=200
+      echo 'done'
+    volumeMounts:
+    - name: cache
+      mountPath: /cache
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 50m
+      limits:
+        # <-- room for the 200 MB plus overhead.
+        memory: 320Mi
+        cpu: 200m
+  volumes:
+  - name: cache
+    emptyDir:
+      medium: Memory
+      sizeLimit: 256Mi

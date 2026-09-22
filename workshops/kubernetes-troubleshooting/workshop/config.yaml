@@ -1,0 +1,38 @@
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Kubernetes Troubleshooting"
+      duration: 60m
+
+      steps:
+      - 00-workshop-overview
+      - 01-debugging-method
+      - 02-pod-wont-start
+      - 03-pod-keeps-dying
+      - 04-pod-stays-pending
+      - 05-app-unreachable
+      - 99-workshop-summary
+
+modules:
+- name: 00-workshop-overview
+  title: Workshop Overview
+
+- name: 01-debugging-method
+  title: A Method That Works
+
+- name: 02-pod-wont-start
+  title: The Pod Never Starts
+
+- name: 03-pod-keeps-dying
+  title: The Pod Starts, Then Dies
+
+- name: 04-pod-stays-pending
+  title: The Pod Stays Pending
+
+- name: 05-app-unreachable
+  title: The App Is Unreachable
+
+- name: 99-workshop-summary
+  title: Workshop Summary

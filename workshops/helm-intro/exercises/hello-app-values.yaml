@@ -1,0 +1,55 @@
+# =============================================================
+# hello-app-values.yaml — values for the chart you scaffolded
+# =============================================================
+# "helm create" generates a chart that runs nginx. These values
+# point it at podinfo instead and size it for the namespace quota.
+#
+# The key names come from the scaffold's own values.yaml — open
+# it side by side to see which knobs exist:
+#
+#     ~/hello-app/values.yaml
+#
+# Apply with:
+#     helm install hello ~/hello-app -f ~/exercises/hello-app-values.yaml
+#
+# Docs: https://helm.sh/docs/chart_template_guide/values_files/
+# =============================================================
+
+replicaCount: 2
+
+image:
+  repository: ghcr.io/stefanprodan/podinfo
+  pullPolicy: IfNotPresent
+  tag: "6.15.0"
+
+# The scaffold's Service defaults to port 80. Podinfo listens on
+# 9898, so this has to move.
+#
+# Note that the scaffold templates the CONTAINER port from this
+# same value:
+#
+#     containerPort: {{ .Values.service.port }}
+#
+# One value, two places. Check for yourself in
+# ~/hello-app/templates/deployment.yaml — assuming a chart has a
+# separate containerPort knob is a common way to waste ten minutes.
+service:
+  type: ClusterIP
+  port: 9898
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 192Mi
+
+# The scaffold's probes hit "/" — podinfo answers there, so the
+# defaults work unchanged.
+
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: false

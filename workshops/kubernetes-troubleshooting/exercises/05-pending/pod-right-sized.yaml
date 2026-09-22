@@ -1,0 +1,31 @@
+# =============================================================
+# pod-right-sized.yaml — a request the namespace will accept
+# =============================================================
+# The same workload, asking for what it actually needs. Admission
+# lets it through and the scheduler places it.
+#
+# Watch your quota consumption change after applying this:
+#
+#     kubectl get resourcequota -o custom-columns=\
+#       NAME:.metadata.name,USED:.status.used,HARD:.status.hard
+#
+# Docs: https://kubernetes.io/docs/concepts/policy/resource-quotas/
+# =============================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: greedy-app-fixed
+  labels:
+    app: greedy-app-fixed
+spec:
+  containers:
+  - name: app
+    image: nginx:1.27
+    resources:
+      requests:
+        memory: 128Mi
+        cpu: 100m
+      limits:
+        memory: 256Mi
+        cpu: 500m

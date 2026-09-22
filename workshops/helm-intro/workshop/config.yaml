@@ -1,0 +1,38 @@
+pathways:
+  default: workshop
+
+  paths:
+    workshop:
+      title: "Helm Fundamentals"
+      duration: 60m
+
+      steps:
+      - 00-workshop-overview
+      - 01-helm-concepts
+      - 02-first-release
+      - 03-values
+      - 04-upgrade-rollback
+      - 05-your-own-chart
+      - 99-workshop-summary
+
+modules:
+- name: 00-workshop-overview
+  title: Workshop Overview
+
+- name: 01-helm-concepts
+  title: Charts, Releases & Repositories
+
+- name: 02-first-release
+  title: Your First Release
+
+- name: 03-values
+  title: Configuring with Values
+
+- name: 04-upgrade-rollback
+  title: Upgrades & Rollbacks
+
+- name: 05-your-own-chart
+  title: Building Your Own Chart
+
+- name: 99-workshop-summary
+  title: Workshop Summary
