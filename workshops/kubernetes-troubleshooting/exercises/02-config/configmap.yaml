@@ -1,11 +1,11 @@
 # =============================================================
-# configmap.yaml — the settings the app is supposed to read
+# configmap.yaml — nastavenia, ktoré má aplikácia čítať
 # =============================================================
-# Note the key name carefully: it is "app_mode", with an
-# underscore. The Pod in pod-bad-key.yaml asks for "mode".
+# Všimnite si názov kľúča: je to "app_mode", s podčiarkovníkom.
+# Pod v pod-bad-key.yaml si však pýta "mode".
 #
-# Kubernetes does not guess, normalise, or fall back — a key
-# reference either matches exactly or the container never starts.
+# Kubernetes nič neuhádne, nenormalizuje ani nenahrádza — odkaz
+# na kľúč buď sedí presne, alebo container nikdy nenaštartuje.
 #
 # Docs: https://kubernetes.io/docs/concepts/configuration/configmap/
 # =============================================================

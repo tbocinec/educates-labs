@@ -3,36 +3,36 @@ pathways:
 
   paths:
     workshop:
-      title: "Helm Fundamentals"
-      duration: 60m
+      title: "Základy Helmu"
+      duration: 45m
 
       steps:
       - 00-workshop-overview
-      - 01-helm-concepts
-      - 02-first-release
-      - 03-values
-      - 04-upgrade-rollback
-      - 05-your-own-chart
+      - 01-find-and-install
+      - 02-values
+      - 03-upgrade-rollback
+      - 04-your-own-chart
+      - 05-advanced-optional
       - 99-workshop-summary
 
 modules:
 - name: 00-workshop-overview
-  title: Workshop Overview
+  title: Prehľad workshopu
 
-- name: 01-helm-concepts
-  title: Charts, Releases & Repositories
+- name: 01-find-and-install
+  title: "Časť 1 · Nájsť a nainštalovať"
 
-- name: 02-first-release
-  title: Your First Release
+- name: 02-values
+  title: "Časť 1 · Zmena values"
 
-- name: 03-values
-  title: Configuring with Values
+- name: 03-upgrade-rollback
+  title: "Časť 1 · Návrat po zlom nasadení"
 
-- name: 04-upgrade-rollback
-  title: Upgrades & Rollbacks
+- name: 04-your-own-chart
+  title: "Časť 2 · Vlastný chart"
 
-- name: 05-your-own-chart
-  title: Building Your Own Chart
+- name: 05-advanced-optional
+  title: "Voliteľné · Čo Helm ešte vie"
 
 - name: 99-workshop-summary
-  title: Workshop Summary
+  title: Zhrnutie workshopu

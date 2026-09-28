@@ -1,18 +1,17 @@
 # =============================================================
-# pod-oom.yaml — a container that exceeds its memory limit
+# pod-oom.yaml — container, ktorý prekročí svoj limit pamäte
 # =============================================================
-# This writes 200 MB into a memory-backed volume (tmpfs) while
-# holding a 64 Mi memory limit. Files written to a "medium:
-# Memory" emptyDir count against the container's memory, so the
-# kernel's OOM killer steps in.
+# Zapisuje 200 MB do volume v pamäti (tmpfs), pričom má limit
+# pamäte 64 Mi. Súbory zapísané do emptyDir s "medium: Memory" sa
+# počítajú do pamäte containera, takže zasiahne OOM killer jadra.
 #
-# What you will see:
-#   - reason:    OOMKilled
-#   - exit code: 137   (128 + SIGKILL)
-#   - logs:      EMPTY
+# Čo uvidíte:
+#   - reason:        OOMKilled
+#   - návratový kód: 137   (128 + SIGKILL)
+#   - logy:          PRÁZDNE
 #
-# That last one is the fingerprint. The process was killed
-# instantly and had no chance to log a thing.
+# To posledné je ten odtlačok prsta. Proces bol zabitý okamžite a
+# nemal šancu čokoľvek zalogovať.
 #
 # Docs: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 # =============================================================
@@ -42,7 +41,7 @@ spec:
         memory: 64Mi
         cpu: 50m
       limits:
-        # <-- 64 Mi, while the command writes 200 MB.
+        # <-- 64 Mi, pričom príkaz zapisuje 200 MB.
         memory: 64Mi
         cpu: 200m
   volumes:

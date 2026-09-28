@@ -1,96 +1,95 @@
 ---
-title: The Pod Never Starts
+title: Pod nikdy nenaštartuje
 ---
 
-# Level 2: The Pod Never Starts
+# Úroveň 2: Pod nikdy nenaštartuje
 
-Symptom: you applied a manifest, and the Pod sits at `0/1` forever. It never
-reaches `Running`, and `kubectl logs` returns nothing useful.
+Príznak: aplikovali ste manifest a Pod visí večne na `0/1`. Nikdy sa nedostane do
+stavu `Running` a `kubectl logs` nevracia nič použiteľné.
 
-Two very different causes produce this, and `describe` tells them apart
-immediately.
+Vedú k tomu dve úplne odlišné príčiny a `describe` ich okamžite rozlíši.
 
-## Scenario 1: The Image That Doesn't Exist
+## Scenár 1: Image, ktorý neexistuje
 
-A colleague hands you this manifest and says "it works on my machine".
+Kolega vám podá tento manifest so slovami „mne to funguje".
 
 ```editor:open-file
 file: broken/01-image/pod-bad-image.yaml
 ```
 
-Apply it:
+Aplikujte ho:
 
 ```terminal:execute
 command: kubectl apply -f ~/broken/01-image/pod-bad-image.yaml
 ```
 
-### Observe
+### Pozorovanie
 
 ```terminal:execute
 command: kubectl get pod web-server
 ```
 
-Give it a few seconds and look again — the status moves from
-`ContainerCreating` to `ErrImagePull`, then settles on `ImagePullBackOff`:
+Dajte tomu pár sekúnd a pozrite znova — stav sa posunie z `ContainerCreating` na
+`ErrImagePull` a ustáli sa na `ImagePullBackOff`:
 
 ```terminal:execute
 command: kubectl get pod web-server -w
 ```
 
-Once the status stops changing, stop the watch:
+Keď sa stav prestane meniť, sledovanie zastavte:
 
 ```terminal:interrupt
 ```
 
-> **`BackOff` means Kubernetes is retrying with increasing delays.** It is not a
-> permanent failure — it will keep trying forever. That's why a typo can quietly
-> burn a Pod slot all afternoon.
+> **`BackOff` znamená, že Kubernetes skúša znova s narastajúcimi odstupmi.** Nie
+> je to trvalé zlyhanie — bude to skúšať donekonečna. Preto vie preklep potichu
+> blokovať jedno miesto celé popoludnie.
 
-### Diagnose
+### Diagnostika
 
-Logs first, to prove the point from the last chapter:
+Najprv logy, nech je zrejmé, o čom bola predchádzajúca kapitola:
 
 ```terminal:execute
 command: kubectl logs web-server
 ```
 
-Nothing — there is no container to read logs from. Now do it properly:
+Nič — nie je odkiaľ logy čítať, container neexistuje. Teraz poriadne:
 
 ```terminal:execute
 command: kubectl describe pod web-server | grep -A8 Events:
 ```
 
-Read the `Failed` event. It names the image and says the manifest is unknown or
-not found. The cluster is telling you the image reference is wrong.
+Prečítajte si udalosť `Failed`. Pomenúva image a hovorí, že manifest je neznámy
+alebo sa nenašiel. Klaster vám hovorí, že odkaz na image je zlý.
 
-Confirm exactly what was requested:
+Overte, čo bolo presne požadované:
 
 ```terminal:execute
 command: kubectl get pod web-server -o jsonpath='{.spec.containers[0].image}{"\n"}'
 ```
 
-### Root Cause
+### Príčina
 
-`nginx:1.99-does-not-exist` — there is no such tag. In the real world the same
-event appears for four distinct reasons, and the event text distinguishes them:
+`nginx:1.99-does-not-exist` — taký tag neexistuje. V praxi sa rovnaká udalosť
+objaví zo štyroch rôznych dôvodov a text udalosti ich rozlíši:
 
-| Event says | Real cause |
-|------------|------------|
-| `manifest unknown` / `not found` | Typo in the image name or tag |
-| `unauthorized` / `authentication required` | Private registry, missing `imagePullSecrets` |
-| `no such host` / `timeout` | Registry unreachable from the node |
-| `toomanyrequests` | Registry rate limit (common with Docker Hub) |
+| Udalosť hovorí | Skutočná príčina |
+|----------------|------------------|
+| `manifest unknown` / `not found` | Preklep v názve alebo tagu image |
+| `unauthorized` / `authentication required` | Privátny registry, chýbajúce `imagePullSecrets` |
+| `no such host` / `timeout` | Registry je z nodu nedostupný |
+| `toomanyrequests` | Limit registry (časté pri Docker Hube) |
 
-### Fix and Verify
+### Oprava a overenie
 
-Fix the tag in the editor — change `1.99-does-not-exist` to `1.27`:
+Opravte tag v editore — zmeňte `1.99-does-not-exist` na `1.27`:
 
 ```editor:select-matching-text
 file: broken/01-image/pod-bad-image.yaml
 text: "image: nginx:1.99-does-not-exist"
 ```
 
-A Pod's image **cannot be patched in place**, so delete and re-apply:
+Image Podu sa **nedá zmeniť za behu**, takže Pod zmažte a vytvorte nanovo:
 
 ```terminal:execute
 command: kubectl delete pod web-server --ignore-not-found
@@ -108,16 +107,15 @@ command: kubectl wait --for=condition=Ready pod/web-server --timeout=90s
 command: kubectl get pod web-server
 ```
 
-`1/1 Running`. Clean up:
+`1/1 Running`. Upracte:
 
 ```terminal:execute
 command: kubectl delete pod web-server
 ```
 
-## Scenario 2: The ConfigMap Key That Isn't There
+## Scenár 2: Kľúč v ConfigMape, ktorý tam nie je
 
-Same symptom, completely different cause. This app reads its mode from a
-ConfigMap.
+Rovnaký príznak, úplne iná príčina. Táto aplikácia si číta režim z ConfigMapy.
 
 ```editor:open-file
 file: broken/02-config/configmap.yaml
@@ -127,61 +125,60 @@ file: broken/02-config/configmap.yaml
 file: broken/02-config/pod-bad-key.yaml
 ```
 
-Apply both:
+Aplikujte oboje:
 
 ```terminal:execute
 command: kubectl apply -f ~/broken/02-config/
 ```
 
-### Observe
+### Pozorovanie
 
 ```terminal:execute
 command: kubectl get pod config-app
 ```
 
-`CreateContainerConfigError`. The image pulled fine — Kubernetes got all the way
-to building the container's configuration and then gave up.
+`CreateContainerConfigError`. Image sa stiahol v poriadku — Kubernetes sa dostal
+až k zostaveniu konfigurácie containera a tam to vzdal.
 
-### Diagnose
+### Diagnostika
 
 ```terminal:execute
 command: kubectl describe pod config-app | grep -A8 Events:
 ```
 
-The event is refreshingly specific: `couldn't find key mode in ConfigMap`.
+Udalosť je príjemne konkrétna: `couldn't find key mode in ConfigMap`.
 
-Now check what the ConfigMap actually contains:
+Pozrite sa, čo ConfigMap naozaj obsahuje:
 
 ```terminal:execute
 command: kubectl get configmap app-settings -o jsonpath='{.data}{"\n"}'
 ```
 
-And what the Pod asked for:
+A o čo Pod žiadal:
 
 ```terminal:execute
 command: kubectl get pod config-app -o jsonpath='{.spec.containers[0].env[0].valueFrom.configMapKeyRef}{"\n"}'
 ```
 
-### Root Cause
+### Príčina
 
-The ConfigMap defines `app_mode`. The Pod asks for `mode`. Kubernetes does not
-guess.
+ConfigMap definuje `app_mode`. Pod žiada `mode`. Kubernetes to neuhádne.
 
-> **Why is this a *config* error and not a missing-file error?** Because the
-> reference is resolved by the kubelet *before* the container starts. The same
-> status appears for a missing Secret, a missing ConfigMap entirely, or a
-> `secretKeyRef` pointing at the wrong key.
+> **Prečo je to chyba *konfigurácie* a nie chýbajúceho súboru?** Lebo odkaz
+> rozlišuje kubelet *pred* spustením containera. Rovnaký stav sa objaví pri
+> chýbajúcom Secrete, úplne chýbajúcej ConfigMape aj pri `secretKeyRef`
+> ukazujúcom na zlý kľúč.
 
-### Fix and Verify
+### Oprava a overenie
 
-Change the key in the Pod manifest from `mode` to `app_mode`:
+Zmeňte v manifeste Podu kľúč z `mode` na `app_mode`:
 
 ```editor:select-matching-text
 file: broken/02-config/pod-bad-key.yaml
 text: "key: mode"
 ```
 
-Replace `mode` with `app_mode`, save, then re-create the Pod:
+Prepíšte `mode` na `app_mode`, uložte a vytvorte Pod nanovo:
 
 ```terminal:execute
 command: kubectl delete pod config-app --ignore-not-found && kubectl apply -f ~/broken/02-config/pod-bad-key.yaml
@@ -191,25 +188,25 @@ command: kubectl delete pod config-app --ignore-not-found && kubectl apply -f ~/
 command: kubectl wait --for=condition=Ready pod/config-app --timeout=90s
 ```
 
-Prove the environment variable arrived:
+Dokážte, že premenná prostredia dorazila:
 
 ```terminal:execute
 command: kubectl exec config-app -- printenv APP_MODE
 ```
 
-`production`. Clean up:
+`production`. Upracte:
 
 ```terminal:execute
 command: kubectl delete -f ~/broken/02-config/ --ignore-not-found
 ```
 
-## Summary
+## Zhrnutie
 
-In this chapter you learned:
-- `ImagePullBackOff` — the image reference is wrong, private, or unreachable; the event text says which
-- `CreateContainerConfigError` — a ConfigMap or Secret reference cannot be resolved
-- Neither Pod ever produced logs, because no container ever ran
-- `describe` → Events named the exact cause both times
-- A Pod's image and env cannot be patched in place — delete and re-create
+V tejto kapitole ste sa naučili:
+- `ImagePullBackOff` — odkaz na image je zlý, privátny alebo nedostupný; text udalosti povie, čo z toho
+- `CreateContainerConfigError` — odkaz na ConfigMap alebo Secret sa nedá rozlíšiť
+- Ani jeden Pod nikdy nevyprodukoval logy, lebo žiadny container nebežal
+- `describe` → Events v oboch prípadoch pomenoval presnú príčinu
+- Image a env Podu sa nedajú meniť za behu — treba zmazať a vytvoriť nanovo
 
-Next: Pods that *do* start, and then die anyway.
+Ďalej: Pody, ktoré **naštartujú** a aj tak zomrú.

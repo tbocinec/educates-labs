@@ -1,11 +1,11 @@
 # =============================================================
-# job-parallel.yaml — A Job with parallel execution
+# job-parallel.yaml — Job s paralelným vykonávaním
 # =============================================================
-# This Job runs 4 completions with up to 2 Pods running
-# in parallel. Each Pod simulates a work item.
+# Tento Job potrebuje 4 dokončenia, pričom naraz bežia najviac
+# 2 Pody. Každý Pod simuluje jednu pracovnú položku.
 #
-# completions: total number of successful Pods required
-# parallelism: max Pods running at the same time
+# completions: celkový počet úspešných Podov
+# parallelism: maximálny počet Podov bežiacich naraz
 # =============================================================
 
 apiVersion: batch/v1

@@ -1,13 +1,13 @@
 # =============================================================
-# cronjob.yaml — A CronJob that runs on a schedule
+# cronjob.yaml — CronJob spúšťaný podľa plánu
 # =============================================================
-# A CronJob creates Jobs on a time-based schedule (cron syntax).
-# This example runs every minute and prints the current time.
+# CronJob vytvára Jobs podľa časového plánu (cron syntax).
+# Tento príklad beží každú minútu a vypíše aktuálny čas.
 #
-# Cron format: "minute hour day-of-month month day-of-week"
-#   */1 * * * * = every minute
-#   0 */6 * * * = every 6 hours
-#   0 0 * * 1   = every Monday at midnight
+# Cron formát: "minúta hodina deň-v-mesiaci mesiac deň-v-týždni"
+#   */1 * * * * = každú minútu
+#   0 */6 * * * = každých 6 hodín
+#   0 0 * * 1   = každý pondelok o polnoci
 #
 # Docs: https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/
 # =============================================================

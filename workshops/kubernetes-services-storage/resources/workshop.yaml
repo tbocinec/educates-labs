@@ -3,11 +3,11 @@ kind: Workshop
 metadata:
   name: "kubernetes-services-storage"
 spec:
-  title: "Kubernetes Services, Secrets & Storage"
-  description: "A hands-on follow-up workshop covering Kubernetes networking with Services, managing sensitive data with Secrets, persistent storage with PVCs, application health checks with Probes, and batch workloads with Jobs and CronJobs."
+  title: "Kubernetes: Services, Secrets a úložisko"
+  description: "Nadväzujúci workshop o labeloch a selektoroch do hĺbky, namespaces, sieťovaní Podov a Services, práci s citlivými údajmi cez Secrets, trvalom úložisku cez PVC, kontrolách zdravia cez probes a dávkových úlohách cez Jobs a CronJobs."
   url: https://github.com/tbocinec/educates-labs
   difficulty: beginner
-  duration: 90m
+  duration: 105m
   publish:
     image: "$(image_repository)/kubernetes-services-storage-files:$(workshop_version)"
     files:

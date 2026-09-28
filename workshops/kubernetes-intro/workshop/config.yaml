@@ -3,7 +3,7 @@ pathways:
 
   paths:
     workshop:
-      title: "Kubernetes Fundamentals"
+      title: "Základy Kubernetes"
       duration: 90m
 
       steps:
@@ -15,36 +15,36 @@ pathways:
       - 05-deployments
       - 06-updates-and-rollbacks
       - 07-configmaps
-      - 08-labels-selectors-namespaces
+      - 08-putting-it-together
       - 99-workshop-summary
 
 modules:
 - name: 00-workshop-overview
-  title: Workshop Overview
+  title: Prehľad workshopu
 
 - name: 01-kubernetes-architecture
-  title: Kubernetes Architecture
+  title: Architektúra Kubernetes
 
 - name: 02-kubectl-basics
-  title: kubectl CLI Basics
+  title: Základy kubectl
 
 - name: 03-first-pod
-  title: Running Your First Pod
+  title: Váš prvý Pod
 
 - name: 04-pods-with-yaml
-  title: Pods with YAML Manifests
+  title: Pody cez YAML manifesty
 
 - name: 05-deployments
-  title: Deployments
+  title: Deployments a škálovanie
 
 - name: 06-updates-and-rollbacks
-  title: Updates & Rollbacks
+  title: Updaty a rollbacky
 
 - name: 07-configmaps
   title: ConfigMaps
 
-- name: 08-labels-selectors-namespaces
-  title: Labels, Selectors & Namespaces
+- name: 08-putting-it-together
+  title: Všetko dokopy
 
 - name: 99-workshop-summary
-  title: Workshop Summary
+  title: Zhrnutie workshopu

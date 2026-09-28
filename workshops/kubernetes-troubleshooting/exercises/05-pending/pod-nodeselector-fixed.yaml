@@ -1,12 +1,11 @@
 # =============================================================
-# pod-nodeselector-fixed.yaml — the impossible demand removed
+# pod-nodeselector-fixed.yaml — nesplniteľná požiadavka odstránená
 # =============================================================
-# Same Pod, without the nodeSelector. The scheduler now has
-# candidates and places it immediately.
+# Ten istý Pod, bez nodeSelectora. Scheduler už má z čoho vyberať
+# a umiestni ho okamžite.
 #
-# In production you would either label the nodes that really do
-# have the hardware, or drop the constraint if it was never true
-# to begin with.
+# V produkcii by ste buď olabelovali nody, ktoré ten hardvér
+# naozaj majú, alebo podmienku zrušili, ak nikdy neplatila.
 #
 # Docs: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
 # =============================================================

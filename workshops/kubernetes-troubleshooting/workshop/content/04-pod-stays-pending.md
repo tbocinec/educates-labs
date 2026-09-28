@@ -1,17 +1,16 @@
 ---
-title: The Pod Stays Pending
+title: Pod ostáva v Pending
 ---
 
-# Level 4: The Pod Stays Pending
+# Úroveň 4: Pod ostáva v Pending
 
-Symptom: `kubectl get pods` shows `Pending`, and it stays that way. No node, no
-container, no logs.
+Príznak: `kubectl get pods` ukazuje `Pending` a nemení sa to. Žiadny node, žiadny
+container, žiadne logy.
 
-`Pending` means the **scheduler** hasn't placed the Pod on a node. This is a
-different subsystem from the previous failures, and it leaves its reasoning in
-the events.
+`Pending` znamená, že **scheduler** Pod neumiestnil na node. Je to iný subsystém
+než pri predchádzajúcich poruchách a svoje úvahy necháva v udalostiach.
 
-## Scenario 5: Nothing Will Schedule It
+## Scenár 5: Nič ho nechce naplánovať
 
 ```editor:open-file
 file: broken/05-pending/pod-nodeselector.yaml
@@ -21,61 +20,61 @@ file: broken/05-pending/pod-nodeselector.yaml
 command: kubectl apply -f ~/broken/05-pending/pod-nodeselector.yaml
 ```
 
-### Observe
+### Pozorovanie
 
 ```terminal:execute
 command: kubectl get pod picky-app
 ```
 
-`Pending`, and no NODE assigned:
+`Pending` a žiadny pridelený NODE:
 
 ```terminal:execute
 command: kubectl get pod picky-app -o wide
 ```
 
-### Diagnose
+### Diagnostika
 
 ```terminal:execute
 command: kubectl describe pod picky-app | grep -A8 Events:
 ```
 
-The scheduler reports `FailedScheduling` and — crucially — counts the nodes it
-rejected and why: *"didn't match Pod's node affinity/selector"*.
+Scheduler hlási `FailedScheduling` a — čo je kľúčové — spočíta nody, ktoré
+odmietol, aj prečo: *„didn't match Pod's node affinity/selector"*.
 
-Look at what the Pod demands:
+Pozrite sa, čo Pod vyžaduje:
 
 ```terminal:execute
 command: kubectl get pod picky-app -o jsonpath='{.spec.nodeSelector}{"\n"}'
 ```
 
-And what the cluster's nodes actually offer:
+A čo nody klastra naozaj ponúkajú:
 
 ```terminal:execute
 command: kubectl get nodes --show-labels
 ```
 
-No node carries `disktype=ultra-fast-ssd`, so no node is eligible.
+Žiadny node nemá `disktype=ultra-fast-ssd`, takže žiadny nevyhovuje.
 
-### Root Cause
+### Príčina
 
-A `nodeSelector` that matches nothing. The scheduler's message is a checklist —
-it tells you how many nodes failed each predicate:
+`nodeSelector`, ktorému nič nezodpovedá. Hláška schedulera je vlastne kontrolný
+zoznam — povie vám, koľko nodov zlyhalo na ktorej podmienke:
 
-| Scheduler message | Cause |
-|-------------------|-------|
-| `didn't match Pod's node affinity/selector` | `nodeSelector`/affinity matches no node |
-| `Insufficient cpu` / `Insufficient memory` | No node has room for the requests |
-| `had untolerated taint` | Nodes are tainted, Pod has no toleration |
-| `had volume node affinity conflict` | PV is in a zone the Pod can't be placed in |
-| `pod has unbound immediate PersistentVolumeClaims` | PVC isn't bound yet |
+| Hláška schedulera | Príčina |
+|-------------------|---------|
+| `didn't match Pod's node affinity/selector` | `nodeSelector`/affinity nevyhovuje žiadnemu nodu |
+| `Insufficient cpu` / `Insufficient memory` | Žiadny node nemá miesto pre požadované zdroje |
+| `had untolerated taint` | Nody sú otagované taintom, Pod nemá toleráciu |
+| `had volume node affinity conflict` | PV je v zóne, kde sa Pod nedá umiestniť |
+| `pod has unbound immediate PersistentVolumeClaims` | PVC ešte nie je naviazané |
 
-> **`Pending` is not always a bug.** On a cluster with autoscaling — like this
-> one — a Pod can sit `Pending` for a minute while a new node is created. Read
-> the event before assuming something is broken.
+> **`Pending` nie je vždy chyba.** V klastri s autoscalingom — ako je tento —
+> môže Pod minútu čakať, kým vznikne nový node. Prečítajte si udalosť skôr, než
+> usúdite, že je niečo pokazené.
 
-### Fix and Verify
+### Oprava a overenie
 
-Drop the impossible requirement:
+Odstráňte nesplniteľnú požiadavku:
 
 ```terminal:execute
 command: kubectl delete pod picky-app --ignore-not-found
@@ -93,15 +92,16 @@ command: kubectl wait --for=condition=Ready pod/picky-app-fixed --timeout=90s
 command: kubectl get pod picky-app-fixed -o wide
 ```
 
-Now it has a node. Clean up:
+Teraz má node. Upracte:
 
 ```terminal:execute
 command: kubectl delete -f ~/broken/05-pending/pod-nodeselector-fixed.yaml --ignore-not-found
 ```
 
-## Scenario 6: Rejected Before It Exists
+## Scenár 6: Odmietnutý skôr, než vznikol
 
-Not every failure produces a Pod to inspect. Some are refused at the door.
+Nie každá porucha po sebe zanechá Pod, ktorý sa dá skúmať. Niektoré sú odmietnuté
+už pri dverách.
 
 ```editor:open-file
 file: broken/05-pending/pod-too-big.yaml
@@ -111,23 +111,23 @@ file: broken/05-pending/pod-too-big.yaml
 command: kubectl apply -f ~/broken/05-pending/pod-too-big.yaml
 ```
 
-### Observe
+### Pozorovanie
 
-Read the output carefully — there is no Pod to describe:
+Prečítajte si výstup pozorne — nie je tu žiadny Pod na popísanie:
 
 ```terminal:execute
 command: kubectl get pod greedy-app
 ```
 
-`NotFound`. The API server rejected the object outright.
+`NotFound`. API server objekt rovno odmietol.
 
-### Diagnose
+### Diagnostika
 
-The error from `apply` *was* the diagnosis: `maximum memory usage per Pod is
-8Gi, but limit is 32Gi`. That's an **admission** rejection, enforced by objects
-that live in your namespace.
+Chyba z `apply` *bola* tou diagnózou: `maximum memory usage per Pod is 8Gi, but
+limit is 32Gi`. Je to odmietnutie pri **admission**, vynútené objektmi, ktoré
+žijú vo vašom namespace.
 
-See the rules you're playing by:
+Pozrite si pravidlá, podľa ktorých hráte:
 
 ```terminal:execute
 command: kubectl describe limitrange
@@ -137,26 +137,27 @@ command: kubectl describe limitrange
 command: kubectl describe resourcequota
 ```
 
-`LimitRange` caps what a single Pod or container may ask for. `ResourceQuota`
-caps the total across your whole namespace — and it also shows how much you've
-already used.
+`LimitRange` obmedzuje, o čo si smie pýtať jeden Pod alebo container.
+`ResourceQuota` obmedzuje súčet za celý váš namespace — a zároveň ukazuje, koľko
+ste už spotrebovali.
 
-### Root Cause
+### Príčina
 
-The manifest requested more than the namespace policy allows. The distinction
-that matters:
+Manifest si vypýtal viac, než politika namespace dovoľuje. Rozdiel, na ktorom
+záleží:
 
-| Where it fails | What you see | Where to look |
-|----------------|--------------|---------------|
-| **Admission** (`apply` errors) | No object is created | The error text, `LimitRange`, `ResourceQuota` |
-| **Scheduling** (Pod is `Pending`) | Object exists, no node | `describe` → `FailedScheduling` |
-| **Runtime** (Pod runs, then fails) | Restarts, `OOMKilled` | `logs --previous`, `Last State` |
+| Kde to zlyhá | Čo vidíte | Kam sa pozrieť |
+|--------------|-----------|----------------|
+| **Admission** (`apply` vráti chybu) | Žiadny objekt nevznikne | Text chyby, `LimitRange`, `ResourceQuota` |
+| **Scheduling** (Pod je `Pending`) | Objekt existuje, nemá node | `describe` → `FailedScheduling` |
+| **Runtime** (Pod beží a potom padne) | Reštarty, `OOMKilled` | `logs --previous`, `Last State` |
 
-If `kubectl apply` printed an error, stop reading Pod status — there is no Pod.
+Ak `kubectl apply` vypísal chybu, prestaňte skúmať stav Podu — žiadny Pod
+neexistuje.
 
-### Fix and Verify
+### Oprava a overenie
 
-Ask for something within the quota:
+Vypýtajte si niečo, čo sa do kvóty zmestí:
 
 ```terminal:execute
 command: kubectl apply -f ~/broken/05-pending/pod-right-sized.yaml
@@ -166,25 +167,25 @@ command: kubectl apply -f ~/broken/05-pending/pod-right-sized.yaml
 command: kubectl wait --for=condition=Ready pod/greedy-app-fixed --timeout=90s
 ```
 
-See your quota consumption change:
+Pozrite sa, ako sa zmenila spotreba kvóty:
 
 ```terminal:execute
 command: kubectl get resourcequota -o custom-columns=NAME:.metadata.name,USED:.status.used,HARD:.status.hard
 ```
 
-Clean up:
+Upracte:
 
 ```terminal:execute
 command: kubectl delete -f ~/broken/05-pending/pod-right-sized.yaml --ignore-not-found
 ```
 
-## Summary
+## Zhrnutie
 
-In this chapter you learned:
-- `Pending` means the **scheduler** couldn't place the Pod — the reason is in the events
-- `FailedScheduling` counts nodes and names the predicate each one failed
-- Common causes: unmatched `nodeSelector`, insufficient resources, untolerated taints
-- An error from `kubectl apply` means **admission** rejected it — no Pod exists to debug
-- `LimitRange` bounds a single Pod; `ResourceQuota` bounds the whole namespace
+V tejto kapitole ste sa naučili:
+- `Pending` znamená, že **scheduler** Pod neumiestnil — dôvod je v udalostiach
+- `FailedScheduling` spočíta nody a pomenuje podmienku, na ktorej každý zlyhal
+- Bežné príčiny: nevyhovujúci `nodeSelector`, nedostatok zdrojov, netolerované tainty
+- Chyba z `kubectl apply` znamená odmietnutie pri **admission** — nie je čo debugovať
+- `LimitRange` obmedzuje jeden Pod, `ResourceQuota` celý namespace
 
-Next: the Pod is healthy, but nobody can reach it.
+Ďalej: Pod je zdravý, ale nikto sa k nemu nedostane.

@@ -1,15 +1,15 @@
 # =============================================================
-# pod-crashloop.yaml — a worker that dies on startup
+# pod-crashloop.yaml — worker, ktorý zomiera pri štarte
 # =============================================================
-# This container starts successfully, runs for five seconds,
-# fails to find its config file, and exits with code 1.
+# Tento container úspešne naštartuje, päť sekúnd beží, nenájde
+# svoj konfiguračný súbor a skončí s kódom 1.
 #
-# Kubernetes restarts it. It fails again. After a few rounds the
-# status becomes CrashLoopBackOff, and the restart delay grows
-# (10s, 20s, 40s ... up to 5 minutes).
+# Kubernetes ho reštartuje. Zlyhá znova. Po pár kolách je stav
+# CrashLoopBackOff a odstup medzi reštartmi rastie
+# (10 s, 20 s, 40 s ... až na 5 minút).
 #
-# The important part: the useful output belongs to the container
-# that ALREADY DIED. Use:
+# Dôležité: použiteľný výstup patrí containeru, ktorý UŽ ZOMREL.
+# Použite:
 #
 #     kubectl logs worker --previous
 #

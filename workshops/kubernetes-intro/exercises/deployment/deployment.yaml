@@ -1,12 +1,12 @@
 # =============================================================
-# deployment.yaml — A basic Deployment running Nginx
+# deployment.yaml — jednoduchý Deployment s Nginxom
 # =============================================================
-# A Deployment manages a set of identical Pods (ReplicaSet).
-# It provides:
-#   - Desired state (replicas count)
-#   - Self-healing (restarts failed Pods)
-#   - Easy scaling (change replicas)
-#   - Rolling updates and rollbacks
+# Deployment spravuje sadu identických Podov (cez ReplicaSet).
+# Poskytuje:
+#   - požadovaný stav (počet replík)
+#   - self-healing (nahradí spadnuté Pody)
+#   - jednoduché škálovanie (zmena replicas)
+#   - rolling updates a rollbacky
 # =============================================================
 
 apiVersion: apps/v1

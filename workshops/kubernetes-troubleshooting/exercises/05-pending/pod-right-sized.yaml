@@ -1,10 +1,10 @@
 # =============================================================
-# pod-right-sized.yaml — a request the namespace will accept
+# pod-right-sized.yaml — požiadavka, ktorú namespace prijme
 # =============================================================
-# The same workload, asking for what it actually needs. Admission
-# lets it through and the scheduler places it.
+# Ten istý workload, ale pýta si to, čo naozaj potrebuje.
+# Admission ho pustí a scheduler ho umiestni.
 #
-# Watch your quota consumption change after applying this:
+# Po aplikovaní sledujte, ako sa zmení spotreba kvóty:
 #
 #     kubectl get resourcequota -o custom-columns=\
 #       NAME:.metadata.name,USED:.status.used,HARD:.status.hard

@@ -1,8 +1,9 @@
 # =============================================================
-# pod-labels.yaml — A Pod demonstrating labels and annotations
+# pod-labels.yaml — Pod s ukážkou labelov a anotácií
 # =============================================================
-# Labels are key-value pairs used to organize and select resources.
-# Annotations store non-identifying metadata (docs, contacts, etc.)
+# Labels sú dvojice kľúč-hodnota na organizáciu a výber zdrojov.
+# Annotations držia metadáta, podľa ktorých sa nevyberá
+# (dokumentácia, kontakty a podobne).
 # =============================================================
 
 apiVersion: v1

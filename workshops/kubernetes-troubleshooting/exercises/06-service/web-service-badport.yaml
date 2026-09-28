@@ -1,17 +1,17 @@
 # =============================================================
-# web-service-badport.yaml — right Pods, wrong door
+# web-service-badport.yaml — správne Pody, zlé dvere
 # =============================================================
-# This Service selects correctly (app=web), so "kubectl get
-# endpoints" shows two Pod IPs and everything looks connected.
+# Táto Service vyberá správne (app=web), takže "kubectl get
+# endpoints" ukáže dve IP Podov a všetko vyzerá prepojené.
 #
-# Traffic still fails, because targetPort points at 8080 and
-# nginx listens on 80.
+# Prevádzka aj tak zlyháva, lebo targetPort mieri na 8080, kým
+# nginx počúva na 80.
 #
-#   port       = what clients call on the Service
-#   targetPort = the container port traffic is forwarded to
+#   port       = na čo volajú klienti Service
+#   targetPort = port containera, kam sa prevádzka preposiela
 #
-# They are allowed to differ, which is exactly why this mistake
-# is easy to make and invisible in the Pod list.
+# Smú sa líšiť, a práve preto sa táto chyba robí ľahko a vo výpise
+# Podov ju nevidno.
 #
 # Docs: https://kubernetes.io/docs/concepts/services-networking/service/
 # =============================================================
@@ -26,5 +26,5 @@ spec:
     app: web
   ports:
   - port: 80
-    # <-- Nothing is listening on 8080 inside the container.
+    # <-- Na porte 8080 vnútri containera nič nepočúva.
     targetPort: 8080

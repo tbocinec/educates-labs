@@ -1,0 +1,56 @@
+# =============================================================
+# app-deployment.yaml — the podinfo application
+# =============================================================
+# Everything in this file is something you met earlier in the
+# workshop:
+#
+#   replicas      — how many Pods the controller keeps running
+#   selector      — how the Deployment recognises its own Pods
+#   template      — the Pod blueprint it stamps out
+#   envFrom       — pulls the WHOLE ConfigMap in as env vars
+#   resources     — requests and limits, required by this
+#                   namespace's LimitRange
+#
+# The one thing missing is a Service, so the app has no stable
+# address yet. You will reach it with "kubectl port-forward"
+# instead - and add a Service in the next workshop.
+#
+# Docs: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+# =============================================================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podinfo
+  labels:
+    app: podinfo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: podinfo          # <-- must match the Pod labels below
+  template:
+    metadata:
+      labels:
+        app: podinfo        # <-- the label the selector looks for
+    spec:
+      containers:
+      - name: app
+        image: ghcr.io/stefanprodan/podinfo:6.15.0
+        ports:
+        - name: http
+          containerPort: 9898
+        envFrom:
+        # Every key in the ConfigMap becomes an environment
+        # variable. Change the ConfigMap later and you will find
+        # that running containers do NOT pick it up - that is the
+        # point of step 5.
+        - configMapRef:
+            name: podinfo-config
+        resources:
+          requests:
+            memory: 64Mi
+            cpu: 50m
+          limits:
+            memory: 192Mi
+            cpu: 200m

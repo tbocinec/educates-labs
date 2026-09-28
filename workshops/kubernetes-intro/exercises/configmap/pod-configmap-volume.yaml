@@ -1,9 +1,9 @@
 # =============================================================
-# pod-configmap-volume.yaml — Pod mounting ConfigMap as a volume
+# pod-configmap-volume.yaml — Pod mountujúci ConfigMap ako volume
 # =============================================================
-# This Pod mounts the 'file-config' ConfigMap as files inside
-# the container at /etc/config/. Each key in the ConfigMap
-# becomes a file, and the value becomes the file content.
+# Tento Pod mountuje ConfigMapu 'file-config' ako súbory vnútri
+# containera do /etc/config/. Z každého kľúča v ConfigMape sa
+# stane súbor a jeho hodnota bude obsahom toho súboru.
 # =============================================================
 
 apiVersion: v1

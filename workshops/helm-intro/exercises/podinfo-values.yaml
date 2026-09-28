@@ -1,15 +1,16 @@
 # =============================================================
-# podinfo-values.yaml — overrides for the podinfo chart
+# podinfo-values.yaml — prebitia pre chart podinfo
 # =============================================================
-# Every key here exists in the chart's own values.yaml. Check for
-# yourself with:
+# Každý kľúč tu existuje aj vo values.yaml samotného chartu.
+# Overte si to sami cez:
 #
 #     helm show values podinfo/podinfo
 #
-# Anything not listed here keeps the chart's default. That is the
-# whole point of a values file: describe only what differs.
+# Čokoľvek, čo tu nie je uvedené, ostáva na predvolenej hodnote
+# chartu. Presne o tom je values súbor: popisuje len to, čo sa
+# líši.
 #
-# Apply it with:
+# Aplikujete ho cez:
 #     helm upgrade my-app podinfo/podinfo -f ~/exercises/podinfo-values.yaml
 #
 # Docs: https://helm.sh/docs/chart_template_guide/values_files/
@@ -17,13 +18,13 @@
 
 replicaCount: 2
 
-# A message the app echoes back — handy for proving that your
-# values actually reached the running container.
+# Správa, ktorú aplikácia vracia späť — šikovný spôsob, ako
+# dokázať, že vaše values naozaj dorazili do bežiaceho containera.
 ui:
   message: "Hello from the Helm workshop!"
 
-# Keep well inside the namespace quota. Without limits the
-# namespace LimitRange would apply its defaults instead.
+# Držte sa pohodlne v rámci kvóty namespace. Bez limitov by sa
+# uplatnili predvolené hodnoty z LimitRange namespace.
 resources:
   requests:
     cpu: 50m
@@ -32,12 +33,12 @@ resources:
     cpu: 200m
     memory: 192Mi
 
-# The chart can create an Ingress. Left off here because it needs
-# a hostname and TLS setup that differ per cluster.
+# Chart vie vytvoriť aj Ingress. Tu je vypnutý, lebo potrebuje
+# hostname a nastavenie TLS, ktoré sa klaster od klastra líšia.
 ingress:
   enabled: false
 
-# Autoscaling needs metrics-server. Off by default so the chart
-# behaves the same on every cluster.
+# Autoscaling potrebuje metrics-server. Vypnutý, nech sa chart
+# správa rovnako v každom klastri.
 autoscaling:
   enabled: false

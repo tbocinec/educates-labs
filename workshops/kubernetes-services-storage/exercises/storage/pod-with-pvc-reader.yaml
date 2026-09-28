@@ -1,8 +1,9 @@
 # =============================================================
-# pod-with-pvc-reader.yaml — Second Pod reading from the same PVC
+# pod-with-pvc-reader.yaml — druhý Pod čítajúci z toho istého PVC
 # =============================================================
-# This Pod mounts the same PVC and reads the data written
-# by the previous Pod, proving the data persists independently.
+# Tento Pod mountuje to isté PVC a číta dáta zapísané
+# predchádzajúcim Podom. Dokazuje, že dáta pretrvávajú nezávisle
+# od Podu.
 # =============================================================
 
 apiVersion: v1

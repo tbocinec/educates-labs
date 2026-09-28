@@ -1,8 +1,8 @@
 # =============================================================
-# pod-multi-label.yaml — Multiple Pods with different labels
+# pod-multi-label.yaml — viac Podov s rôznymi labelmi
 # =============================================================
-# These Pods demonstrate how labels enable filtering
-# and selecting specific resources with kubectl.
+# Tieto Pody ukazujú, ako labels umožňujú filtrovanie a výber
+# konkrétnych zdrojov cez kubectl.
 # =============================================================
 
 apiVersion: v1

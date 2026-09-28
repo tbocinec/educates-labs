@@ -1,174 +1,187 @@
 ---
-title: Pods with YAML Manifests
+title: Pody cez YAML manifesty
 ---
 
-# Pods with YAML Manifests
+# Pody cez YAML manifesty
 
-In the previous chapter you created Pods **imperatively** with `kubectl run`. In practice, Kubernetes resources are typically defined **declaratively** using YAML manifests. This approach is:
+V predchádzajúcej kapitole ste Pody vytvárali **imperatívne** cez `kubectl run`.
+V praxi sa však zdroje v Kubernetes definujú **deklaratívne** pomocou YAML
+manifestov. Tento prístup je:
 
-- **Reproducible** — the same YAML always produces the same result
-- **Version-controllable** — manifests can be stored in Git
-- **Reviewable** — team members can review changes before applying
-- **Self-documenting** — the YAML describes the full resource specification
+- **Reprodukovateľný** — rovnaký YAML vždy vytvorí rovnaký výsledok
+- **Verzovateľný** — manifesty sa dajú držať v Gite
+- **Kontrolovateľný** — kolegovia vedia zmeny pred nasadením prejsť v review
+- **Samodokumentujúci** — YAML popisuje kompletnú špecifikáciu zdroja
 
-> **Docs**: [Pod YAML Reference](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/)
+> **Dokumentácia**: [Pod YAML Reference](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/)
 
-## Anatomy of a Pod Manifest
+## Anatómia Pod manifestu
 
-A Kubernetes YAML manifest has four required top-level fields:
+YAML manifest v Kubernetes má štyri povinné polia najvyššej úrovne:
 
 ```yaml
-apiVersion: v1          # Which API version to use
-kind: Pod               # What type of resource
-metadata:               # Resource identity (name, labels, etc.)
+apiVersion: v1          # Ktorá verzia API sa použije
+kind: Pod               # Aký typ zdroja
+metadata:               # Identita zdroja (názov, labels a pod.)
   name: my-pod
-spec:                   # Desired state specification
+spec:                   # Špecifikácia požadovaného stavu
   containers:
   - name: my-container
     image: nginx:1.27
 ```
 
-## Creating a Pod from YAML
+## Vytvorenie Podu z YAML
 
-Let's look at the pre-built exercise file. Open it in the editor:
+Pozrime sa na pripravený cvičný súbor. Otvorte si ho v editore:
 
 ```editor:open-file
 file: exercises/pod-basic/pod.yaml
 ```
 
-This file defines a Pod named `my-nginx` running the `nginx:1.27` image with port 80 exposed.
+Súbor definuje Pod s názvom `my-nginx`, ktorý beží na image `nginx:1.27`
+s vystaveným portom 80.
 
-First, copy the exercise file to your working directory:
+Najprv si cvičný súbor skopírujte do pracovného adresára:
 
 ```terminal:execute
 command: cp -r ~/exercises/pod-basic ~/pod-basic
 ```
 
-Apply the manifest to create the Pod:
+Aplikujte manifest a vytvorte Pod:
 
 ```terminal:execute
 command: kubectl apply -f ~/pod-basic/pod.yaml
 ```
 
-Verify the Pod is running:
+Overte, že Pod beží:
 
 ```terminal:execute
 command: kubectl get pods
 ```
 
-## Viewing the Live YAML
+## Zobrazenie živého YAML
 
-You can view the full YAML of a running resource with `-o yaml`:
+Kompletný YAML bežiaceho zdroja si zobrazíte cez `-o yaml`:
 
 ```terminal:execute
 command: kubectl get pod my-nginx -o yaml | head -40
 ```
 
-Notice how Kubernetes has added many fields beyond what you specified — things like `status`, `uid`, `creationTimestamp`, default `tolerations`, etc. Kubernetes fills in defaults for anything you don't explicitly set.
+Všimnite si, koľko polí Kubernetes doplnil nad rámec toho, čo ste zadali — napr.
+`status`, `uid`, `creationTimestamp`, predvolené `tolerations` a ďalšie.
+Kubernetes doplní predvolené hodnoty všade, kde ste nič neurčili.
 
-## Comparing Apply vs Create
+## Apply vs create
 
-Kubernetes has two commands for creating resources from files:
+Kubernetes má na vytváranie zdrojov zo súborov dva príkazy:
 
-| Command | Behavior |
-|---------|----------|
-| `kubectl create -f` | Creates the resource. **Fails** if it already exists. |
-| `kubectl apply -f` | Creates the resource if it doesn't exist. **Updates** it if it does. |
+| Príkaz | Správanie |
+|--------|-----------|
+| `kubectl create -f` | Vytvorí zdroj. **Zlyhá**, ak už existuje. |
+| `kubectl apply -f` | Vytvorí zdroj, ak neexistuje. Ak existuje, **aktualizuje** ho. |
 
-`apply` is generally preferred because it's idempotent — you can safely run it multiple times.
+`apply` sa vo všeobecnosti uprednostňuje, lebo je idempotentný — môžete ho
+bezpečne spustiť opakovane.
 
-Try applying the same file again:
+Skúste aplikovať ten istý súbor ešte raz:
 
 ```terminal:execute
 command: kubectl apply -f ~/pod-basic/pod.yaml
 ```
 
-Notice the output says `unchanged` — Kubernetes detected no changes needed.
+Všimnite si výstup `unchanged` — Kubernetes zistil, že nie je čo meniť.
 
-## Editing a Pod
+## Úprava Podu
 
-You can modify a running resource using `kubectl edit`, which opens the live manifest in a terminal editor:
+Bežiaci zdroj sa dá upraviť príkazom `kubectl edit`, ktorý otvorí živý manifest
+v terminálovom editore:
 
 ```terminal:execute
 command: kubectl edit pod my-nginx
 ```
 
-This opens the full YAML in `vi`. You could change a mutable field (e.g., add a label), save and exit (`:wq`). Press `:q!` to quit without saving.
+Otvorí sa kompletný YAML vo `vi`. Mohli by ste zmeniť meniteľné pole (napr.
+pridať label), uložiť a ukončiť (`:wq`). Cez `:q!` ukončíte bez uloženia.
 
-> **Note**: Most Pod fields are **immutable** after creation. To change immutable fields (like the image), you need to delete and recreate the Pod. This is another reason Deployments are preferred — they handle this automatically.
+> **Poznámka**: Väčšina polí Podu je po vytvorení **nemenná (immutable)**. Na
+> zmenu nemenného poľa (napríklad image) treba Pod zmazať a vytvoriť nanovo. To
+> je ďalší dôvod, prečo sa uprednostňujú Deployments — riešia to za vás.
 
-## Labels in Manifests
+## Labels v manifestoch
 
-Let's look at a Pod with rich label metadata. Open the exercise file:
+Pozrime sa na Pod s bohatšími labelmi. Otvorte cvičný súbor:
 
 ```editor:open-file
 file: exercises/pod-labels/pod-labels.yaml
 ```
 
-Notice the `labels` and `annotations` sections under `metadata`. Copy and apply this manifest:
+Všimnite si sekcie `labels` a `annotations` pod `metadata`. Skopírujte a
+aplikujte tento manifest:
 
 ```terminal:execute
 command: cp -r ~/exercises/pod-labels ~/pod-labels && kubectl apply -f ~/pod-labels/pod-labels.yaml
 ```
 
-Now you can filter Pods by label:
+Teraz viete Pody filtrovať podľa labelov:
 
 ```terminal:execute
 command: kubectl get pods --show-labels
 ```
 
-Filter only Pods with a specific label:
+Vyfiltrujte iba Pody s konkrétnym labelom:
 
 ```terminal:execute
 command: kubectl get pods -l app=web
 ```
 
-## Deleting Resources by File
+## Mazanie zdrojov cez súbor
 
-When you create resources from a file, you can also delete them using the same file:
+Ak ste zdroje vytvorili zo súboru, tým istým súborom ich viete aj zmazať:
 
 ```terminal:execute
 command: kubectl delete -f ~/pod-labels/pod-labels.yaml
 ```
 
-This is very convenient — Kubernetes reads the file and deletes the matching resource.
+Je to veľmi pohodlné — Kubernetes súbor prečíta a zmaže zodpovedajúci zdroj.
 
-Clean up the first Pod too:
+Upracte aj prvý Pod:
 
 ```terminal:execute
 command: kubectl delete -f ~/pod-basic/pod.yaml
 ```
 
-Verify all Pods are cleaned up:
+Overte, že sú všetky Pody upratané:
 
 ```terminal:execute
 command: kubectl get pods
 ```
 
-## Generating YAML Templates
+## Generovanie YAML šablón
 
-A handy trick: use `--dry-run=client -o yaml` to generate YAML templates for any resource, then redirect to a file:
+Šikovný trik: cez `--dry-run=client -o yaml` si vygenerujete YAML šablónu pre
+ľubovoľný zdroj a presmerujete ju do súboru:
 
 ```terminal:execute
 command: kubectl run my-app --image=busybox:1.36 --dry-run=client -o yaml > ~/generated-pod.yaml
 ```
 
-View the generated file:
+Pozrite si vygenerovaný súbor:
 
 ```terminal:execute
 command: cat ~/generated-pod.yaml
 ```
 
-You can then edit this file and apply it. This saves time when writing manifests from scratch.
+Ten si potom upravíte a aplikujete. Šetrí to čas pri písaní manifestov od nuly.
 
-## Summary
+## Zhrnutie
 
-In this chapter you learned:
-- YAML manifests have four key fields: `apiVersion`, `kind`, `metadata`, `spec`
-- `kubectl apply -f` creates or updates resources declaratively
-- `kubectl delete -f` removes resources defined in a file
-- `kubectl get -o yaml` shows the full live resource definition
-- Labels in manifests enable powerful filtering and selection
-- `--dry-run=client -o yaml` generates manifest templates
+V tejto kapitole ste sa naučili:
+- YAML manifest má štyri kľúčové polia: `apiVersion`, `kind`, `metadata`, `spec`
+- `kubectl apply -f` vytvára alebo aktualizuje zdroje deklaratívne
+- `kubectl delete -f` maže zdroje definované v súbore
+- `kubectl get -o yaml` zobrazí kompletnú živú definíciu zdroja
+- Labels v manifestoch umožňujú filtrovanie a výber
+- `--dry-run=client -o yaml` generuje šablóny manifestov
 
-Now that you're comfortable with Pods, let's move to **Deployments** — the recommended way to manage application workloads in production!
+Keď ste už s Podmi zžití, poďme na **Deployments** — odporúčaný spôsob, ako
+prevádzkovať aplikácie v produkcii!

@@ -1,14 +1,14 @@
 # =============================================================
-# pod-bad-image.yaml — a Pod that can never start
+# pod-bad-image.yaml — Pod, ktorý nikdy nenaštartuje
 # =============================================================
-# Someone handed you this manifest. It looks perfectly reasonable,
-# and Kubernetes will accept it without complaint.
+# Niekto vám podal tento manifest. Vyzerá úplne rozumne a
+# Kubernetes ho bez námietok prijme.
 #
-# The Pod will sit in ImagePullBackOff forever, because the image
-# tag below does not exist in the registry.
+# Pod bude navždy visieť v ImagePullBackOff, lebo tag image
+# uvedený nižšie v registry neexistuje.
 #
-# Remember: BackOff means "retrying with growing delays", not
-# "gave up". A typo here quietly burns a Pod slot all day.
+# Pozor: BackOff znamená "skúšam znova s narastajúcimi odstupmi",
+# nie "vzdal som to". Preklep tu potichu blokuje miesto celý deň.
 #
 # Docs: https://kubernetes.io/docs/concepts/containers/images/
 # =============================================================
@@ -22,7 +22,7 @@ metadata:
 spec:
   containers:
   - name: nginx
-    # <-- This tag does not exist. nginx ships 1.27, not 1.99.
+    # <-- Tento tag neexistuje. nginx vydáva 1.27, nie 1.99.
     image: nginx:1.99-does-not-exist
     ports:
     - containerPort: 80

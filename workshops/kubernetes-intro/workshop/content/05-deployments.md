@@ -1,22 +1,25 @@
 ---
-title: Deployments
+title: Deployments a škálovanie
 ---
 
-# Level 3: Deployments
+# Úroveň 3: Deployments
 
-In the previous chapters you created standalone Pods. But standalone Pods have limitations:
+V predchádzajúcich kapitolách ste vytvárali samostatné Pody. Tie však majú svoje
+obmedzenia:
 
-- **No self-healing** — if a Pod dies, it stays dead
-- **No scaling** — you can't easily run multiple identical Pods
-- **No rolling updates** — you must manually delete and recreate Pods to change the image
+- **Žiadne self-healing** — keď Pod zomrie, ostane mŕtvy
+- **Žiadne škálovanie** — nedá sa jednoducho spustiť viac identických Podov
+- **Žiadne rolling updates** — pri zmene image musíte Pod ručne zmazať a vytvoriť znova
 
-A **Deployment** solves all of these problems. It's the standard way to run stateless applications in Kubernetes.
+**Deployment** rieši všetky tri. Je to štandardný spôsob, ako prevádzkovať
+bezstavové (stateless) aplikácie v Kubernetes.
 
-> **Docs**: [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+> **Dokumentácia**: [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
 
-## What is a Deployment?
+## Čo je Deployment?
 
-A Deployment manages a **ReplicaSet**, which in turn manages a set of identical **Pods**.
+Deployment spravuje **ReplicaSet**, ktorý zase spravuje sadu identických
+**Podov**.
 
 ```
 Deployment
@@ -26,184 +29,190 @@ Deployment
         └── Pod 3
 ```
 
-The Deployment controller continuously ensures the actual state matches your desired state:
-- Want 3 replicas? It creates and maintains exactly 3 Pods.
-- A Pod crashes? The controller automatically creates a replacement.
-- Need to update the image? It performs a rolling update with zero downtime.
+Controller Deploymentu nepretržite dbá na to, aby skutočný stav zodpovedal tomu
+požadovanému:
+- Chcete 3 repliky? Vytvorí a udržiava presne 3 Pody.
+- Pod spadne? Controller automaticky vytvorí náhradu.
+- Treba zmeniť image? Vykoná rolling update bez výpadku.
 
-## Creating a Deployment Imperatively
+## Vytvorenie Deploymentu imperatívne
 
-The fastest way to create a Deployment:
+Najrýchlejšia cesta k Deploymentu:
 
 ```terminal:execute
 command: kubectl create deployment my-nginx --image=nginx:1.26 --replicas=2
 ```
 
-Check the result:
+Pozrite si výsledok:
 
 ```terminal:execute
 command: kubectl get deployments
 ```
 
-See the Pods created by the Deployment:
+A Pody, ktoré Deployment vytvoril:
 
 ```terminal:execute
 command: kubectl get pods
 ```
 
-Notice the Pod names follow the pattern: `{deployment-name}-{replicaset-hash}-{pod-hash}`.
+Všimnite si vzor v názvoch Podov: `{názov-deploymentu}-{hash-replicasetu}-{hash-podu}`.
 
-## Exploring the Deployment
+## Preskúmanie Deploymentu
 
-View detailed information about the Deployment:
+Zobrazte podrobné informácie o Deploymente:
 
 ```terminal:execute
 command: kubectl describe deployment my-nginx
 ```
 
-Look at the key sections:
-- **Replicas** — desired vs. current vs. available
-- **StrategyType** — how updates are applied (RollingUpdate by default)
-- **Pod Template** — the template used to create Pods
-- **Events** — what Kubernetes has done
+Pozrite si kľúčové sekcie:
+- **Replicas** — požadované vs. aktuálne vs. dostupné
+- **StrategyType** — ako sa aplikujú updaty (predvolene RollingUpdate)
+- **Pod Template** — šablóna, z ktorej vznikajú Pody
+- **Events** — čo Kubernetes urobil
 
-View the underlying ReplicaSet:
+Zobrazte podkladový ReplicaSet:
 
 ```terminal:execute
 command: kubectl get replicasets
 ```
 
-The ReplicaSet is the object that actually manages the Pod count. You rarely interact with ReplicaSets directly — the Deployment manages them for you.
+ReplicaSet je objekt, ktorý reálne stráži počet Podov. S ReplicaSetmi priamo
+pracujete len zriedka — spravuje ich za vás Deployment.
 
-## Creating a Deployment from YAML
+## Vytvorenie Deploymentu z YAML
 
-Let's delete the imperative Deployment and use a YAML manifest instead:
+Zmažme imperatívne vytvorený Deployment a použime radšej YAML manifest:
 
 ```terminal:execute
 command: kubectl delete deployment my-nginx
 ```
 
-Open the exercise file in the editor:
+Otvorte cvičný súbor v editore:
 
 ```editor:open-file
 file: exercises/deployment/deployment.yaml
 ```
 
-Review the key sections:
+Prejdite si kľúčové sekcie:
 
 ```editor:select-matching-text
 file: exercises/deployment/deployment.yaml
 text: replicas: 3
 ```
 
-- `replicas: 3` — run 3 identical Pods
-- `selector.matchLabels` — how the Deployment finds its Pods
-- `template` — the Pod template (metadata + spec)
+- `replicas: 3` — bežať budú 3 identické Pody
+- `selector.matchLabels` — podľa čoho si Deployment nájde svoje Pody
+- `template` — šablóna Podu (metadata + spec)
 
-> **Important**: The `selector.matchLabels` must match the `template.metadata.labels`. This is how the Deployment knows which Pods belong to it.
+> **Dôležité**: `selector.matchLabels` sa musí zhodovať s
+> `template.metadata.labels`. Práve takto Deployment vie, ktoré Pody sú jeho.
 
-Copy and apply the manifest:
+Skopírujte a aplikujte manifest:
 
 ```terminal:execute
 command: cp -r ~/exercises/deployment ~/deployment && kubectl apply -f ~/deployment/deployment.yaml
 ```
 
-Watch the Pods come up (press Ctrl+C to stop):
+Sledujte, ako Pody nabiehajú (zastavíte cez Ctrl+C):
 
 ```terminal:execute
 command: kubectl get pods -w
 session: 2
 ```
 
-Check the Deployment status:
+Skontrolujte stav Deploymentu:
 
 ```terminal:execute
 command: kubectl get deployment nginx-deployment
 ```
 
-## Scaling a Deployment
+## Škálovanie Deploymentu
 
-Scale the Deployment to 5 replicas:
+Naškálujte Deployment na 5 replík:
 
 ```terminal:execute
 command: kubectl scale deployment nginx-deployment --replicas=5
 ```
 
-Watch the new Pods appear:
+Sledujte, ako pribúdajú nové Pody:
 
 ```terminal:execute
 command: kubectl get pods
 ```
 
-Scale back down to 2:
+Zmenšite späť na 2:
 
 ```terminal:execute
 command: kubectl scale deployment nginx-deployment --replicas=2
 ```
 
-Check that the extra Pods are terminating:
+Skontrolujte, že prebytočné Pody sa ukončujú:
 
 ```terminal:execute
 command: kubectl get pods
 ```
 
-> **Tip**: You can also scale by editing the Deployment:
-> `kubectl edit deployment nginx-deployment` and changing the `replicas` field.
+> **Tip**: Škálovať sa dá aj úpravou Deploymentu:
+> `kubectl edit deployment nginx-deployment` a zmenou poľa `replicas`.
 
-## Self-Healing in Action
+## Self-healing naživo
 
-Let's demonstrate Kubernetes self-healing. First, get the current Pod names:
+Poďme si ukázať self-healing. Najprv si zistite aktuálne názvy Podov:
 
 ```terminal:execute
 command: kubectl get pods -o name
 ```
 
-Now manually delete one of the Pods (replace the name if needed):
+Teraz jeden z Podov ručne zmažte:
 
 ```terminal:execute
 command: POD=$(kubectl get pods -l app=nginx -o name | head -1) && kubectl delete $POD
 ```
 
-Immediately check the Pods:
+Hneď potom sa pozrite na Pody:
 
 ```terminal:execute
 command: kubectl get pods
 ```
 
-Notice that Kubernetes has already started creating a **replacement Pod** to maintain the desired replica count of 2. This is self-healing in action!
+Všimnite si, že Kubernetes už začal vytvárať **náhradný Pod**, aby dodržal
+požadovaný počet 2 replík. To je self-healing v praxi!
 
-## Deployment Status
+## Stav rolloutu
 
-Check the rollout status of the Deployment:
+Skontrolujte stav rolloutu Deploymentu:
 
 ```terminal:execute
 command: kubectl rollout status deployment nginx-deployment
 ```
 
-This shows whether the Deployment has finished rolling out all its Pods.
+Ukáže vám, či Deployment dokončil nasadenie všetkých svojich Podov.
 
-## The Headlamp UI
+## Rozhranie Headlamp
 
-Switch to the **Headlamp** tab to see your namespace in a web UI. You can visualize your Deployment, its ReplicaSet, and individual Pods in a graphical interface.
+Prepnite sa na záložku **Headlamp** a pozrite si svoj namespace vo webovom UI.
+Deployment, jeho ReplicaSet aj jednotlivé Pody uvidíte graficky.
 
-Headlamp provides:
-- Resource overview and health status
-- Real-time events and logs
-- YAML/JSON resource details, with an editor
+Headlamp ponúka:
+- Prehľad zdrojov a ich zdravotný stav
+- Udalosti a logy naživo
+- Detaily zdrojov v YAML/JSON, aj s editorom
 
-Open **Workloads → Deployments** and click `nginx-deployment`. The detail page
-shows the same information as `kubectl describe`, plus a live view of the Pods
-the Deployment owns.
+Otvorte **Workloads → Deployments** a kliknite na `nginx-deployment`. Detail
+stránky ukazuje to isté čo `kubectl describe`, plus živý pohľad na Pody, ktoré
+Deployment vlastní.
 
-## Summary
+## Zhrnutie
 
-In this chapter you learned:
-- **Deployments** manage ReplicaSets which manage Pods
-- `kubectl create deployment` — create imperatively
-- `kubectl apply -f` — create from YAML manifest
-- `kubectl scale deployment` — adjust replica count
-- `kubectl describe deployment` — view Deployment details
-- `kubectl rollout status` — check rollout progress
-- Self-healing: Kubernetes automatically replaces failed Pods
+V tejto kapitole ste sa naučili:
+- **Deployments** spravujú ReplicaSety, ktoré spravujú Pody
+- `kubectl create deployment` — vytvorenie imperatívne
+- `kubectl apply -f` — vytvorenie z YAML manifestu
+- `kubectl scale deployment` — zmena počtu replík
+- `kubectl describe deployment` — detaily Deploymentu
+- `kubectl rollout status` — kontrola priebehu rolloutu
+- Self-healing: Kubernetes automaticky nahrádza spadnuté Pody
 
-In the next chapter, you'll learn how to update applications and perform rollbacks with zero downtime!
+V ďalšej kapitole sa naučíte aktualizovať aplikácie a robiť rollbacky bez
+výpadku!

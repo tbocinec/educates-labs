@@ -1,10 +1,11 @@
 # =============================================================
-# job.yaml — A basic Kubernetes Job
+# job.yaml — jednoduchý Job v Kubernetes
 # =============================================================
-# A Job creates one or more Pods and ensures a specified number
-# of them successfully complete. Once complete, the Job is done.
+# Job vytvorí jeden alebo viac Podov a dohliadne na to, aby sa
+# určený počet z nich úspešne dokončil. Potom je Job hotový.
 #
-# Use cases: database migrations, batch processing, report generation.
+# Použitie: migrácie databáz, dávkové spracovanie, generovanie
+# reportov.
 #
 # Docs: https://kubernetes.io/docs/concepts/workloads/controllers/job/
 # =============================================================

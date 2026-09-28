@@ -1,67 +1,71 @@
-# Kubernetes Troubleshooting Workshop
+# Workshop: Kubernetes — Troubleshooting
 
-A hands-on workshop on diagnosing broken Kubernetes workloads. Eight realistic
-failures, one repeatable method.
+Praktický workshop o diagnostike rozbitých workloadov v Kubernetes. Osem reálnych
+porúch, jedna opakovateľná metóda.
 
-## Duration
+## Dĺžka
 
-~60 minutes
+~60 minút
 
-## Prerequisites
+## Predpoklady
 
-- Completion of **Kubernetes Fundamentals** and ideally **Kubernetes Services,
-  Secrets & Storage** (or equivalent knowledge of kubectl, Pods, Deployments,
-  Services and ConfigMaps)
+- Absolvovanie workshopov **Základy Kubernetes** a ideálne **Kubernetes:
+  Services, Secrets a úložisko** (alebo rovnocenná znalosť kubectl, Podov,
+  Deploymentov, Services a ConfigMáp)
 
-## Topics Covered
+## Obsah
 
-### Level 1 — A Method That Works
-- The order that solves most problems: status → describe → events → logs
-- Reading the STATUS column as a first diagnosis
-- `kubectl get events --sort-by` and filtering to warnings
+### Úroveň 1 — Metóda, ktorá funguje
+- Poradie, ktoré rieši väčšinu problémov: stav → describe → udalosti → logy
+- Čítanie stĺpca STATUS ako prvá diagnóza
+- `kubectl get events --sort-by` a filtrovanie na varovania
 
-### Level 2 — The Pod Never Starts
-- `ImagePullBackOff` — wrong tag, private registry, rate limits
-- `CreateContainerConfigError` — unresolvable ConfigMap/Secret references
+### Úroveň 2 — Pod nikdy nenaštartuje
+- `ImagePullBackOff` — zlý tag, privátny registry, limity sťahovania
+- `CreateContainerConfigError` — nerozlíšiteľné odkazy na ConfigMap/Secret
 
-### Level 3 — The Pod Starts, Then Dies
-- `CrashLoopBackOff` and why `kubectl logs --previous` is the whole trick
-- `OOMKilled` — exit 137 with empty logs, and what that fingerprint means
+### Úroveň 3 — Pod naštartuje a zomrie
+- `CrashLoopBackOff` a prečo je `kubectl logs --previous` celý ten trik
+- `OOMKilled` — kód 137 s prázdnymi logmi a čo tento odtlačok znamená
 
-### Level 4 — The Pod Stays Pending
-- `FailedScheduling` — unmatched `nodeSelector`, insufficient resources, taints
-- Admission rejections from `LimitRange` and `ResourceQuota`
+### Úroveň 4 — Pod ostáva v Pending
+- `FailedScheduling` — nevyhovujúci `nodeSelector`, nedostatok zdrojov, tainty
+- Odmietnutia pri admission cez `LimitRange` a `ResourceQuota`
 
-### Level 5 — The App Is Unreachable
-- `kubectl get endpoints` as the first command for connectivity problems
-- Label selector mismatch — legal, silent, and very common
-- `port` vs `targetPort` confusion
+### Úroveň 5 — Aplikácia je nedostupná
+- `kubectl get endpoints` ako prvý príkaz pri problémoch s dostupnosťou
+- Nesúlad label selektora — legitímny, tichý a veľmi častý
+- Zámena `port` a `targetPort`
 
-## Features
+## Vlastnosti
 
-- Eight broken manifests with inline comments explaining the trap
-- Every scenario follows: break → observe → diagnose → fix → verify
-- Matching `-fixed` manifests so learners can compare before and after
-- Headlamp web UI for reading events and logs visually
-- Split terminal for watching resources while working
+- Osem rozbitých manifestov s komentármi vysvetľujúcimi pascu
+- Každý scenár má rovnaký priebeh: rozbi → pozoruj → diagnostikuj → oprav → over
+- Zodpovedajúce `-fixed` manifesty na porovnanie pred a po
+- Webové UI Headlamp na vizuálne čítanie udalostí a logov
+- Rozdelený terminál na sledovanie zdrojov počas práce
 
-## Design Notes
+## Jazyk
 
-All scenarios run inside a single session namespace and need no cluster-scoped
-permissions. They were verified to reproduce on both a local kind cluster and
-the Educates session environment:
+Workshop je v slovenčine, technické pojmy a príkazy sú ponechané v angličtine.
 
-| Scenario | Verified result |
-|----------|-----------------|
-| Bad image tag | `ErrImagePull` → `ImagePullBackOff` |
-| Missing ConfigMap key | `CreateContainerConfigError`, "couldn't find key mode" |
-| Crashing worker | `CrashLoopBackOff`, message visible via `logs --previous` |
-| Memory hog | `OOMKilled`, exit code 137, empty logs |
-| Impossible nodeSelector | `Pending`, `FailedScheduling` event |
-| Oversized request | Rejected at admission by `LimitRange` |
-| Selector mismatch | `endpoints` shows `<none>` |
+## Poznámky k návrhu
 
-## Official Documentation Links
+Všetky scenáre bežia v rámci jedného session namespace a nepotrebujú žiadne
+cluster-scoped oprávnenia. Ich reprodukovateľnosť bola overená na lokálnom kind
+klastri aj v session prostredí Educates:
+
+| Scenár | Overený výsledok |
+|--------|------------------|
+| Zlý tag image | `ErrImagePull` → `ImagePullBackOff` |
+| Chýbajúci kľúč v ConfigMape | `CreateContainerConfigError`, „couldn't find key mode" |
+| Padajúci worker | `CrashLoopBackOff`, hláška viditeľná cez `logs --previous` |
+| Žrút pamäte | `OOMKilled`, návratový kód 137, prázdne logy |
+| Nesplniteľný nodeSelector | `Pending`, udalosť `FailedScheduling` |
+| Predimenzovaná požiadavka | Odmietnutie pri admission cez `LimitRange` |
+| Nesúlad selektora | `endpoints` ukazuje `<none>` |
+
+## Odkazy na oficiálnu dokumentáciu
 
 - [Troubleshoot Applications](https://kubernetes.io/docs/tasks/debug/debug-application/)
 - [Debug Pods](https://kubernetes.io/docs/tasks/debug/debug-application/debug-pods/)

@@ -1,170 +1,181 @@
 ---
-title: Running Your First Pod
+title: Váš prvý Pod
 ---
 
-# Level 2: Running Your First Pod
+# Úroveň 2: Váš prvý Pod
 
-A **Pod** is the smallest deployable unit in Kubernetes. It represents a single instance of a running process — typically wrapping one container (though it can contain multiple).
+**Pod** je najmenšia nasaditeľná jednotka v Kubernetes. Predstavuje jednu
+inštanciu bežiaceho procesu — typicky obaľuje jeden container (môže ich však
+obsahovať aj viac).
 
-> **Docs**: [Pods](https://kubernetes.io/docs/concepts/workloads/pods/)
+> **Dokumentácia**: [Pods](https://kubernetes.io/docs/concepts/workloads/pods/)
 
-## Creating a Pod Imperatively
+## Vytvorenie Podu imperatívne
 
-The quickest way to create a Pod is using the `kubectl run` command:
+Najrýchlejšia cesta k Podu je príkaz `kubectl run`:
 
 ```terminal:execute
 command: kubectl run hello-pod --image=nginx:1.27
 ```
 
-This creates a Pod named `hello-pod` running the `nginx:1.27` container image.
+Vytvorí sa Pod s názvom `hello-pod`, v ktorom beží container image `nginx:1.27`.
 
-## Checking Pod Status
+## Kontrola stavu Podu
 
-List the Pods in your namespace:
+Vypíšte Pody vo vašom namespace:
 
 ```terminal:execute
 command: kubectl get pods
 ```
 
-You should see `hello-pod` with a status progressing from `ContainerCreating` to `Running`.
+Mali by ste vidieť `hello-pod`, ktorého stav sa postupne mení z
+`ContainerCreating` na `Running`.
 
-Add the `-o wide` flag to see additional details like the node and IP address:
+Prepínač `-o wide` pridá ďalšie údaje, napríklad node a IP adresu:
 
 ```terminal:execute
 command: kubectl get pods -o wide
 ```
 
-## Describing a Pod
+## Detailný popis Podu
 
-The `describe` command provides detailed information about a resource, including events:
+Príkaz `describe` poskytne podrobné informácie o zdroji vrátane udalostí:
 
 ```terminal:execute
 command: kubectl describe pod hello-pod
 ```
 
-Scroll through the output and notice the key sections:
+Prejdite si výstup a všimnite si kľúčové sekcie:
 
-- **Metadata** — name, namespace, labels
-- **Containers** — image, ports, state
-- **Conditions** — Pod readiness and scheduling status
-- **Events** — chronological log of what happened (pull image, create container, start)
+- **Metadata** — názov, namespace, labels
+- **Containers** — image, porty, stav
+- **Conditions** — pripravenosť Podu a stav plánovania
+- **Events** — chronologický záznam toho, čo sa dialo (stiahnutie image, vytvorenie containera, spustenie)
 
-## Viewing Pod Logs
+## Logy Podu
 
-Check the container logs to see what Nginx has output:
+Pozrite si logy containera, teda čo Nginx vypísal:
 
 ```terminal:execute
 command: kubectl logs hello-pod
 ```
 
-To follow logs in real-time (like `tail -f`), use the `-f` flag. Run this in the second terminal:
+Na sledovanie logov naživo (ako `tail -f`) slúži prepínač `-f`. Spustite to
+v druhom termináli:
 
 ```terminal:execute
 command: kubectl logs hello-pod -f
 session: 2
 ```
 
-Press `Ctrl+C` in the second terminal to stop following logs when done.
+Keď skončíte, sledovanie zastavte klávesou `Ctrl+C` v druhom termináli.
 
-## Executing Commands Inside a Pod
+## Spúšťanie príkazov vnútri Podu
 
-You can run commands inside a running container using `kubectl exec`:
+V bežiacom containeri viete spúšťať príkazy cez `kubectl exec`:
 
 ```terminal:execute
 command: kubectl exec hello-pod -- hostname
 ```
 
-The `--` separates `kubectl` flags from the command to execute inside the container.
+Dvojica `--` oddeľuje prepínače `kubectl` od príkazu, ktorý sa má vykonať vnútri
+containera.
 
-Run an interactive shell session:
+Spustite interaktívny shell:
 
 ```terminal:execute
 command: kubectl exec -it hello-pod -- /bin/bash
 ```
 
-You're now inside the Nginx container! Let's verify Nginx is serving content:
+Teraz ste vnútri Nginx containera! Overme, že Nginx niečo servíruje:
 
 ```terminal:execute
 command: curl localhost:80
 ```
 
-Check the Nginx version:
+Zistite verziu Nginxu:
 
 ```terminal:execute
 command: nginx -v
 ```
 
-Exit the container shell:
+Opustite shell containera:
 
 ```terminal:execute
 command: exit
 ```
 
-## Port Forwarding
+## Port forwarding
 
-First, make sure you have stopped the log follow from the earlier step. Press `Ctrl+C` in the second terminal if it's still running:
+Najprv sa uistite, že ste zastavili sledovanie logov z predchádzajúceho kroku.
+Ak ešte beží, stlačte v druhom termináli `Ctrl+C`:
 
 ```terminal:execute
 command: ""
 session: 2
 ```
 
-To access the Pod from your local environment, use `kubectl port-forward`. Run this in the second terminal:
+Na prístup k Podu z vášho prostredia slúži `kubectl port-forward`. Spustite ho
+v druhom termináli:
 
 ```terminal:execute
 command: kubectl port-forward hello-pod 8080:80 &
 session: 2
 ```
 
-Now test the connection from the first terminal:
+Teraz otestujte spojenie z prvého terminálu:
 
 ```terminal:execute
 command: curl localhost:8080
 ```
 
-Stop the port-forward:
+Zastavte port-forward:
 
 ```terminal:execute
 command: kill %1 2>/dev/null; echo "Port-forward stopped"
 session: 2
 ```
 
-## Deleting a Pod
+## Zmazanie Podu
 
-Clean up the Pod when you're done:
+Po skončení Pod upracte:
 
 ```terminal:execute
 command: kubectl delete pod hello-pod
 ```
 
-Verify the Pod is gone:
+Overte, že je preč:
 
 ```terminal:execute
 command: kubectl get pods
 ```
 
-> **Important**: When you delete a standalone Pod, it's gone permanently. There is no automatic recreation. This is why we use **Deployments** in practice (covered in Chapter 5).
+> **Dôležité**: Keď zmažete samostatný Pod, je nenávratne preč. Nič ho
+> automaticky nevytvorí znova. Práve preto sa v praxi používajú **Deployments**
+> (kapitola 5).
 
-## Quick Dry Run
+## Rýchly dry run
 
-Before creating a resource, you can preview what would be created using `--dry-run=client`:
+Pred vytvorením zdroja si viete pozrieť, čo by vzniklo, pomocou
+`--dry-run=client`:
 
 ```terminal:execute
 command: kubectl run test-pod --image=nginx:1.27 --dry-run=client -o yaml
 ```
 
-This outputs the YAML manifest **without** actually creating the Pod. Very useful for generating YAML templates!
+Vypíše sa YAML manifest **bez** toho, aby sa Pod naozaj vytvoril. Výborná pomôcka
+na generovanie YAML šablón!
 
-## Summary
+## Zhrnutie
 
-In this chapter you learned:
-- `kubectl run` — create a Pod imperatively
-- `kubectl get pods` — list Pods
-- `kubectl describe pod` — show detailed Pod info
-- `kubectl logs` — view container logs
-- `kubectl exec` — run commands inside a container
-- `kubectl port-forward` — access a Pod's port locally
-- `kubectl delete pod` — remove a Pod
-- `--dry-run=client -o yaml` — preview without creating
+V tejto kapitole ste sa naučili:
+- `kubectl run` — vytvorenie Podu imperatívne
+- `kubectl get pods` — výpis Podov
+- `kubectl describe pod` — podrobnosti o Pode
+- `kubectl logs` — logy containera
+- `kubectl exec` — spustenie príkazu vnútri containera
+- `kubectl port-forward` — lokálny prístup na port Podu
+- `kubectl delete pod` — odstránenie Podu
+- `--dry-run=client -o yaml` — náhľad bez vytvorenia
 
-Next, let's learn how to define Pods using YAML manifests — the **declarative** way.
+Ďalej sa naučíme definovať Pody pomocou YAML manifestov — teda **deklaratívne**.

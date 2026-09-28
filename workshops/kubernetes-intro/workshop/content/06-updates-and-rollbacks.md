@@ -1,103 +1,109 @@
 ---
-title: Updates & Rollbacks
+title: Updaty a rollbacky
 ---
 
-# Updates & Rollbacks
+# Updaty a rollbacky
 
-One of the most powerful features of Kubernetes Deployments is the ability to **update applications with zero downtime** and **roll back** if something goes wrong.
+Jedna z najsilnejších vlastností Deploymentov v Kubernetes je schopnosť
+**aktualizovať aplikáciu bez výpadku** a **vrátiť zmenu späť**, keď sa niečo
+pokazí.
 
-> **Docs**: [Rolling Update Strategy](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-update-deployment)
+> **Dokumentácia**: [Rolling Update Strategy](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-update-deployment)
 
-## Rolling Update Strategy
+## Stratégia RollingUpdate
 
-By default, Deployments use the **RollingUpdate** strategy:
-- New Pods are gradually created with the updated configuration
-- Old Pods are gradually terminated
-- At no point are all Pods unavailable
+Deployments predvolene používajú stratégiu **RollingUpdate**:
+- Postupne vznikajú nové Pody s aktualizovanou konfiguráciou
+- Postupne sa ukončujú staré Pody
+- V žiadnom okamihu nie sú nedostupné všetky Pody naraz
 
-The key parameters controlling this behavior are:
-- `maxSurge` — how many extra Pods can be created during the update (default: 25%)
-- `maxUnavailable` — how many Pods can be unavailable during the update (default: 25%)
+Správanie riadia dva kľúčové parametre:
+- `maxSurge` — koľko Podov navyše smie počas updatu vzniknúť (predvolene 25 %)
+- `maxUnavailable` — koľko Podov smie byť počas updatu nedostupných (predvolene 25 %)
 
-## Current State
+## Aktuálny stav
 
-Let's check the current state of our Deployment from the previous chapter:
+Pozrime sa na stav Deploymentu z predchádzajúcej kapitoly:
 
 ```terminal:execute
 command: kubectl get deployment nginx-deployment -o wide
 ```
 
-Notice the `IMAGE` column — it should show `nginx:1.26`. Let's update to `nginx:1.27`.
+Všimnite si stĺpec `IMAGE` — mal by ukazovať `nginx:1.26`. Poďme ho aktualizovať
+na `nginx:1.27`.
 
-First, scale back to 3 replicas for a clearer demonstration:
+Najprv sa vráťte na 3 repliky, nech je ukážka názornejšia:
 
 ```terminal:execute
 command: kubectl scale deployment nginx-deployment --replicas=3
 ```
 
-## Updating with kubectl set image
+## Update cez kubectl set image
 
-The `kubectl set image` command is the quickest way to update a container image:
+Príkaz `kubectl set image` je najrýchlejší spôsob, ako zmeniť container image.
 
-Start watching the Pods in the second terminal:
+Spustite sledovanie Podov v druhom termináli:
 
 ```terminal:execute
 command: kubectl get pods -w
 session: 2
 ```
 
-Now trigger the rolling update in the first terminal:
+Teraz v prvom termináli spustite rolling update:
 
 ```terminal:execute
 command: kubectl set image deployment nginx-deployment nginx=nginx:1.27
 ```
 
-Watch the output in the second terminal — you'll see new Pods being created and old Pods being terminated in a rolling fashion.
+Sledujte výstup v druhom termináli — uvidíte, ako postupne vznikajú nové Pody a
+ukončujú sa staré.
 
-Press `Ctrl+C` in the second terminal when the update is complete.
+Keď je update hotový, stlačte v druhom termináli `Ctrl+C`.
 
-Check the updated Deployment:
+Skontrolujte aktualizovaný Deployment:
 
 ```terminal:execute
 command: kubectl get deployment nginx-deployment -o wide
 ```
 
-The `IMAGE` column should now show `nginx:1.27`.
+V stĺpci `IMAGE` by teraz malo byť `nginx:1.27`.
 
-## Updating with a YAML File
+## Update cez YAML súbor
 
-In practice, you would update the YAML manifest and apply the change. Open the updated manifest:
+V praxi by ste upravili YAML manifest a aplikovali zmenu. Otvorte aktualizovaný
+manifest:
 
 ```editor:open-file
 file: exercises/deployment/deployment-v2.yaml
 ```
 
-Notice the image change:
+Všimnite si zmenený image:
 
 ```editor:select-matching-text
 file: exercises/deployment/deployment-v2.yaml
 text: image: nginx:1.27
 ```
 
-This file has `nginx:1.27` (which we already applied). In a real workflow, you'd edit the YAML, commit to Git, and apply.
+Tento súbor obsahuje `nginx:1.27` (ktorý sme už aplikovali). V reálnom
+workflow by ste YAML upravili, commitli do Gitu a aplikovali.
 
-## Rollout Status
+## Stav rolloutu
 
-Check the status of a rollout at any time:
+Stav rolloutu si viete kedykoľvek overiť:
 
 ```terminal:execute
 command: kubectl rollout status deployment nginx-deployment
 ```
 
-## Rollout History
+## História rolloutov
 
-Every update creates a new revision. View the history of revisions:
+Každý update vytvorí novú revíziu. Zobrazte si históriu revízií:
 
 ```terminal:execute
 command: kubectl rollout history deployment nginx-deployment
 ```
 
-To see details of a specific revision:
+Detaily konkrétnej revízie:
 
 ```terminal:execute
 command: kubectl rollout history deployment nginx-deployment --revision=1
@@ -107,25 +113,27 @@ command: kubectl rollout history deployment nginx-deployment --revision=1
 command: kubectl rollout history deployment nginx-deployment --revision=2
 ```
 
-Notice the image versions differ between revisions.
+Všimnite si, že sa medzi revíziami líšia verzie image.
 
-## Recording Changes
+## Zaznamenávanie zmien
 
-By default, the `CHANGE-CAUSE` column in rollout history is empty. You can add context using the `--record` flag (deprecated but still works) or by annotating the Deployment:
+Stĺpec `CHANGE-CAUSE` v histórii rolloutov je predvolene prázdny. Kontext mu
+doplníte prepínačom `--record` (zastaraný, ale funguje) alebo anotáciou
+Deploymentu:
 
 ```terminal:execute
 command: kubectl annotate deployment nginx-deployment kubernetes.io/change-cause="Updated image to nginx:1.27"
 ```
 
-Check the history again:
+Pozrite si históriu znova:
 
 ```terminal:execute
 command: kubectl rollout history deployment nginx-deployment
 ```
 
-## Simulating a Bad Update
+## Simulácia zlého updatu
 
-Let's simulate a failed update by setting an image that doesn't exist:
+Nasimulujme neúspešný update tak, že nastavíme neexistujúci image:
 
 ```terminal:execute
 command: kubectl set image deployment nginx-deployment nginx=nginx:99.99.99
@@ -135,103 +143,108 @@ command: kubectl set image deployment nginx-deployment nginx=nginx:99.99.99
 command: kubectl annotate deployment nginx-deployment kubernetes.io/change-cause="Updated to non-existent image nginx:99.99.99" --overwrite
 ```
 
-Watch the Pods:
+Pozrite sa na Pody:
 
 ```terminal:execute
 command: kubectl get pods
 ```
 
-You'll see new Pods stuck in `ImagePullBackOff` or `ErrImagePull` — Kubernetes can't find image `nginx:99.99.99`.
+Uvidíte nové Pody zaseknuté v stave `ImagePullBackOff` alebo `ErrImagePull` —
+Kubernetes nevie nájsť image `nginx:99.99.99`.
 
-Check the rollout status:
+Skontrolujte stav rolloutu:
 
 ```terminal:execute
 command: kubectl rollout status deployment nginx-deployment --timeout=30s
 ```
 
-The rollout will not complete because the new Pods can't start. But note that some of the **old Pods** are still running — the rolling update strategy ensures availability during the transition.
+Rollout sa nedokončí, lebo nové Pody nevedia naštartovať. Všimnite si však, že
+časť **starých Podov** stále beží — stratégia rolling update chráni dostupnosť aj
+počas prechodu.
 
-## Rolling Back
+## Rollback
 
-This is where rollbacks shine. Undo the last update:
+Tu sa rollbacky ukážu v plnej kráse. Vráťte posledný update:
 
 ```terminal:execute
 command: kubectl rollout undo deployment nginx-deployment
 ```
 
-Check the Pods:
+Pozrite sa na Pody:
 
 ```terminal:execute
 command: kubectl get pods
 ```
 
-The failing Pods are terminated and the previous working version is restored.
+Chybné Pody sa ukončia a obnoví sa predchádzajúca funkčná verzia.
 
-Verify the image:
+Overte image:
 
 ```terminal:execute
 command: kubectl get deployment nginx-deployment -o wide
 ```
 
-You should see `nginx:1.27` again (the previous working revision).
+Mali by ste znova vidieť `nginx:1.27` (predchádzajúca funkčná revízia).
 
-## Rolling Back to a Specific Revision
+## Rollback na konkrétnu revíziu
 
-You can also roll back to a specific revision number:
+Vrátiť sa dá aj na konkrétne číslo revízie:
 
 ```terminal:execute
 command: kubectl rollout history deployment nginx-deployment
 ```
 
-To roll back to revision 1 (the original `nginx:1.26`):
+Návrat na revíziu 1 (pôvodný `nginx:1.26`):
 
 ```terminal:execute
 command: kubectl rollout undo deployment nginx-deployment --to-revision=1
 ```
 
-Check the result:
+Skontrolujte výsledok:
 
 ```terminal:execute
 command: kubectl get deployment nginx-deployment -o wide
 ```
 
-## Understanding ReplicaSets During Updates
+## ReplicaSety počas updatov
 
-Each update creates a new ReplicaSet. Let's see them all:
+Každý update vytvorí nový ReplicaSet. Pozrime si ich všetky:
 
 ```terminal:execute
 command: kubectl get replicasets
 ```
 
-Notice:
-- One ReplicaSet has the current desired Pod count
-- Previous ReplicaSets have `DESIRED` = 0 but are **kept** for rollback purposes
+Všimnite si:
+- Jeden ReplicaSet má aktuálny požadovaný počet Podov
+- Predchádzajúce ReplicaSety majú `DESIRED` = 0, ale **ostávajú zachované** kvôli rollbackom
 
-This is how Kubernetes tracks revision history — each revision is a ReplicaSet.
+Presne takto si Kubernetes drží históriu revízií — každá revízia je jeden
+ReplicaSet.
 
-## Cleanup
+## Upratanie
 
-Let's clean up the Deployment before the next chapter:
+Pred ďalšou kapitolou Deployment upracte:
 
 ```terminal:execute
 command: kubectl delete deployment nginx-deployment
 ```
 
-Verify everything is cleaned up:
+Overte, že je všetko upratané:
 
 ```terminal:execute
 command: kubectl get pods
 ```
 
-## Summary
+## Zhrnutie
 
-In this chapter you learned:
-- **Rolling updates** — zero-downtime image updates with `kubectl set image` or `kubectl apply -f`
-- `kubectl rollout status` — monitor a rolling update
-- `kubectl rollout history` — view update history and revisions
-- `kubectl rollout undo` — roll back to the previous version
-- `kubectl rollout undo --to-revision=N` — roll back to a specific revision
-- Each update creates a new **ReplicaSet** (old ones are kept for rollback)
-- Rolling updates protect availability during bad deployments
+V tejto kapitole ste sa naučili:
+- **Rolling updates** — zmena image bez výpadku cez `kubectl set image` alebo `kubectl apply -f`
+- `kubectl rollout status` — sledovanie priebehu rolling updatu
+- `kubectl rollout history` — história updatov a revízií
+- `kubectl rollout undo` — návrat na predchádzajúcu verziu
+- `kubectl rollout undo --to-revision=N` — návrat na konkrétnu revíziu
+- Každý update vytvorí nový **ReplicaSet** (staré sa zachovávajú kvôli rollbacku)
+- Rolling update chráni dostupnosť aj pri nepodarenom nasadení
 
-Next, let's learn about **ConfigMaps** — the Kubernetes way to manage application configuration!
+Ďalej sa pozrieme na **ConfigMap** — spôsob, akým Kubernetes rieši konfiguráciu
+aplikácií!

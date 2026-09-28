@@ -1,16 +1,16 @@
 ---
-title: The Pod Starts, Then Dies
+title: Pod naštartuje a zomrie
 ---
 
-# Level 3: The Pod Starts, Then Dies
+# Úroveň 3: Pod naštartuje a zomrie
 
-Symptom: the restart counter keeps climbing. The Pod flickers between `Running`
-and `Error`, and eventually settles into `CrashLoopBackOff`.
+Príznak: počítadlo reštartov stále rastie. Pod bliká medzi `Running` a `Error` a
+nakoniec sa ustáli na `CrashLoopBackOff`.
 
-Good news: the container **did** run, so this time there *are* logs. The trick is
-asking for the right ones.
+Dobrá správa: container **bežal**, takže tentoraz logy *existujú*. Trik je
+vypýtať si tie správne.
 
-## Scenario 3: CrashLoopBackOff
+## Scenár 3: CrashLoopBackOff
 
 ```editor:open-file
 file: broken/03-crashloop/pod-crashloop.yaml
@@ -20,83 +20,79 @@ file: broken/03-crashloop/pod-crashloop.yaml
 command: kubectl apply -f ~/broken/03-crashloop/pod-crashloop.yaml
 ```
 
-### Observe
+### Pozorovanie
 
-Watch the restart count grow. Run this in your **second terminal** and leave it
-running:
+Sledujte, ako rastie počet reštartov. Spustite to v **druhom termináli** a
+nechajte bežať:
 
 ```terminal:execute
 command: kubectl get pod worker -w
 session: 2
 ```
 
-Meanwhile, check the status here:
+Medzitým si tu skontrolujte stav:
 
 ```terminal:execute
 command: kubectl get pod worker
 ```
 
-The Pod cycles: `Running` → `Error` → `CrashLoopBackOff` → `Running` → … Each
-restart waits longer than the last (10s, 20s, 40s… capped at 5 minutes).
+Pod sa točí dokola: `Running` → `Error` → `CrashLoopBackOff` → `Running` → … Každý
+reštart čaká dlhšie než predošlý (10 s, 20 s, 40 s… strop je 5 minút).
 
-### Diagnose
+### Diagnostika
 
-Ask for the logs the obvious way:
+Vypýtajte si logy tým zrejmým spôsobom:
 
 ```terminal:execute
 command: kubectl logs worker
 ```
 
-Depending on timing you may get the current attempt's output — or nothing at
-all, if the container is between restarts. That's the trap. Ask for the
-**previous** container instead:
+Podľa načasovania dostanete výstup aktuálneho pokusu — alebo vôbec nič, ak je
+container práve medzi reštartmi. To je tá pasca. Vypýtajte si radšej
+**predchádzajúci** container:
 
 ```terminal:execute
 command: kubectl logs worker --previous
 ```
 
-There it is: `FATAL: cannot open /etc/worker/config.yaml`. The application told
-you exactly what it needed.
+A je to tu: `FATAL: cannot open /etc/worker/config.yaml`. Aplikácia vám presne
+povedala, čo potrebovala.
 
-> **If you see `unable to retrieve container logs for containerd://...`**, you
-> caught the Pod mid-restart — the old container is gone and the new one hasn't
-> logged yet. Wait a few seconds and run the command again. This is a timing
-> race, not a broken cluster.
+> **Ak uvidíte `unable to retrieve container logs for containerd://...`**, trafili
+> ste Pod uprostred reštartu — starý container je preč a nový ešte nič
+> nezalogoval. Počkajte pár sekúnd a príkaz zopakujte. Je to súboj s časovaním,
+> nie pokazený klaster.
 
-> **`--previous` is the whole lesson of this scenario.** A crash-looping
-> container's useful output belongs to the instance that already died. Without
-> this flag you are reading the one that hasn't failed *yet*.
-
-Confirm how it terminated:
+Overte, ako sa ukončil:
 
 ```terminal:execute
 command: kubectl get pod worker -o jsonpath='reason={.status.containerStatuses[0].lastState.terminated.reason} exit={.status.containerStatuses[0].lastState.terminated.exitCode}{"\n"}'
 ```
 
-`Error` with exit code `1` — the application chose to exit. Compare that with the
-next scenario, where the exit code tells a very different story.
+`Error` s návratovým kódom `1` — aplikácia sa ukončila sama. Porovnajte to
+s nasledujúcim scenárom, kde návratový kód rozpráva úplne iný príbeh.
 
-Stop the watch in the second terminal:
+Zastavte sledovanie v druhom termináli:
 
 ```terminal:interrupt
 session: 2
 ```
 
-### Root Cause
+### Príčina
 
-The app requires a config file that was never mounted. In production this is
-almost always one of:
+Aplikácia potrebuje konfiguračný súbor, ktorý jej nikto nenamountoval.
+V produkcii je to takmer vždy jedno z tohto:
 
-| Exit code | Usually means |
-|-----------|---------------|
-| `1` | Application error — read the logs, it told you |
-| `137` | `SIGKILL` — almost always OOMKilled (see below) |
-| `143` | `SIGTERM` — shut down on request, often a failing liveness probe |
-| `127` | Command not found — wrong `command`/`args` or wrong image |
+| Návratový kód | Zvyčajne znamená |
+|---------------|------------------|
+| `1` | Chyba aplikácie — prečítajte si logy, povedala vám to |
+| `137` | `SIGKILL` — takmer vždy OOMKilled (nižšie) |
+| `143` | `SIGTERM` — ukončenie na požiadanie, často zlyhávajúca liveness probe |
+| `127` | Príkaz sa nenašiel — zlý `command`/`args` alebo zlý image |
 
-### Fix and Verify
+### Oprava a overenie
 
-The real fix is mounting the config. Delete the broken Pod:
+Skutočnou opravou je namountovať konfiguráciu. Zmažte rozbitý Pod:
 
 ```terminal:execute
 command: kubectl delete pod worker --ignore-not-found
@@ -114,76 +110,75 @@ command: kubectl get pod worker-fixed
 command: kubectl logs worker-fixed
 ```
 
-The worker now finds its config and keeps running.
+Worker si konfiguráciu nájde a ďalej beží.
 
 ```terminal:execute
 command: kubectl delete -f ~/broken/03-crashloop/pod-fixed.yaml --ignore-not-found
 ```
 
-## Scenario 4: OOMKilled
+## Scenár 4: OOMKilled
 
-Same "keeps dying" symptom, but the application never gets to complain.
+Rovnaký príznak „stále zomiera", ale aplikácia sa ani nestihne posťažovať.
 
 ```editor:open-file
 file: broken/04-oom/pod-oom.yaml
 ```
 
-This Pod writes 200 MB into a memory-backed volume while holding a **64 Mi**
-memory limit.
+Tento Pod zapisuje 200 MB do volume v pamäti, pričom má limit pamäte **64 Mi**.
 
 ```terminal:execute
 command: kubectl apply -f ~/broken/04-oom/pod-oom.yaml
 ```
 
-### Observe
+### Pozorovanie
 
 ```terminal:execute
 command: kubectl get pod memory-hog
 ```
 
-### Diagnose
+### Diagnostika
 
-Wait a few seconds, then read the termination reason:
+Počkajte pár sekúnd a prečítajte si dôvod ukončenia:
 
 ```terminal:execute
 command: kubectl get pod memory-hog -o jsonpath='reason={.status.containerStatuses[0].state.terminated.reason} exit={.status.containerStatuses[0].state.terminated.exitCode}{"\n"}'
 ```
 
-`OOMKilled`, exit code `137`. Now look at the logs:
+`OOMKilled`, návratový kód `137`. Teraz si pozrite logy:
 
 ```terminal:execute
 command: kubectl logs memory-hog
 ```
 
-Notice what's **missing**: no error, no stack trace, no goodbye. The kernel
-killed the process instantly — the app had no chance to log anything. An empty
-log plus exit 137 is the signature of an OOM kill.
+Všimnite si, čo **chýba**: žiadna chyba, žiadny stack trace, žiadna rozlúčka.
+Jadro proces zabilo okamžite — aplikácia nemala šancu čokoľvek zalogovať. Prázdny
+log plus návratový kód 137 je podpis OOM killu.
 
-See it in `describe` too:
+Vidieť to aj cez `describe`:
 
 ```terminal:execute
 command: kubectl describe pod memory-hog | grep -A6 "Last State"
 ```
 
-And compare what it asked for against what it used:
+A porovnajte, o čo si Pod pýtal:
 
 ```terminal:execute
 command: kubectl get pod memory-hog -o jsonpath='limits={.spec.containers[0].resources.limits}{"\n"}'
 ```
 
-### Root Cause
+### Príčina
 
-The container exceeded its `resources.limits.memory`. The kernel's OOM killer
-enforces that limit — Kubernetes doesn't ask politely.
+Container prekročil svoj `resources.limits.memory`. Limit vynucuje OOM killer
+v jadre — Kubernetes sa nepýta pekne.
 
-> **Memory limits are hard; CPU limits are not.** Exceed a CPU limit and your
-> container is *throttled* (slow). Exceed a memory limit and it is *killed*.
-> That asymmetry surprises people.
+> **Limity pamäte sú tvrdé, limity CPU nie.** Pri prekročení limitu CPU sa
+> container len *spomalí* (throttling). Pri prekročení limitu pamäte sa *zabije*.
+> Táto asymetria ľudí prekvapuje.
 
-### Fix and Verify
+### Oprava a overenie
 
-There are two honest fixes: give it more memory, or make the app use less. Here
-the workload genuinely needs ~200 MB, so raise the limit:
+Sú dve poctivé opravy: dať mu viac pamäte, alebo aplikáciu naučiť spotrebovať
+menej. Tu workload naozaj potrebuje ~200 MB, takže zdvihneme limit:
 
 ```terminal:execute
 command: kubectl delete pod memory-hog --ignore-not-found
@@ -201,25 +196,25 @@ command: kubectl wait --for=jsonpath='{.status.phase}'=Succeeded pod/memory-hog-
 command: kubectl logs memory-hog-fixed
 ```
 
-It completes and prints `done`.
+Dokončí sa a vypíše `done`.
 
-> **Raising the limit is not always right.** If the app leaks memory, a bigger
-> limit just delays the crash. Use `kubectl top pod` (where metrics-server is
-> available) to see real usage before choosing a number.
+> **Zdvihnúť limit nie je vždy správne.** Ak aplikácii uniká pamäť, väčší limit
+> len oddiali pád. Predtým, než si zvolíte číslo, pozrite si reálnu spotrebu cez
+> `kubectl top pod` (tam, kde je dostupný metrics-server).
 
-Clean up:
+Upracte:
 
 ```terminal:execute
 command: kubectl delete -f ~/broken/04-oom/pod-oom-fixed.yaml --ignore-not-found
 ```
 
-## Summary
+## Zhrnutie
 
-In this chapter you learned:
-- `CrashLoopBackOff` means it ran and exited — read `kubectl logs --previous`
-- Restart backoff grows to a 5-minute ceiling, so a fix may look slow to take effect
-- Exit `1` = the app failed and logged why; exit `137` = OOMKilled and it logged nothing
-- An **empty log with exit 137** is the fingerprint of a memory limit
-- Memory limits kill; CPU limits only throttle
+V tejto kapitole ste sa naučili:
+- `CrashLoopBackOff` znamená, že bežal a skončil — čítajte `kubectl logs --previous`
+- Odstupy medzi reštartmi rastú až na 5 minút, takže oprava sa môže zdať pomalá
+- Kód `1` = aplikácia zlyhala a zalogovala prečo; kód `137` = OOMKilled a nezalogovala nič
+- **Prázdny log s kódom 137** je odtlačok prsta limitu pamäte
+- Limity pamäte zabíjajú, limity CPU len spomaľujú
 
-Next: Pods that never even reach a node.
+Ďalej: Pody, ktoré sa ani nedostanú na node.

@@ -1,76 +1,94 @@
 ---
-title: Workshop Overview
+title: Prehľad workshopu
 ---
 
-# Helm Fundamentals
+# Základy Helmu
 
-Welcome! By now you've written a fair amount of YAML by hand — a Deployment
-here, a Service there, a ConfigMap to tie them together. It works, until you
-need the same application in dev, staging and production with three different
-configurations.
+Vitajte! Doteraz ste písali YAML ručne — tu Deployment, tam Service, a ConfigMap,
+ktorá to spája. Funguje to, kým nepotrebujete tú istú aplikáciu v dev, staging a
+produkcii s tromi rôznymi konfiguráciami.
 
-**Helm** is the package manager for Kubernetes. It turns a pile of manifests
-into a versioned, configurable, installable unit — and gives you an undo button.
+**Helm** je balíčkovací systém pre Kubernetes. Z kopy manifestov spraví
+verzovanú, konfigurovateľnú a inštalovateľnú jednotku — a pridá tlačidlo späť.
 
-## What You Will Learn
+## Ako je workshop rozdelený
 
-| Level | Topic | What You Will Cover |
-|-------|-------|---------------------|
-| **1 — Concepts** | Charts & releases | Repositories, charts, releases, where Helm stores state |
-| **2 — Install** | Your first release | `helm install`, inspecting what it created |
-| **3 — Configure** | Values | `--set`, values files, `helm template` |
-| **4 — Operate** | Upgrade & rollback | Release history, rolling back a bad deploy, `--atomic` |
-| **5 — Author** | Your own chart | `helm create`, templates, `helm lint` |
+Workshop má dve časti, ktoré zodpovedajú dvom pohľadom na Helm.
 
-## Prerequisites
+### Časť 1 — Používanie Helmu
 
-You should be familiar with:
-- `kubectl` basics (`get`, `describe`, `apply`, `delete`)
-- Deployments, Services and ConfigMaps
-- Reading YAML manifests
+Najčastejšia práca: niekto už chart napísal a vy ho chcete nasadiť.
 
-These were covered in *Kubernetes Fundamentals* and *Kubernetes Services, Secrets
-& Storage*.
+| Úroveň | Čo preberieme |
+|--------|---------------|
+| **1 — Nájsť a nainštalovať** | Repozitáre, hľadanie chartov, `helm install` |
+| **2 — Zmena values** | `--set`, values súbory, `--dry-run` |
+| **3 — Návrat po zlom nasadení** | História revízií, `helm rollback` |
 
-## Workshop Environment
+### Časť 2 — Tvorba vlastného chartu
 
-Your workshop environment provides:
+| Úroveň | Čo preberieme |
+|--------|---------------|
+| **4 — Vlastný chart** | `helm create`, šablóny, `lint`, `test`, `package` |
 
-- **Two terminals** (split layout) — run commands side by side
-- **Code editor** — read and edit charts and values files
-- **Headlamp** — see what Helm actually created in your namespace
-- **Helm, already installed** — no setup needed
+### Voliteľné
 
-Your dedicated namespace is `{{ session_namespace }}`.
+| Úroveň | Čo preberieme |
+|--------|---------------|
+| **5 — Čo Helm ešte vie** | Prehľad pokročilých tém s odkazmi, bez cvičení |
 
-Confirm the version you're working with:
+Piata úroveň je naozaj **voliteľná** — workshop je hotový po štvrtej. Je to
+rozcestník na to, keď neskôr narazíte na závislosti, hooks, GitOps alebo OCI
+registry.
+
+## Predpoklady
+
+Mali by ste ovládať:
+- Základy `kubectl` (`get`, `describe`, `apply`, `delete`)
+- Deployments, Services a ConfigMaps
+
+Pokrývali to workshopy *Základy Kubernetes* a *Kubernetes: Services, Secrets a
+úložisko*.
+
+## Prostredie workshopu
+
+Vaše prostredie obsahuje:
+
+- **Dva terminály** (rozdelený layout) — príkazy môžete púšťať vedľa seba
+- **Editor kódu** — na čítanie a úpravu chartov a values súborov
+- **Headlamp** — uvidíte, čo Helm vo vašom namespace naozaj vytvoril
+- **Helm už nainštalovaný** — netreba nič pripravovať
+
+Váš vlastný namespace je `{{ session_namespace }}`.
+
+Overte si verziu, s ktorou pracujete:
 
 ```terminal:execute
 command: helm version
 ```
 
-> **This workshop uses Helm 4.** Nearly everything here works identically on
-> Helm 3. Where the two differ, the text says so.
+> **Tento workshop používa Helm 4.** Takmer všetko tu funguje rovnako aj na Helme
+> 3.
 
-## A Note on Permissions
+## Poznámka k oprávneniam
 
-You are an administrator **inside your own namespace** and nowhere else. That
-matters for Helm: many public charts install cluster-scoped objects
-(ClusterRoles, CRDs, webhooks) and would be refused here.
+Ste administrátorom **vo vlastnom namespace** a nikde inde. Pri Helme to má
+dôsledky: mnohé verejné charty inštalujú cluster-scoped objekty (ClusterRoles,
+CRD, webhooky) a tu by boli odmietnuté.
 
-The charts in this workshop are deliberately namespace-only. If you later try a
-chart of your own and see `Forbidden` errors, that's usually the reason — not a
-broken chart.
+Charty použité na tomto workshope sú zámerne iba namespaced. Keď neskôr skúsite
+vlastný chart a uvidíte chyby `Forbidden`, býva to zvyčajne práve toto — nie
+pokazený chart.
 
-## Official Documentation
+## Oficiálna dokumentácia
 
 - [Helm documentation](https://helm.sh/docs/)
 - [Using Helm](https://helm.sh/docs/intro/using_helm/)
 - [Charts](https://helm.sh/docs/topics/charts/)
-- [Values files](https://helm.sh/docs/chart_template_guide/values_files/)
 
-## Time Estimate
+## Časový odhad
 
-This workshop takes approximately **60 minutes** to complete.
+Časti 1 a 2 trvajú spolu približne **45 minút**. Voliteľná piata úroveň je
+čítanie na ďalších ~10 minút.
 
-Let's install something!
+Poďme niečo nainštalovať!

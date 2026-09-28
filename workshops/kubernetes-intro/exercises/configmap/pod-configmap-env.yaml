@@ -1,8 +1,8 @@
 # =============================================================
-# pod-configmap-env.yaml — Pod consuming ConfigMap as env vars
+# pod-configmap-env.yaml — Pod konzumujúci ConfigMap ako env vars
 # =============================================================
-# This Pod references the 'app-config' ConfigMap and loads
-# all its key-value pairs as environment variables using envFrom.
+# Tento Pod odkazuje na ConfigMapu 'app-config' a cez envFrom
+# načíta všetky jej dvojice kľúč-hodnota ako premenné prostredia.
 # =============================================================
 
 apiVersion: v1

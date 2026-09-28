@@ -3,11 +3,11 @@ kind: Workshop
 metadata:
   name: "helm-intro"
 spec:
-  title: "Helm Fundamentals"
-  description: "A hands-on introduction to Helm — charts, releases and values, installing and upgrading applications, rolling back a bad release, and building your own chart from scratch."
+  title: "Základy Helmu"
+  description: "Praktický úvod do Helmu v dvoch častiach — najprv používanie hotových chartov (repozitáre, inštalácia, values, rollback), potom tvorba vlastného chartu. Voliteľná posledná úroveň je rozcestník na pokročilé témy."
   url: https://github.com/tbocinec/educates-labs
   difficulty: beginner
-  duration: 60m
+  duration: 45m
   publish:
     image: "$(image_repository)/helm-intro-files:$(workshop_version)"
     files:

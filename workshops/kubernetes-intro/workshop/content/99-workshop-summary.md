@@ -1,108 +1,120 @@
 ---
-title: Workshop Summary
+title: Zhrnutie workshopu
 ---
 
-# Workshop Summary
+# Zhrnutie workshopu
 
-Congratulations on completing the **Kubernetes Fundamentals** workshop! Here's a recap of everything you've learned.
+Gratulujeme k dokončeniu workshopu **Základy Kubernetes**! Tu je prehľad všetkého,
+čo ste sa naučili.
 
-## Level 1 — Getting Started
+## Úroveň 1 — Začíname
 
-**Kubernetes Architecture:**
-- Control Plane (API Server, etcd, Scheduler, Controller Manager) manages the cluster
-- Worker Nodes (kubelet, kube-proxy, container runtime) run your workloads
+**Architektúra Kubernetes:**
+- Control Plane (API Server, etcd, Scheduler, Controller Manager) riadi klaster
+- Worker nodes (kubelet, kube-proxy, container runtime) spúšťajú vaše workloady
 
-**kubectl Basics:**
-- `kubectl cluster-info` — cluster information
-- `kubectl get` — list resources
-- `kubectl describe` — detailed resource info
-- `kubectl explain` — documentation for resource types
-- `kubectl api-resources` — list all available resource types
+**Základy kubectl:**
+- `kubectl cluster-info` — informácie o klastri
+- `kubectl get` — výpis zdrojov
+- `kubectl describe` — podrobnosti o zdroji
+- `kubectl explain` — dokumentácia k typom zdrojov
+- `kubectl api-resources` — výpis všetkých dostupných typov zdrojov
 
-## Level 2 — Pods
+## Úroveň 2 — Pody
 
-**Imperative Pod Management:**
-- `kubectl run <name> --image=<image>` — create a Pod
-- `kubectl logs <pod>` — view container logs
-- `kubectl exec -it <pod> -- <command>` — execute commands in a container
-- `kubectl port-forward <pod> <local>:<remote>` — access a Pod locally
-- `kubectl delete pod <name>` — delete a Pod
+**Imperatívna práca s Podmi:**
+- `kubectl run <názov> --image=<image>` — vytvorenie Podu
+- `kubectl logs <pod>` — logy containera
+- `kubectl exec -it <pod> -- <príkaz>` — spustenie príkazu v containeri
+- `kubectl port-forward <pod> <lokálny>:<vzdialený>` — lokálny prístup k Podu
+- `kubectl delete pod <názov>` — zmazanie Podu
 
-**Declarative YAML Manifests:**
-- Four required fields: `apiVersion`, `kind`, `metadata`, `spec`
-- `kubectl apply -f <file>` — create or update from YAML (idempotent)
-- `kubectl delete -f <file>` — delete resources defined in a file
-- `--dry-run=client -o yaml` — generate YAML templates
+**Deklaratívne YAML manifesty:**
+- Štyri povinné polia: `apiVersion`, `kind`, `metadata`, `spec`
+- `kubectl apply -f <súbor>` — vytvorenie alebo aktualizácia z YAML (idempotentné)
+- `kubectl delete -f <súbor>` — zmazanie zdrojov definovaných v súbore
+- `--dry-run=client -o yaml` — generovanie YAML šablón
 
-## Level 3 — Deployments
+## Úroveň 3 — Deployments
 
-**Creating and Scaling:**
-- `kubectl create deployment` — create imperatively
-- `kubectl scale deployment <name> --replicas=N` — scale up/down
-- Deployments create and manage ReplicaSets, which manage Pods
-- Self-healing: Kubernetes replaces failed Pods automatically
+**Vytvorenie a škálovanie:**
+- `kubectl create deployment` — vytvorenie imperatívne
+- `kubectl scale deployment <názov> --replicas=N` — zväčšenie/zmenšenie
+- Deployments vytvárajú a spravujú ReplicaSety, tie spravujú Pody
+- Self-healing: Kubernetes automaticky nahrádza spadnuté Pody
 
-**Updates & Rollbacks:**
-- `kubectl set image deployment <name> <container>=<image>` — rolling update
-- `kubectl rollout status deployment <name>` — monitor update progress
-- `kubectl rollout history deployment <name>` — view revision history
-- `kubectl rollout undo deployment <name>` — roll back to previous version
-- `kubectl rollout undo --to-revision=N` — roll back to a specific version
+**Updaty a rollbacky:**
+- `kubectl set image deployment <názov> <container>=<image>` — rolling update
+- `kubectl rollout status deployment <názov>` — sledovanie priebehu updatu
+- `kubectl rollout history deployment <názov>` — história revízií
+- `kubectl rollout undo deployment <názov>` — návrat na predchádzajúcu verziu
+- `kubectl rollout undo --to-revision=N` — návrat na konkrétnu revíziu
 
-## Level 4 — Configuration & Organization
+## Úroveň 4 — Konfigurácia
 
 **ConfigMaps:**
-- Store non-sensitive configuration as key-value pairs
-- Create from literals (`--from-literal`), files (`--from-file`), or YAML
-- Consume as environment variables (`envFrom` / `configMapRef`)
-- Mount as files in a volume (`volumes` / `volumeMounts`)
+- Uchovávajú necitlivú konfiguráciu ako dvojice kľúč-hodnota
+- Vytvorenie z hodnôt (`--from-literal`), zo súborov (`--from-file`) alebo z YAML
+- Konzumujú sa ako premenné prostredia (`envFrom` / `configMapRef`)
+- Alebo sa mountujú ako súbory vo volume (`volumes` / `volumeMounts`)
 
-**Labels & Selectors:**
-- Labels are key-value metadata on resources
-- Selectors filter by labels: `-l app=web`, `-l "version in (1.0, 2.0)"`
-- `kubectl label` — add, modify, or remove labels
-- Labels are the binding mechanism between Deployments and their Pods
+## Úroveň 5 — Všetko dokopy
 
-**Namespaces:**
-- Virtual cluster partitions for resource isolation
-- `-n <namespace>` targets a specific namespace
-- `-A` / `--all-namespaces` shows all namespaces
+Prevádzkovali ste reálnu aplikáciu a použili pritom všetko vyššie naraz:
 
-## kubectl Quick Reference
+- **ConfigMap** dodala konfiguráciu, vloženú cez `envFrom`
+- **`kubectl port-forward`** sprístupnil Pod bez toho, aby pred ním bola Service
+- Naškálovanie na tri repliky a zmazanie jednej ukázalo **self-healing** naživo
+- Zmena ConfigMapy dokázala, že **premenné prostredia sa neobnovujú** — bežiace
+  containery si držia hodnoty, s ktorými naštartovali
+- **`kubectl rollout restart`** vymenil Pody, takže si načítali novú konfiguráciu
+- **Rolling update** prešiel na novú verziu image a `rollout undo` sa vrátil späť
 
-| Command | Purpose |
-|---------|---------|
-| `kubectl get <resource>` | List resources |
-| `kubectl describe <resource> <name>` | Detailed info |
-| `kubectl apply -f <file>` | Create/update from YAML |
-| `kubectl delete -f <file>` | Delete from YAML |
-| `kubectl logs <pod>` | View logs |
-| `kubectl exec -it <pod> -- <cmd>` | Run command in container |
-| `kubectl scale deployment <name> --replicas=N` | Scale |
-| `kubectl set image deployment <name> <c>=<img>` | Update image |
-| `kubectl rollout undo deployment <name>` | Rollback |
-| `kubectl get <resource> -l <key>=<value>` | Filter by label |
-| `kubectl explain <resource>` | Documentation |
+**Myšlienka, ktorá je pod tým všetkým:** vy deklarujete, čo má platiť, a
+controller nepretržite zmenšuje rozdiel medzi tým a realitou. Nič nereštartujete
+ručne.
 
-## What's Next?
+## Rýchly prehľad kubectl
 
-Now that you understand the fundamentals, here are topics to explore next:
+| Príkaz | Na čo slúži |
+|--------|-------------|
+| `kubectl get <zdroj>` | Výpis zdrojov |
+| `kubectl describe <zdroj> <názov>` | Podrobnosti |
+| `kubectl apply -f <súbor>` | Vytvorenie/aktualizácia z YAML |
+| `kubectl delete -f <súbor>` | Zmazanie podľa YAML |
+| `kubectl logs <pod>` | Logy |
+| `kubectl exec -it <pod> -- <príkaz>` | Príkaz v containeri |
+| `kubectl scale deployment <názov> --replicas=N` | Škálovanie |
+| `kubectl set image deployment <názov> <c>=<img>` | Zmena image |
+| `kubectl rollout undo deployment <názov>` | Rollback |
+| `kubectl get <zdroj> -l <kľúč>=<hodnota>` | Filtrovanie podľa labelu |
+| `kubectl rollout restart deployment <názov>` | Výmena Podov (načítanie novej konfigurácie) |
+| `kubectl port-forward deployment/<názov> <lokálny>:<vzdialený>` | Lokálny prístup k Podu |
+| `kubectl explain <zdroj>` | Dokumentácia |
 
-- **Services** — expose and load-balance applications  
-- **Ingress** — route external HTTP traffic to services
-- **Secrets** — manage sensitive data (like ConfigMaps, but encrypted)
-- **Persistent Volumes** — persistent storage for stateful apps
-- **StatefulSets** — manage stateful applications (databases, etc.)
-- **Helm** — package manager for Kubernetes applications
-- **RBAC** — role-based access control for security
+## Čo ďalej?
 
-## Documentation
+Vaša aplikácia stále nemá stabilnú adresu — to je prvá vec, ktorú rieši
+nasledujúci workshop.
+
+**Ďalej: *Kubernetes: Services, Secrets a úložisko***
+- **Labels a selektory do hĺbky** — a namespaces
+- **Services** — stabilná adresa a load balancing pre vaše Pody
+- **Secrets** — citlivé údaje, riešené oddelene od ConfigMáp
+- **Trvalé úložisko** — dáta, ktoré prežijú Pod
+- **Probes, Jobs a CronJobs** — kontroly zdravia a dávkové úlohy
+
+**Potom: *Kubernetes: Troubleshooting*** — čo robiť, keď sa čokoľvek z toho
+pokazí.
+
+Ďalej za obzorom: Ingress, StatefulSets, Helm a RBAC.
+
+## Dokumentácia
 
 - [Pods](https://kubernetes.io/docs/concepts/workloads/pods/)
 - [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
 - [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
-- [Labels and Selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
-- [Namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)
+- [Port Forwarding to a Pod](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/)
 - [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
 
-Thank you for completing this workshop!
+Ďakujeme za absolvovanie workshopu!

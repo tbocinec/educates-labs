@@ -1,131 +1,132 @@
 ---
-title: Workshop Summary
+title: Zhrnutie workshopu
 ---
 
-# Workshop Summary
+# Zhrnutie workshopu
 
-Congratulations! You've debugged eight broken workloads across five categories. 🎉
+Gratulujeme! Zdiagnostikovali ste osem rozbitých workloadov v piatich
+kategóriách. 🎉
 
-The point was never the eight error messages — it was the method underneath them.
+Nešlo však o tých osem chybových hlášok — išlo o metódu, ktorá je pod nimi.
 
 ---
 
-## The Method
+## Metóda
 
 ```
-1. kubectl get pods              → what state, how many restarts?
-2. kubectl describe pod <name>   → why did Kubernetes decide that?
-3. kubectl get events            → what happened, in what order?
-4. kubectl logs <name>           → what did the application say?
+1. kubectl get pods              → v akom stave, koľko reštartov?
+2. kubectl describe pod <názov>  → prečo sa Kubernetes rozhodol takto?
+3. kubectl get events            → čo sa dialo a v akom poradí?
+4. kubectl logs <názov>          → čo povedala samotná aplikácia?
 ```
 
-Two rules that save the most time:
+Dve pravidlá, ktoré ušetria najviac času:
 
-- **If the container never started, there are no logs.** Steps 1–3 tell you whether step 4 is even possible.
-- **If `kubectl apply` printed an error, there is no object.** Stop looking for a Pod to describe.
-
----
-
-## Diagnosis by Symptom
-
-| Symptom | Likely cause | Command that proves it |
-|---------|--------------|------------------------|
-| `ImagePullBackOff` | Wrong tag, private registry, rate limit | `describe` → Events |
-| `CreateContainerConfigError` | Missing ConfigMap/Secret key | `describe` → Events |
-| `CrashLoopBackOff` | App exits on startup | `logs --previous` |
-| `OOMKilled` / exit 137 | Exceeded memory limit | `describe` → Last State |
-| `Pending` | Scheduler found no fit | `describe` → `FailedScheduling` |
-| Error on `apply` | Admission (LimitRange/quota) | the error text itself |
-| Running but unreachable | Selector or port mismatch | `kubectl get endpoints` |
+- **Ak container nikdy nenaštartoval, logy neexistujú.** Kroky 1–3 vám povedia, či má krok 4 vôbec zmysel.
+- **Ak `kubectl apply` vypísal chybu, objekt neexistuje.** Prestaňte hľadať Pod na popísanie.
 
 ---
 
-## Exit Codes Worth Memorising
+## Diagnóza podľa príznaku
 
-| Code | Meaning |
-|------|---------|
-| `0` | Clean exit — for a long-running app, usually still a bug |
-| `1` | Application error — the logs will say why |
-| `127` | Command not found — wrong `command`/`args` or wrong image |
-| `137` | `SIGKILL` — almost always OOMKilled |
-| `143` | `SIGTERM` — terminated on request, often a failing liveness probe |
-
----
-
-## Where Failures Happen
-
-Knowing *which* subsystem rejected you tells you where to look:
-
-| Stage | Who decides | Symptom | Evidence |
-|-------|-------------|---------|----------|
-| **Admission** | API server, LimitRange, quota | `apply` fails | The error text |
-| **Scheduling** | Scheduler | `Pending` | `FailedScheduling` event |
-| **Startup** | kubelet | `ImagePullBackOff`, config errors | Pod events |
-| **Runtime** | Container / kernel | `CrashLoopBackOff`, `OOMKilled` | `logs --previous`, Last State |
-| **Networking** | Service / EndpointSlice | Running but unreachable | `get endpoints` |
+| Príznak | Pravdepodobná príčina | Príkaz, ktorý to dokáže |
+|---------|----------------------|--------------------------|
+| `ImagePullBackOff` | Zlý tag, privátny registry, limit sťahovania | `describe` → Events |
+| `CreateContainerConfigError` | Chýbajúci kľúč v ConfigMape/Secrete | `describe` → Events |
+| `CrashLoopBackOff` | Aplikácia padá pri štarte | `logs --previous` |
+| `OOMKilled` / kód 137 | Prekročený limit pamäte | `describe` → Last State |
+| `Pending` | Scheduler nenašiel vhodný node | `describe` → `FailedScheduling` |
+| Chyba pri `apply` | Admission (LimitRange/kvóta) | samotný text chyby |
+| Beží, ale je nedostupná | Nesúlad selektora alebo portu | `kubectl get endpoints` |
 
 ---
 
-## Command Cheat Sheet
+## Návratové kódy, ktoré sa oplatí pamätať
 
-### First look
+| Kód | Význam |
+|-----|--------|
+| `0` | Čisté ukončenie — pri dlhobežiacej aplikácii aj tak zvyčajne chyba |
+| `1` | Chyba aplikácie — logy povedia prečo |
+| `127` | Príkaz sa nenašiel — zlý `command`/`args` alebo zlý image |
+| `137` | `SIGKILL` — takmer vždy OOMKilled |
+| `143` | `SIGTERM` — ukončenie na požiadanie, často zlyhávajúca liveness probe |
+
+---
+
+## Kde poruchy vznikajú
+
+Keď viete, *ktorý* subsystém vás odmietol, viete aj kam sa pozrieť:
+
+| Fáza | Kto rozhoduje | Príznak | Dôkaz |
+|------|---------------|---------|-------|
+| **Admission** | API server, LimitRange, kvóta | `apply` zlyhá | Text chyby |
+| **Scheduling** | Scheduler | `Pending` | Udalosť `FailedScheduling` |
+| **Štart** | kubelet | `ImagePullBackOff`, chyby konfigurácie | Udalosti Podu |
+| **Runtime** | Container / jadro | `CrashLoopBackOff`, `OOMKilled` | `logs --previous`, Last State |
+| **Sieť** | Service / EndpointSlice | Beží, ale nedostupné | `get endpoints` |
+
+---
+
+## Ťahák na príkazy
+
+### Prvý pohľad
 
 ```
-kubectl get pods -o wide                        # status, restarts, node, IP
-kubectl get events --sort-by=.lastTimestamp     # chronological narrative
+kubectl get pods -o wide                        # stav, reštarty, node, IP
+kubectl get events --sort-by=.lastTimestamp     # chronologický príbeh
 kubectl get events --field-selector type=Warning
 ```
 
-### Narrowing down
+### Zúženie problému
 
 ```
-kubectl describe pod <name>                     # events + config + last state
-kubectl describe pod <name> | grep -A10 Events:
-kubectl logs <name>                             # current container
-kubectl logs <name> --previous                  # the one that died
-kubectl logs -l app=<label> --tail=50           # by label, all replicas
+kubectl describe pod <názov>                    # udalosti + konfigurácia + posledný stav
+kubectl describe pod <názov> | grep -A10 Events:
+kubectl logs <názov>                            # aktuálny container
+kubectl logs <názov> --previous                 # ten, ktorý zomrel
+kubectl logs -l app=<label> --tail=50           # podľa labelu, všetky repliky
 ```
 
-### Getting inside
+### Pohľad dovnútra
 
 ```
-kubectl exec -it <pod> -- sh                    # shell in the container
-kubectl exec <pod> -- printenv                  # what env did it actually get?
-kubectl debug <pod> -it --image=busybox         # ephemeral container, no shell needed
+kubectl exec -it <pod> -- sh                    # shell v containeri
+kubectl exec <pod> -- printenv                  # aké premenné naozaj dostal?
+kubectl debug <pod> -it --image=busybox         # efemérny container, netreba shell
 ```
 
-### Networking
+### Sieť
 
 ```
-kubectl get endpoints <service>                 # the one command that matters
+kubectl get endpoints <service>                 # jediný príkaz, na ktorom záleží
 kubectl describe service <service>
-kubectl get pods --show-labels                  # compare against the selector
+kubectl get pods --show-labels                  # porovnanie so selektorom
 ```
 
-### Limits and quotas
+### Limity a kvóty
 
 ```
 kubectl describe limitrange
 kubectl describe resourcequota
-kubectl top pod                                 # actual usage (needs metrics-server)
+kubectl top pod                                 # reálna spotreba (treba metrics-server)
 ```
 
 ---
 
-## What Wasn't Covered
+## Čo sme nepokryli
 
-This workshop stayed inside a single namespace, which is where most failures
-live. Things you'll meet later:
+Tento workshop ostal v rámci jedného namespace, kde žije väčšina porúch. S čím sa
+stretnete neskôr:
 
-- **Failing probes** — a readiness probe that never passes empties endpoints silently
-- **Node problems** — `NotReady` nodes, disk pressure, evictions
-- **RBAC denials** — `Forbidden` errors from an under-privileged ServiceAccount
-- **DNS failures** — `nslookup` inside a Pod when name resolution breaks
-- **Init containers** — `Init:0/1` stuck, a whole failure mode of its own
+- **Zlyhávajúce probes** — readiness probe, ktorá nikdy neprejde, potichu vyprázdni endpointy
+- **Problémy s nodmi** — nody v stave `NotReady`, tlak na disk, evikcie
+- **Odmietnutia z RBAC** — chyby `Forbidden` od ServiceAccountu s malými právami
+- **Zlyhania DNS** — `nslookup` vnútri Podu, keď prestane fungovať rozlišovanie mien
+- **Init containery** — zaseknuté `Init:0/1`, samostatná kategória porúch
 
 ---
 
-## Official Kubernetes Documentation
+## Oficiálna dokumentácia Kubernetes
 
 - [Troubleshoot Applications](https://kubernetes.io/docs/tasks/debug/debug-application/)
 - [Debug Pods](https://kubernetes.io/docs/tasks/debug/debug-application/debug-pods/)
@@ -134,4 +135,4 @@ live. Things you'll meet later:
 - [Resource Management for Pods and Containers](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)
 - [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
 
-Thank you for completing this workshop! 🚀
+Ďakujeme za absolvovanie workshopu! 🚀

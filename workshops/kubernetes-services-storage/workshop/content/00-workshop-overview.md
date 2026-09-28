@@ -1,48 +1,57 @@
 ---
-title: Workshop Overview
+title: Prehľad workshopu
 ---
 
-# Kubernetes Services, Secrets & Storage
+# Kubernetes: Services, Secrets a úložisko
 
-Welcome to this hands-on workshop! This is a **follow-up** to the *Kubernetes Fundamentals* workshop that covered kubectl, Pods, Deployments, ConfigMaps, and Labels.
+Vitajte na praktickom workshope! Toto je **pokračovanie** workshopu *Základy
+Kubernetes*, ktorý pokrýval kubectl, Pody, Deployments a ConfigMapy.
 
-In this workshop you'll learn how to **connect**, **secure**, and **persist** your applications in Kubernetes.
+Tu sa naučíte, ako aplikácie v Kubernetes **prepojiť**, **zabezpečiť** a ako im
+zachovať **dáta**.
 
-## What You Will Learn
+## Čo sa naučíte
 
-This workshop is organized into four progressive levels:
+Workshop je rozdelený do štyroch postupných úrovní:
 
-| Level | Topic | What You Will Cover |
-|-------|-------|-------------------|
-| **1 — Networking** | Services & DNS | Pod networking model, ClusterIP Services, service discovery |
-| **2 — Secrets** | Sensitive data | Creating Secrets, consuming as env vars and files |
-| **3 — Storage** | Persistent data | PersistentVolumeClaims, data surviving Pod restarts |
-| **4 — Reliability** | Probes & Jobs | Liveness/readiness health checks, Jobs, CronJobs |
+| Úroveň | Téma | Čo preberieme |
+|--------|------|---------------|
+| **1 — Organizácia a prepojenie** | Labels, DNS a Services | Labels a selektory do hĺbky, namespaces, sieťovanie Podov, ClusterIP Services |
+| **2 — Secrets** | Citlivé údaje | Vytváranie Secrets, konzumácia ako env premenné aj ako súbory |
+| **3 — Úložisko** | Trvalé dáta | PersistentVolumeClaims, dáta prežívajúce reštart Podu |
+| **4 — Spoľahlivosť** | Probes a Jobs | Liveness/readiness kontroly, Jobs, CronJobs |
 
-## Prerequisites
+Úroveň 1 začína labelmi a selektormi zámerne. Service si nájde svoje Pody podľa
+label selektora a podľa ničoho iného — takže práve selektor je to, vďaka čomu
+všetko ďalšie funguje, alebo potichu zlyhá.
 
-You should be familiar with:
-- `kubectl` basics (`get`, `apply`, `describe`, `delete`, `logs`, `exec`)
-- Pods and Deployments
-- Labels and selectors
+## Predpoklady
 
-These were covered in the *Kubernetes Fundamentals* workshop.
+Mali by ste ovládať:
+- Základy `kubectl` (`get`, `apply`, `describe`, `delete`, `logs`, `exec`)
+- Pody, Deployments, škálovanie a rolling updates
+- ConfigMaps
 
-## Workshop Environment
+Všetko to pokrýval workshop *Základy Kubernetes*. Labels preberáme v prvej
+kapitole od začiatku, takže stačí, ak ste o nich počuli.
 
-Your workshop environment provides:
+## Prostredie workshopu
 
-- **Two terminals** (split layout) — run commands side by side
-- **Code editor** — view and edit YAML manifests
-- **Kubernetes Dashboard** — visual cluster monitoring (Console tab)
-- **Pre-built exercise files** — YAML manifests in `~/exercises/`
+Vaše prostredie obsahuje:
 
-Your dedicated namespace is `{{ session_namespace }}`.
+- **Dva terminály** (rozdelený layout) — príkazy môžete púšťať vedľa seba
+- **Editor kódu** — na prezeranie a úpravu YAML manifestov
+- **Kubernetes Dashboard** — vizuálny prehľad klastra (záložka Console)
+- **Pripravené cvičné súbory** — YAML manifesty v `~/exercises/`
 
-## Official Kubernetes Documentation
+Váš vlastný namespace je `{{ session_namespace }}`.
 
-Throughout this workshop we'll reference the official docs. Key pages:
+## Oficiálna dokumentácia Kubernetes
 
+Počas workshopu budeme odkazovať na oficiálnu dokumentáciu. Kľúčové stránky:
+
+- [Labels and Selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
+- [Namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)
 - [Services](https://kubernetes.io/docs/concepts/services-networking/service/)
 - [DNS for Services and Pods](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/)
 - [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)
@@ -51,8 +60,8 @@ Throughout this workshop we'll reference the official docs. Key pages:
 - [Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/job/)
 - [CronJobs](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)
 
-## Time Estimate
+## Časový odhad
 
-This workshop takes approximately **90 minutes** to complete.
+Workshop trvá približne **105 minút**.
 
-Let's begin!
+Poďme na to!

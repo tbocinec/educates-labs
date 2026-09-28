@@ -1,89 +1,96 @@
 ---
-title: Kubernetes Architecture
+title: Architektúra Kubernetes
 ---
 
-# Level 1: Kubernetes Architecture
+# Úroveň 1: Architektúra Kubernetes
 
-Before working with Kubernetes hands-on, let's understand what it is and how it's structured.
+Než začneme s Kubernetes pracovať prakticky, poďme si povedať, čo to vlastne je
+a ako je to poskladané.
 
-## What is Kubernetes?
+## Čo je Kubernetes?
 
-**Kubernetes** (often abbreviated as **K8s**) is an open-source container orchestration platform. It automates the deployment, scaling, and management of containerized applications.
+**Kubernetes** (často skracovaný na **K8s**) je open-source platforma na
+orchestráciu containerov. Automatizuje nasadzovanie, škálovanie a správu
+containerizovaných aplikácií.
 
-Key capabilities:
-- **Self-healing** — restarts failed containers, replaces and reschedules them
-- **Scaling** — scale applications up or down based on demand
-- **Rolling updates** — update applications with zero downtime
-- **Service discovery** — automatic DNS and load balancing for services
-- **Configuration management** — manage application configuration separately from code
+Kľúčové schopnosti:
+- **Self-healing** — reštartuje spadnuté containery, nahrádza ich a preplánuje
+- **Škálovanie** — aplikácie sa dajú zväčšovať a zmenšovať podľa záťaže
+- **Rolling updates** — aktualizácia aplikácie bez výpadku
+- **Service discovery** — automatické DNS a load balancing pre služby
+- **Správa konfigurácie** — konfigurácia aplikácie oddelene od kódu
 
-> **Docs**: [Kubernetes Components](https://kubernetes.io/docs/concepts/overview/components/)
+> **Dokumentácia**: [Kubernetes Components](https://kubernetes.io/docs/concepts/overview/components/)
 
-## Cluster Architecture
+## Architektúra klastra
 
-A Kubernetes cluster consists of two main components:
+Kubernetes klaster sa skladá z dvoch hlavných častí:
 
-### Control Plane (Master)
+### Control Plane (riadiaca vrstva)
 
-The control plane manages the overall cluster. Its key components are:
+Control plane riadi celý klaster. Jeho kľúčové komponenty sú:
 
-| Component | Role |
-|-----------|------|
-| **API Server** | Front-end for Kubernetes. All `kubectl` commands talk to this. |
-| **etcd** | Key-value store that holds all cluster data and state. |
-| **Scheduler** | Decides which node should run a new Pod. |
-| **Controller Manager** | Runs controllers that handle routine tasks (e.g., ensuring desired replica count). |
+| Komponent | Úloha |
+|-----------|-------|
+| **API Server** | Vstupný bod do Kubernetes. Všetky príkazy `kubectl` komunikujú s ním. |
+| **etcd** | Key-value úložisko so všetkými dátami a stavom klastra. |
+| **Scheduler** | Rozhoduje, na ktorom node pobeží nový Pod. |
+| **Controller Manager** | Beží v ňom sada controllerov riešiacich rutinné úlohy (napr. dodržanie požadovaného počtu replík). |
 
-### Worker Nodes
+### Worker nodes (pracovné uzly)
 
-Worker nodes run your actual application workloads:
+Na worker nodes bežia vaše skutočné aplikácie:
 
-| Component | Role |
-|-----------|------|
-| **kubelet** | Agent on each node. Ensures containers are running in Pods. |
-| **kube-proxy** | Handles networking — routes traffic to the correct Pods. |
-| **Container Runtime** | Runs the actual containers (e.g., containerd, CRI-O). |
+| Komponent | Úloha |
+|-----------|-------|
+| **kubelet** | Agent na každom node. Stará sa o to, aby containery v Podoch bežali. |
+| **kube-proxy** | Rieši sieťovanie — smeruje prevádzku na správne Pody. |
+| **Container Runtime** | Spúšťa samotné containery (napr. containerd, CRI-O). |
 
-## Core Concepts
+## Základné objekty
 
-Here are the fundamental Kubernetes objects you will work with in this workshop:
+Toto sú základné objekty Kubernetes, s ktorými budete na workshope pracovať:
 
-| Object | Purpose |
-|--------|---------|
-| **Pod** | Smallest deployable unit. Wraps one or more containers. |
-| **Deployment** | Manages a set of identical Pods. Handles scaling, updates, rollbacks. |
-| **ConfigMap** | Stores non-sensitive configuration data (key-value pairs). |
-| **Namespace** | Virtual cluster partition for resource isolation. |
-| **Label** | Key-value metadata attached to objects for organization and selection. |
+| Objekt | Na čo slúži |
+|--------|-------------|
+| **Pod** | Najmenšia nasaditeľná jednotka. Obaľuje jeden alebo viac containerov. |
+| **Deployment** | Spravuje sadu identických Podov. Rieši škálovanie, updaty a rollbacky. |
+| **ConfigMap** | Uchováva necitlivú konfiguráciu ako dvojice kľúč-hodnota. |
+| **Namespace** | Virtuálne rozdelenie klastra kvôli izolácii zdrojov. |
+| **Label** | Metadáta typu kľúč-hodnota na objektoch, slúžia na organizáciu a výber. |
 
-## The Declarative Model
+## Deklaratívny model
 
-Kubernetes uses a **declarative** approach: you describe the **desired state** (e.g., "I want 3 replicas of nginx") and Kubernetes continuously works to make the **actual state** match.
+Kubernetes používa **deklaratívny** prístup: vy popíšete **požadovaný stav**
+(napr. „chcem 3 repliky nginxu") a Kubernetes sa nepretržite snaží dostať
+**skutočný stav** do súladu s ním.
 
 ```
-You declare:  "I want 3 nginx Pods"
+Vy deklarujete:  "Chcem 3 nginx Pody"
     ↓
-Kubernetes:   Creates and maintains exactly 3 Pods
+Kubernetes:      Vytvorí a udržiava presne 3 Pody
     ↓
-A Pod dies:   Kubernetes automatically creates a replacement
+Pod zomrie:      Kubernetes automaticky vytvorí náhradu
 ```
 
-This is fundamentally different from imperative commands like "start this container on this server."
+Je to zásadne odlišné od imperatívnych príkazov typu „spusti tento container na
+tomto serveri".
 
-## Quick Cluster Check
+## Rýchla kontrola klastra
 
-Let's verify your cluster is working. Check the cluster information:
+Overme si, že klaster funguje. Zistite informácie o klastri:
 
 ```terminal:execute
 command: kubectl cluster-info
 ```
 
-And verify the node(s) in the cluster:
+A pozrite si nodes v klastri:
 
 ```terminal:execute
 command: kubectl get nodes
 ```
 
-You should see your cluster components running and at least one node in `Ready` status.
+Mali by ste vidieť bežiace komponenty klastra a aspoň jeden node v stave `Ready`.
 
-In the next chapter, you'll learn the essential `kubectl` commands for interacting with this cluster.
+V nasledujúcej kapitole sa naučíte základné príkazy `kubectl`, ktorými sa s
+klastrom rozpráva.

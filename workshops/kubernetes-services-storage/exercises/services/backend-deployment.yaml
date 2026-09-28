@@ -1,9 +1,9 @@
 # =============================================================
-# backend-deployment.yaml — A backend app that returns its hostname
+# backend-deployment.yaml — backend, ktorý vracia svoj hostname
 # =============================================================
-# This Deployment creates a simple HTTP server using hashicorp/http-echo.
-# Each Pod responds with its own name, making it easy to see
-# load-balancing in action when accessed through a Service.
+# Tento Deployment vytvorí jednoduchý HTTP server postavený na
+# hashicorp/http-echo. Každý Pod odpovedá vlastným názvom, takže
+# pri prístupe cez Service je rozklad záťaže pekne vidieť.
 # =============================================================
 
 apiVersion: apps/v1

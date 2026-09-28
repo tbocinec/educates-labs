@@ -1,12 +1,12 @@
 # =============================================================
-# pvc.yaml — A PersistentVolumeClaim requesting storage
+# pvc.yaml — PersistentVolumeClaim žiadajúci úložisko
 # =============================================================
-# A PVC is a request for storage. Kubernetes dynamically
-# provisions a PersistentVolume (PV) that satisfies this claim.
+# PVC je požiadavka o úložisko. Kubernetes dynamicky vytvorí
+# PersistentVolume (PV), ktorý tejto požiadavke vyhovie.
 #
-# Key fields:
-#   - accessModes: ReadWriteOnce = single node read/write
-#   - resources.requests.storage: how much storage to request
+# Kľúčové polia:
+#   - accessModes: ReadWriteOnce = čítanie/zápis z jedného nodu
+#   - resources.requests.storage: koľko úložiska žiadame
 #
 # Docs: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
 # =============================================================

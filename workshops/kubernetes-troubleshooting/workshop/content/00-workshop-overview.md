@@ -1,68 +1,68 @@
 ---
-title: Workshop Overview
+title: Prehľad workshopu
 ---
 
-# Kubernetes Troubleshooting
+# Kubernetes: Troubleshooting
 
-Welcome! Every other workshop shows you Kubernetes when it **works**. This one
-shows you Kubernetes when it **doesn't** — which is how you will spend most of
-your time in the real world.
+Vitajte! Všetky ostatné workshopy vám ukazujú Kubernetes, keď **funguje**. Tento
+ukazuje Kubernetes, keď **nefunguje** — a presne tým strávite v praxi väčšinu
+času.
 
-You will be handed six broken workloads. For each one you'll see the symptom,
-find the root cause with `kubectl`, fix it, and confirm the fix. By the end you
-won't be memorising error messages — you'll have a **method** that works on
-errors you've never seen before.
+Dostanete šesť rozbitých workloadov. Pri každom uvidíte príznak, cez `kubectl`
+nájdete príčinu, opravíte ju a opravu overíte. Na konci nebudete memorovať chybové
+hlášky — budete mať **metódu**, ktorá funguje aj na chyby, ktoré ste nikdy
+nevideli.
 
-## What You Will Learn
+## Čo sa naučíte
 
-| Level | Symptom | Failures You Will Diagnose |
-|-------|---------|----------------------------|
-| **1 — Method** | — | `get` → `describe` → events → logs, and when to use each |
-| **2 — Never starts** | `0/1` forever | `ImagePullBackOff`, `CreateContainerConfigError` |
-| **3 — Starts, then dies** | restart count climbing | `CrashLoopBackOff`, `OOMKilled` |
-| **4 — Stays Pending** | no node assigned | unschedulable Pod, rejected by admission |
-| **5 — Unreachable** | app doesn't answer | Service with no endpoints, wrong `targetPort` |
+| Úroveň | Príznak | Poruchy, ktoré budete diagnostikovať |
+|--------|---------|--------------------------------------|
+| **1 — Metóda** | — | `get` → `describe` → events → logs, a kedy čo použiť |
+| **2 — Nikdy nenaštartuje** | večné `0/1` | `ImagePullBackOff`, `CreateContainerConfigError` |
+| **3 — Naštartuje a zomrie** | rastúci počet reštartov | `CrashLoopBackOff`, `OOMKilled` |
+| **4 — Ostáva v Pending** | žiadny pridelený node | nenaplánovateľný Pod, odmietnutie pri admission |
+| **5 — Nedostupná aplikácia** | appka neodpovedá | Service bez endpointov, zlý `targetPort` |
 
-## Prerequisites
+## Predpoklady
 
-You should be comfortable with:
+Mali by ste sa cítiť pohodlne s:
 - `kubectl get`, `describe`, `logs`, `apply`, `delete`
-- Pods, Deployments, Services, ConfigMaps
+- Podmi, Deploymentmi, Services a ConfigMapami
 
-These were covered in *Kubernetes Fundamentals* and *Kubernetes Services, Secrets
-& Storage*.
+Pokrývali to workshopy *Základy Kubernetes* a *Kubernetes: Services, Secrets a
+úložisko*.
 
-## Workshop Environment
+## Prostredie workshopu
 
-Your workshop environment provides:
+Vaše prostredie obsahuje:
 
-- **Two terminals** (split layout) — keep a `watch` running in one while you work in the other
-- **Code editor** — read and fix the broken manifests
-- **Headlamp** — a web UI where events and logs are one click away
-- **Pre-built broken manifests** — in `~/exercises/`
+- **Dva terminály** (rozdelený layout) — v jednom nechajte bežať `watch`, v druhom pracujte
+- **Editor kódu** — na čítanie a opravu rozbitých manifestov
+- **Headlamp** — webové UI, kde sú udalosti a logy na jeden klik
+- **Pripravené rozbité manifesty** — v `~/exercises/`
 
-Your dedicated namespace is `{{ session_namespace }}`.
+Váš vlastný namespace je `{{ session_namespace }}`.
 
-## How Each Scenario Works
+## Ako každý scenár prebieha
 
-Every scenario follows the same four beats:
+Každý scenár má rovnaké štyri fázy:
 
-1. **Break it** — you apply a manifest that someone handed you
-2. **Observe** — what does the cluster actually say?
-3. **Diagnose** — narrow it down to one root cause
-4. **Fix and verify** — change one thing, prove it worked
+1. **Rozbi to** — aplikujete manifest, ktorý vám niekto podal
+2. **Pozoruj** — čo na to klaster vlastne hovorí?
+3. **Diagnostikuj** — zúžte to na jednu príčinu
+4. **Oprav a over** — zmeňte jednu vec a dokážte, že to zabralo
 
-Resist the urge to skip to the fix. The diagnosis is the skill.
+Odolajte pokušeniu preskočiť rovno na opravu. Tou zručnosťou je diagnostika.
 
-## Official Kubernetes Documentation
+## Oficiálna dokumentácia Kubernetes
 
 - [Troubleshoot Applications](https://kubernetes.io/docs/tasks/debug/debug-application/)
 - [Debug Pods](https://kubernetes.io/docs/tasks/debug/debug-application/debug-pods/)
 - [Debug Services](https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/)
 - [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
 
-## Time Estimate
+## Časový odhad
 
-This workshop takes approximately **60 minutes** to complete.
+Workshop trvá približne **60 minút**.
 
-Let's break some things!
+Poďme niečo rozbiť!

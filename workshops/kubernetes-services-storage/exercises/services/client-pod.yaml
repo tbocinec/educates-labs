@@ -1,8 +1,9 @@
 # =============================================================
-# client-pod.yaml — A client Pod for testing Service connectivity
+# client-pod.yaml — klientský Pod na testovanie spojenia
 # =============================================================
-# This lightweight busybox Pod stays running so you can exec into
-# it and test network connectivity to Services using curl/wget.
+# Tento odľahčený busybox Pod stále beží, takže sa doň viete
+# dostať cez exec a otestovať sieťové spojenie na Services
+# pomocou curl/wget.
 # =============================================================
 
 apiVersion: v1

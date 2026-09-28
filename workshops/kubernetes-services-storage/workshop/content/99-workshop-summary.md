@@ -1,133 +1,157 @@
 ---
-title: Workshop Summary
+title: Zhrnutie workshopu
 ---
 
-# Workshop Summary
+# Zhrnutie workshopu
 
-Congratulations! You've completed the **Kubernetes Services, Secrets & Storage** workshop! 🎉
+Gratulujeme! Dokončili ste workshop **Kubernetes: Services, Secrets a úložisko**. 🎉
 
-Here's a recap of everything you learned across the four levels.
-
----
-
-## Level 1: Networking & Services
-
-You learned how Pods communicate and how **Services** provide stable endpoints.
-
-**Key concepts:**
-- Every Pod gets its own IP, but Pod IPs are **ephemeral**
-- **Services** provide a **stable IP and DNS name** for a set of Pods
-- **ClusterIP** is the default Service type (internal only)
-- Services use **label selectors** to find target Pods
-- Cluster **DNS** resolves Service names automatically
-- Services **load-balance** traffic across matching Pods
-
-**Key commands:**
-```
-kubectl expose deployment <name> --port=<port>    # Create Service
-kubectl get services                               # List Services
-kubectl get endpoints <name>                       # Show Pod IPs behind Service
-kubectl describe service <name>                    # Service details
-```
+Tu je prehľad všetkého, čo ste prešli naprieč štyrmi úrovňami.
 
 ---
 
-## Level 2: Secrets
+## Úroveň 1: Labels, selektory a namespaces
 
-You learned how to manage **sensitive data** securely in Kubernetes.
+Naučili ste sa, ako si Kubernetes hľadá veci.
 
-**Key concepts:**
-- **Secrets** store passwords, tokens, certificates (base64-encoded)
-- Create with `kubectl create secret` or YAML (`stringData` for plain text)
-- Consume as **environment variables** (`envFrom`) or **volume mounts**
-- Volume-mounted Secrets **auto-update**; env-var Secrets do **NOT**
+**Kľúčové pojmy:**
+- **Labels** sú dvojice kľúč-hodnota, **selektory** podľa nich filtrujú
+- Selektory na rovnosť (`app=web`), nerovnosť (`tier!=frontend`) a množinové (`version in (1.0, 2.0)`)
+- `kubectl label` pridáva, prepisuje (`--overwrite`) a odoberá (`kľúč-`) labels
+- **Namespaces** rozdeľujú klaster; `-n <ns>` mieri na jeden, `-A` na všetky
+- Controllery stoja na selektoroch — takto si Deployment nájde svoje Pody, a rovnako aj Service
 
-**Key commands:**
+**Kľúčové príkazy:**
 ```
-kubectl create secret generic <name> --from-literal=key=val
-kubectl get secret <name> -o jsonpath='{.data.key}' | base64 -d
-kubectl describe secret <name>
+kubectl get pods --show-labels
+kubectl get pods -l app=web
+kubectl label pod <názov> kľúč=hodnota --overwrite
+kubectl get namespaces
 ```
 
 ---
 
-## Level 3: Persistent Storage
+## Úroveň 1: Sieťovanie a Services
 
-You learned how to **persist data** beyond the Pod lifecycle.
+Naučili ste sa, ako Pody komunikujú a ako im **Services** dávajú stabilné
+koncové body.
 
-**Key concepts:**
-- Pod storage is ephemeral by default
-- **PersistentVolumeClaim (PVC)** requests storage from the cluster
-- **PersistentVolume (PV)** is the actual storage resource
-- Data in a PVC survives **Pod deletion**
-- **StorageClasses** enable dynamic provisioning
-- **Reclaim policies** control data fate on PVC deletion
+**Kľúčové pojmy:**
+- Každý Pod má vlastnú IP, ale IP adresy Podov sú **pominuteľné**
+- **Services** poskytujú **stabilnú IP a DNS názov** pre sadu Podov
+- **ClusterIP** je predvolený typ Service (len interne)
+- Services si hľadajú cieľové Pody cez **label selektory**
+- **DNS** klastra automaticky rozlišuje názvy Services
+- Services **rozkladajú záťaž** medzi vyhovujúce Pody
 
-**Key commands:**
+**Kľúčové príkazy:**
 ```
-kubectl get pvc                    # List PVCs
-kubectl get pv                     # List PVs
-kubectl describe pvc <name>        # PVC details
-kubectl get storageclasses         # Available storage classes
+kubectl expose deployment <názov> --port=<port>   # Vytvorenie Service
+kubectl get services                               # Výpis Services
+kubectl get endpoints <názov>                      # IP Podov za Service
+kubectl describe service <názov>                   # Detaily Service
 ```
 
 ---
 
-## Level 4: Probes, Jobs & CronJobs
+## Úroveň 2: Secrets
 
-You learned Kubernetes **self-healing** and **batch processing** capabilities.
+Naučili ste sa bezpečne narábať s **citlivými údajmi**.
+
+**Kľúčové pojmy:**
+- **Secrets** uchovávajú heslá, tokeny, certifikáty (kódované cez base64)
+- Vytvorenie cez `kubectl create secret` alebo z YAML (`stringData` pre čistý text)
+- Konzumácia ako **premenné prostredia** (`envFrom`) alebo ako **volume mount**
+- Secrets cez volume sa **aktualizujú samy**, cez premenné prostredia **nie**
+
+**Kľúčové príkazy:**
+```
+kubectl create secret generic <názov> --from-literal=kľúč=hodnota
+kubectl get secret <názov> -o jsonpath='{.data.kľúč}' | base64 -d
+kubectl describe secret <názov>
+```
+
+---
+
+## Úroveň 3: Trvalé úložisko
+
+Naučili ste sa, ako **udržať dáta** aj po zániku Podu.
+
+**Kľúčové pojmy:**
+- Úložisko Podu je predvolene pominuteľné
+- **PersistentVolumeClaim (PVC)** je požiadavka o úložisko z klastra
+- **PersistentVolume (PV)** je samotný zdroj úložiska
+- Dáta v PVC prežijú **zmazanie Podu**
+- **StorageClasses** umožňujú dynamické vytváranie úložiska
+- **Reclaim policy** rozhoduje o osude dát pri zmazaní PVC
+
+**Kľúčové príkazy:**
+```
+kubectl get pvc                    # Výpis PVC
+kubectl get pv                     # Výpis PV
+kubectl describe pvc <názov>       # Detaily PVC
+kubectl get storageclasses         # Dostupné StorageClasses
+```
+
+---
+
+## Úroveň 4: Probes, Jobs a CronJobs
+
+Naučili ste sa, ako Kubernetes rieši **self-healing** a **dávkové spracovanie**.
 
 **Probes:**
-- **Liveness probe** → restart container if unhealthy
-- **Readiness probe** → stop routing traffic if not ready
-- Methods: HTTP GET, TCP Socket, Exec (command)
+- **Liveness probe** → reštartuje container, keď je nezdravý
+- **Readiness probe** → prestane naň smerovať prevádzku, keď nie je pripravený
+- Metódy: HTTP GET, TCP Socket, Exec (príkaz)
 
-**Jobs & CronJobs:**
-- **Jobs** run to completion (batch tasks, data processing)
-- `completions` + `parallelism` for parallel execution
-- **CronJobs** create Jobs on a schedule (cron syntax)
+**Jobs a CronJobs:**
+- **Jobs** bežia do dokončenia (dávkové úlohy, spracovanie dát)
+- `completions` + `parallelism` na paralelné vykonávanie
+- **CronJobs** vytvárajú Jobs podľa plánu (cron syntax)
 
-**Key commands:**
+**Kľúčové príkazy:**
 ```
-kubectl get jobs                               # List Jobs
-kubectl logs job/<name>                        # Job output
-kubectl get cronjobs                           # List CronJobs
-kubectl create job <name> --image=<img> -- cmd # Quick Job
-```
-
----
-
-## Complete kubectl Cheat Sheet
-
-### Resources covered in this workshop
-
-| Resource | List | Details | Create | Delete |
-|----------|------|---------|--------|--------|
-| Service | `kubectl get svc` | `kubectl describe svc <name>` | `kubectl expose` | `kubectl delete svc <name>` |
-| Secret | `kubectl get secret` | `kubectl describe secret <name>` | `kubectl create secret` | `kubectl delete secret <name>` |
-| PVC | `kubectl get pvc` | `kubectl describe pvc <name>` | `kubectl apply -f` | `kubectl delete pvc <name>` |
-| Job | `kubectl get jobs` | `kubectl describe job <name>` | `kubectl create job` | `kubectl delete job <name>` |
-| CronJob | `kubectl get cronjob` | `kubectl describe cronjob <name>` | `kubectl apply -f` | `kubectl delete cronjob <name>` |
-
-### Common patterns
-
-```
-kubectl get <resource> -o wide          # More columns
-kubectl get <resource> -o yaml          # Full YAML output
-kubectl get <resource> -w               # Watch for changes
-kubectl describe <resource> <name>      # Detailed info + events
-kubectl logs <pod>                      # Container logs
-kubectl exec <pod> -- <command>         # Run command in Pod
-kubectl apply -f <file>                 # Create/update from YAML
-kubectl delete -f <file>               # Delete resources from YAML
+kubectl get jobs                                   # Výpis Jobov
+kubectl logs job/<názov>                           # Výstup Jobu
+kubectl get cronjobs                               # Výpis CronJobov
+kubectl create job <názov> --image=<img> -- cmd    # Rýchly Job
 ```
 
 ---
 
-## Official Kubernetes Documentation
+## Kompletný prehľad kubectl
 
-Bookmark these for reference:
+### Zdroje preberané na tomto workshope
 
+| Zdroj | Výpis | Detaily | Vytvorenie | Zmazanie |
+|-------|-------|---------|------------|----------|
+| Service | `kubectl get svc` | `kubectl describe svc <názov>` | `kubectl expose` | `kubectl delete svc <názov>` |
+| Secret | `kubectl get secret` | `kubectl describe secret <názov>` | `kubectl create secret` | `kubectl delete secret <názov>` |
+| PVC | `kubectl get pvc` | `kubectl describe pvc <názov>` | `kubectl apply -f` | `kubectl delete pvc <názov>` |
+| Job | `kubectl get jobs` | `kubectl describe job <názov>` | `kubectl create job` | `kubectl delete job <názov>` |
+| CronJob | `kubectl get cronjob` | `kubectl describe cronjob <názov>` | `kubectl apply -f` | `kubectl delete cronjob <názov>` |
+
+### Bežné vzory
+
+```
+kubectl get <zdroj> -o wide          # Viac stĺpcov
+kubectl get <zdroj> -o yaml          # Kompletný YAML výstup
+kubectl get <zdroj> -w               # Sledovanie zmien
+kubectl describe <zdroj> <názov>     # Podrobnosti + udalosti
+kubectl logs <pod>                   # Logy containera
+kubectl exec <pod> -- <príkaz>       # Príkaz v Pode
+kubectl apply -f <súbor>             # Vytvorenie/aktualizácia z YAML
+kubectl delete -f <súbor>            # Zmazanie zdrojov podľa YAML
+```
+
+---
+
+## Oficiálna dokumentácia Kubernetes
+
+Oplatí sa uložiť do záložiek:
+
+- [Labels and Selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
+- [Namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)
 - [Services](https://kubernetes.io/docs/concepts/services-networking/service/)
 - [DNS for Services and Pods](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/)
 - [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)
@@ -139,15 +163,18 @@ Bookmark these for reference:
 
 ---
 
-## What's Next?
+## Čo ďalej?
 
-With two workshops completed, you now have a solid Kubernetes foundation. Here are some topics to explore next:
+S dvoma dokončenými workshopmi máte solídny základ. Ďalšie témy na preskúmanie:
 
-- **Ingress** — expose HTTP/HTTPS routes to Services
-- **NetworkPolicies** — control Pod-to-Pod traffic
-- **RBAC** — role-based access control
-- **Helm** — package manager for Kubernetes
-- **StatefulSets** — for stateful applications (databases)
-- **Operators** — automate complex application management
+**Hneď nadväzuje: *Kubernetes: Troubleshooting*** — čo robiť, keď sa čokoľvek
+z tohto pokazí.
 
-Thank you for completing this workshop! 🚀
+- **Ingress** — sprístupnenie HTTP/HTTPS ciest k Services
+- **NetworkPolicies** — riadenie prevádzky medzi Podmi
+- **RBAC** — riadenie prístupu podľa rolí
+- **Helm** — balíčkovací systém pre Kubernetes
+- **StatefulSets** — pre stavové aplikácie (databázy)
+- **Operators** — automatizácia správy zložitých aplikácií
+
+Ďakujeme za absolvovanie workshopu! 🚀

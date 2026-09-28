@@ -1,15 +1,14 @@
 # =============================================================
-# pod-fixed.yaml — the same worker, with its config mounted
+# pod-fixed.yaml — ten istý worker, s namountovanou konfiguráciou
 # =============================================================
-# The crash in pod-crashloop.yaml was not a Kubernetes problem.
-# The app genuinely needed /etc/worker/config.yaml and nobody
-# gave it one.
+# Pád v pod-crashloop.yaml nebol problém Kubernetes. Aplikácia
+# naozaj potrebovala /etc/worker/config.yaml a nikto jej ho nedal.
 #
-# Here the config lives in a ConfigMap, mounted as a file. The
-# worker finds it and keeps running.
+# Tu konfigurácia žije v ConfigMape a je namountovaná ako súbor.
+# Worker si ju nájde a ďalej beží.
 #
-# The lesson: "CrashLoopBackOff" is a symptom, not a cause. The
-# cause was in the application's own log line.
+# Poučenie: "CrashLoopBackOff" je príznak, nie príčina. Príčina
+# bola v tom, čo si aplikácia sama zalogovala.
 #
 # Docs: https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
 # =============================================================

@@ -1,0 +1,24 @@
+# =============================================================
+# app-config.yaml — configuration for the podinfo application
+# =============================================================
+# podinfo reads its settings from environment variables, all of
+# which start with PODINFO_. The Deployment pulls this whole
+# ConfigMap in with "envFrom", so every key below becomes an
+# environment variable inside the container.
+#
+# That is why the keys are UPPER_CASE here: a ConfigMap key used
+# this way IS the variable name, so it has to be a valid one.
+# (When you mount a ConfigMap as a volume instead, keys become
+# file names and any name works.)
+#
+# Docs: https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
+# =============================================================
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: podinfo-config
+data:
+  PODINFO_UI_MESSAGE: "Hello from the Kubernetes workshop!"
+  PODINFO_UI_COLOR: "#34577c"
+  PODINFO_LEVEL: "info"

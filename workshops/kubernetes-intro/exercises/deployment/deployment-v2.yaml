@@ -1,9 +1,9 @@
 # =============================================================
-# deployment-v2.yaml — Updated Deployment (image version bump)
+# deployment-v2.yaml — aktualizovaný Deployment (zmena verzie image)
 # =============================================================
-# This is the same Deployment with the image updated to nginx:1.27.
-# Applying this will trigger a rolling update — Kubernetes will
-# gradually replace old Pods with new ones, ensuring zero downtime.
+# Ten istý Deployment, len s image zmeneným na nginx:1.27.
+# Jeho aplikovaním sa spustí rolling update — Kubernetes postupne
+# nahradí staré Pody novými, bez výpadku.
 # =============================================================
 
 apiVersion: apps/v1

@@ -11,8 +11,9 @@ Kubernetes or app dashboards, with no local setup.
 Each workshop is a self-contained module (instructions + setup + resource
 definition) that can be deployed on its own or grouped into a training portal.
 
-> **Note:** the Docker workshops are written in **Slovak** (technical terms kept
-> in English); the Kubernetes, Kafka and Grafana workshops are in **English**.
+> **Note:** the Docker, Kubernetes and Helm workshops are written in **Slovak**
+> (technical terms and commands kept in English); the Kafka and Grafana
+> workshops are in **English**.
 
 ## Available workshops
 
@@ -27,14 +28,14 @@ definition) that can be deployed on its own or grouped into a training portal.
 ### ☸️ Kubernetes
 | Workshop | Description |
 |----------|-------------|
-| `kubernetes-intro` | Kubernetes basics — `kubectl`, Pods, Deployments, rollouts/rollbacks, ConfigMaps, labels & selectors. |
-| `kubernetes-services-storage` | Services & networking, Secrets, persistent storage with PV/PVC. |
-| `kubernetes-troubleshooting` | Diagnosing broken workloads — `ImagePullBackOff`, `CrashLoopBackOff`, `OOMKilled`, unschedulable Pods, Services with no endpoints. (60 min) |
+| `kubernetes-intro` | First contact with Kubernetes — `kubectl`, Pods, Deployments with scaling and rolling updates, ConfigMaps, and a closing scenario operating a real app. (SK, 90 min) |
+| `kubernetes-services-storage` | Labels & selectors in depth, namespaces, Services & networking, Secrets, persistent storage, probes, Jobs/CronJobs. (SK, 105 min) |
+| `kubernetes-troubleshooting` | Diagnosing broken workloads — `ImagePullBackOff`, `CrashLoopBackOff`, `OOMKilled`, unschedulable Pods, Services with no endpoints. (SK, 60 min) |
 
 ### ⎈ Helm
 | Workshop | Description |
 |----------|-------------|
-| `helm-intro` | Charts, releases and values; installing, upgrading, rolling back, and building your own chart. (60 min) |
+| `helm-intro` | Charts, releases and values; installing, upgrading, rolling back, and building your own chart. (SK, 60 min) |
 
 ### 📨 Apache Kafka
 | Workshop | Description |

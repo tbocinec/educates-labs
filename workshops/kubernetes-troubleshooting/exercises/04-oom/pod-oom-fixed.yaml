@@ -1,14 +1,13 @@
 # =============================================================
-# pod-oom-fixed.yaml — the same work, with an honest limit
+# pod-oom-fixed.yaml — tá istá práca, s poctivým limitom
 # =============================================================
-# The workload genuinely needs about 200 MB, so the limit was
-# the thing that was wrong — not the application.
+# Workload naozaj potrebuje asi 200 MB, takže chybou bol limit —
+# nie aplikácia.
 #
-# Be careful with this conclusion in real life. If an app LEAKS
-# memory, raising the limit only delays the crash. Check actual
-# usage first:
+# V praxi s týmto záverom opatrne. Ak aplikácii UNIKÁ pamäť, väčší
+# limit len oddiali pád. Najprv si pozrite reálnu spotrebu:
 #
-#     kubectl top pod            (needs metrics-server)
+#     kubectl top pod            (treba metrics-server)
 #
 # Docs: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 # =============================================================
@@ -38,7 +37,7 @@ spec:
         memory: 256Mi
         cpu: 50m
       limits:
-        # <-- room for the 200 MB plus overhead.
+        # <-- priestor na 200 MB plus réžia.
         memory: 320Mi
         cpu: 200m
   volumes:

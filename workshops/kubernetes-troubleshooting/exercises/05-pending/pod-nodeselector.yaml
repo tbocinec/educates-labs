@@ -1,13 +1,14 @@
 # =============================================================
-# pod-nodeselector.yaml — a Pod no node can satisfy
+# pod-nodeselector.yaml — Pod, ktorému nevyhovie žiadny node
 # =============================================================
-# The scheduler looks for a node labelled disktype=ultra-fast-ssd.
-# No such node exists, so the Pod stays Pending forever.
+# Scheduler hľadá node s labelom disktype=ultra-fast-ssd. Taký
+# neexistuje, takže Pod ostane navždy v Pending.
 #
-# Note what does NOT happen: no error, no warning on apply, no
-# restarts. The object is perfectly valid. It simply never runs.
+# Všimnite si, čo sa NESTANE: žiadna chyba, žiadne varovanie pri
+# apply, žiadne reštarty. Objekt je úplne platný. Len nikdy
+# nenaštartuje.
 #
-# The scheduler explains itself in the Pod's events:
+# Scheduler sa vysvetlí v udalostiach Podu:
 #
 #     kubectl describe pod picky-app | grep -A8 Events:
 #
@@ -21,7 +22,7 @@ metadata:
   labels:
     app: picky-app
 spec:
-  # <-- No node in this cluster carries this label.
+  # <-- Žiadny node v tomto klastri tento label nemá.
   nodeSelector:
     disktype: ultra-fast-ssd
   containers:

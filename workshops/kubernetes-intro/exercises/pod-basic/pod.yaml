@@ -1,8 +1,8 @@
 # =============================================================
-# pod.yaml — A basic Kubernetes Pod running Nginx
+# pod.yaml — jednoduchý Pod s Nginxom
 # =============================================================
-# A Pod is the smallest deployable unit in Kubernetes.
-# This manifest defines a single Pod with one Nginx container.
+# Pod je najmenšia nasaditeľná jednotka v Kubernetes.
+# Tento manifest definuje jeden Pod s jedným Nginx containerom.
 # =============================================================
 
 apiVersion: v1

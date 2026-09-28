@@ -3,8 +3,8 @@ kind: Workshop
 metadata:
   name: "kubernetes-intro"
 spec:
-  title: "Kubernetes Fundamentals"
-  description: "A hands-on workshop covering Kubernetes basics — kubectl commands, Pods, Deployments with updates and rollbacks, ConfigMaps, Labels, Selectors, and Namespaces. Includes access to Headlamp, a web UI for visual cluster management."
+  title: "Základy Kubernetes"
+  description: "Prvý kontakt s Kubernetes — obhliadka klastra, spustenie prvého Podu, prechod na Deployments so škálovaním a rolling updates, konfigurácia cez ConfigMap a na záver scenár, v ktorom si od začiatku do konca odprevádzkujete reálnu aplikáciu."
   url: https://github.com/tbocinec/educates-labs
   difficulty: beginner
   duration: 90m

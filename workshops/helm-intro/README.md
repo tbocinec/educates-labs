@@ -1,72 +1,77 @@
-# Helm Fundamentals Workshop
+# Workshop: Základy Helmu
 
-A hands-on introduction to Helm — the package manager for Kubernetes.
+Praktický úvod do Helmu — balíčkovacieho systému pre Kubernetes. Rozdelený na dve
+časti podľa dvoch pohľadov na Helm: najprv ako hotový chart použiť, potom ako si
+napísať vlastný.
 
-## Duration
+## Dĺžka
 
-~60 minutes
+~45 minút (plus ~10 minút voliteľného čítania)
 
-## Prerequisites
+## Predpoklady
 
-- Completion of **Kubernetes Fundamentals** (or equivalent knowledge of kubectl,
-  Deployments, Services and ConfigMaps)
+- Absolvovanie workshopu **Základy Kubernetes** (alebo rovnocenná znalosť
+  kubectl, Deploymentov, Services a ConfigMáp)
 
-## Topics Covered
+## Obsah
 
-### Level 1 — Charts, Releases & Repositories
-- The three core concepts and how they relate
-- Adding repositories, searching, reading a chart before installing it
-- Where Helm keeps release state (Secrets, not a server)
+### Časť 1 — Používanie Helmu
 
-### Level 2 — Your First Release
-- `--dry-run` and `--wait`
-- Inspecting a release: `status`, `get values`, `get manifest`
-- Installing the same chart twice to show releases are independent
+Najčastejšia práca: chart už niekto napísal a vy ho nasadzujete.
 
-### Level 3 — Configuring with Values
-- The precedence chain: chart defaults → values files → `--set`
-- `helm template` for local rendering
-- The `--reuse-values` trap that loses overrides on upgrade
+**Úroveň 1 — Nájsť a nainštalovať**
+- Chart, release, repozitár v troch vetách
+- `helm repo add`, `helm search`, `helm show values`
+- `helm install --wait`, `helm list`, `helm status`, `helm uninstall`
 
-### Level 4 — Upgrades & Rollbacks
-- Release history and revisions
-- Shipping a deliberately broken release, then rolling it back
-- `--atomic` for automatic rollback on failure
-- Pinning chart versions
+**Úroveň 2 — Zmena values**
+- Poradie prednosti: predvolené chartu → values súbor → `--set`
+- Values súbor a overenie, že zmena dorazila až do bežiacej aplikácie
+- `--dry-run=client` ako návyk
 
-### Level 5 — Building Your Own Chart
-- `helm create`, template syntax, whitespace trimming
-- `helm lint` and `helm template` as a pre-flight check
-- `helm test` and `helm package`
+**Úroveň 3 — Návrat po zlom nasadení**
+- História revízií
+- Zámerne rozbitý release a `helm rollback`
 
-## Features
+### Časť 2 — Tvorba vlastného chartu
 
-- Helm is already installed in the workshop image — no setup step
-- Uses [podinfo](https://github.com/stefanprodan/podinfo), a small demo app
-  whose chart creates only namespaced objects
-- Commented values files learners apply and modify
-- Headlamp web UI for seeing what Helm created
+**Úroveň 4 — Vlastný chart**
+- `helm create`, štruktúra chartu, syntax šablón
+- `helm lint` a `helm template` ako kontrola pred nasadením
+- Inštalácia z adresára, `helm test`, `helm package`
 
-## Design Notes
+### Voliteľné
 
-Learners are namespace administrators, not cluster administrators. Every chart
-used here was chosen because it creates **only namespaced objects** — no CRDs,
-ClusterRoles or webhooks, which would be refused.
+**Úroveň 5 — Čo Helm ešte vie**
 
-The full lifecycle was verified in an Educates session with those permissions:
+Bez cvičení, samé odkazy. `--atomic` a pripínanie verzií v CI, závislosti a
+subcharty, hooks, library charts, šablónovací jazyk, OCI registry, podpisovanie,
+Helmfile/Argo CD/Flux a práca s citlivými údajmi.
 
-| Command | Verified |
-|---------|----------|
-| `helm repo add` / `search` | Works, chart podinfo 6.15.0 found |
-| `helm install --wait` | Release created, objects healthy |
-| `helm upgrade` | Replica count change applied |
-| `helm history` | Revisions recorded |
-| `helm rollback` | Returned to the previous revision |
+## Poznámky k návrhu
 
-Note that Helm objects are named `<release>-podinfo`, so content filters on the
-`app.kubernetes.io/managed-by=Helm` label rather than a chart name.
+Prvé úrovne sú zámerne jednoduché a krátke — cieľom je, aby účastník vedel po
+troch kapitolách reálne nasadiť a prevádzkovať cudzí chart. Pokročilé veci
+(`--atomic`, `--reuse-values`, `--dry-run=server`, verzie chartov, interné
+uloženie stavu v Secretoch) sú vytiahnuté do voliteľnej piatej úrovne, aby
+nezdržiavali.
 
-## Official Documentation Links
+Študenti sú administrátormi namespace, nie klastra. Každý použitý chart bol
+zvolený preto, že vytvára **iba namespaced objekty** — žiadne CRD, ClusterRoles
+ani webhooky, ktoré by boli odmietnuté.
+
+## Vlastnosti
+
+- Helm je už v image workshopu — žiadny inštalačný krok
+- Používa [podinfo](https://github.com/stefanprodan/podinfo), malú demo aplikáciu
+- Komentované values súbory, ktoré študenti aplikujú a upravujú
+- Webové UI Headlamp na prehľad toho, čo Helm vytvoril
+
+## Jazyk
+
+Workshop je v slovenčine, technické pojmy a príkazy sú ponechané v angličtine.
+
+## Odkazy na oficiálnu dokumentáciu
 
 - [Helm documentation](https://helm.sh/docs/)
 - [Using Helm](https://helm.sh/docs/intro/using_helm/)

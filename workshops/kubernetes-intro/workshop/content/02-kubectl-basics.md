@@ -1,52 +1,55 @@
 ---
-title: kubectl CLI Basics
+title: Základy kubectl
 ---
 
-# kubectl CLI Basics
+# Základy kubectl
 
-`kubectl` (pronounced "kube-control" or "kube-cuddle") is the primary command-line tool for interacting with Kubernetes. Every operation — from deploying applications to inspecting cluster state — goes through `kubectl`.
+`kubectl` (vyslovuje sa „kube-control" alebo „kube-cuddle") je hlavný nástroj
+príkazového riadku na prácu s Kubernetes. Všetko — od nasadenia aplikácie po
+zisťovanie stavu klastra — ide cez `kubectl`.
 
-> **Docs**: [kubectl Overview](https://kubernetes.io/docs/reference/kubectl/) | [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
+> **Dokumentácia**: [kubectl Overview](https://kubernetes.io/docs/reference/kubectl/) | [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
 
-## Command Structure
+## Štruktúra príkazu
 
-The general syntax is:
+Všeobecná syntax vyzerá takto:
 
 ```
-kubectl [command] [resource-type] [name] [flags]
+kubectl [príkaz] [typ-zdroja] [názov] [prepínače]
 ```
 
-For example:
-- `kubectl get pods` — list all Pods
-- `kubectl describe pod my-nginx` — show details of a specific Pod
-- `kubectl delete pod my-nginx` — delete a specific Pod
+Napríklad:
+- `kubectl get pods` — vypíše všetky Pody
+- `kubectl describe pod my-nginx` — zobrazí detaily konkrétneho Podu
+- `kubectl delete pod my-nginx` — zmaže konkrétny Pod
 
-## Cluster Information
+## Informácie o klastri
 
-First, see what version of `kubectl` and the cluster you're running:
+Najprv zistite, akú verziu `kubectl` a klastra používate:
 
 ```terminal:execute
 command: kubectl version --output=yaml
 ```
 
-View detailed cluster information:
+Zobrazte podrobnejšie informácie o klastri:
 
 ```terminal:execute
 command: kubectl cluster-info
 ```
 
-## Exploring API Resources
+## Preskúmanie API zdrojov
 
-Kubernetes has many resource types. List all available resource types in the cluster:
+Kubernetes má mnoho typov zdrojov. Vypíšte všetky, ktoré klaster pozná:
 
 ```terminal:execute
 command: kubectl api-resources --sort-by=name | head -30
 ```
 
-This shows the short names, API group, whether the resource is namespaced, and the kind. Some commonly used short names:
+Uvidíte skratky, API skupinu, či je zdroj namespaced, a jeho kind. Niektoré bežne
+používané skratky:
 
-| Short | Full Name |
-|-------|-----------|
+| Skratka | Celý názov |
+|---------|------------|
 | `po`  | pods |
 | `deploy` | deployments |
 | `svc` | services |
@@ -55,91 +58,92 @@ This shows the short names, API group, whether the resource is namespaced, and t
 | `no`  | nodes |
 | `rs`  | replicasets |
 
-You can use short names in any `kubectl` command. For example, `kubectl get po` is the same as `kubectl get pods`.
+Skratky fungujú v ľubovoľnom príkaze `kubectl`. Napríklad `kubectl get po` je to
+isté ako `kubectl get pods`.
 
-## The explain Command
+## Príkaz explain
 
-One of the most useful commands when learning Kubernetes is `explain`. It shows the documentation for any resource type or field — right in the terminal.
+Jeden z najužitočnejších príkazov pri učení Kubernetes je `explain`. Zobrazí
+dokumentáciu k akémukoľvek typu zdroja alebo poľu — priamo v termináli.
 
-Get documentation for a Pod:
+Dokumentácia k Podu:
 
 ```terminal:execute
 command: kubectl explain pod
 ```
 
-Drill into a specific field (use dot notation):
+Ponorte sa do konkrétneho poľa (bodková notácia):
 
 ```terminal:execute
 command: kubectl explain pod.spec.containers
 ```
 
-Go even deeper:
+A ešte hlbšie:
 
 ```terminal:execute
 command: kubectl explain pod.spec.containers.ports
 ```
 
-> **Tip**: Use `--recursive` to see the entire structure at once:
+> **Tip**: Prepínačom `--recursive` si zobrazíte celú štruktúru naraz:
 > `kubectl explain pod.spec --recursive | head -50`
 
-## The get Command
+## Príkaz get
 
-`kubectl get` lists resources. Let's explore the current state of the cluster.
+`kubectl get` vypisuje zdroje. Poďme si pozrieť aktuálny stav klastra.
 
-List all namespaces:
+Vypíšte všetky namespaces:
 
 ```terminal:execute
 command: kubectl get namespaces
 ```
 
-List Pods in your namespace (should be empty for now):
+Vypíšte Pody vo vašom namespace (zatiaľ by mal byť prázdny):
 
 ```terminal:execute
 command: kubectl get pods
 ```
 
+## Bežné formáty výstupu
 
+| Prepínač | Popis |
+|----------|-------|
+| (predvolené) | Čitateľná tabuľka |
+| `-o wide` | Tabuľka s ďalšími stĺpcami |
+| `-o yaml` | Kompletná YAML reprezentácia |
+| `-o json` | Kompletná JSON reprezentácia |
+| `-o name` | Iba názov zdroja |
+| `--no-headers` | Tabuľka bez hlavičky |
 
-## Common Output Formats
+## Kde hľadať pomoc
 
-| Flag | Description |
-|------|-------------|
-| (default) | Human-readable table |
-| `-o wide` | Table with additional columns |
-| `-o yaml` | Full YAML representation |
-| `-o json` | Full JSON representation |
-| `-o name` | Just the resource name |
-| `--no-headers` | Table without header row |
-
-## Getting Help
-
-Every `kubectl` command has built-in help:
+Každý príkaz `kubectl` má vstavanú nápovedu:
 
 ```terminal:execute
 command: kubectl --help | head -30
 ```
 
-Get help for a specific command:
+Nápoveda ku konkrétnemu príkazu:
 
 ```terminal:execute
 command: kubectl get --help | head -20
 ```
 
-## Command Cheat Sheet
+## Prehľad príkazov
 
-Here's a quick reference of the commands you'll use most in this workshop:
+Rýchly prehľad príkazov, ktoré na workshope použijete najčastejšie:
 
-| Command | Purpose |
-|---------|---------|
-| `kubectl get` | List resources |
-| `kubectl describe` | Show detailed info about a resource |
-| `kubectl create` | Create a resource |
-| `kubectl apply` | Create or update a resource from a file |
-| `kubectl delete` | Delete a resource |
-| `kubectl logs` | View container logs |
-| `kubectl exec` | Execute a command in a container |
-| `kubectl explain` | Show documentation for a resource |
-| `kubectl scale` | Change replica count |
-| `kubectl rollout` | Manage deployments (status, history, undo) |
+| Príkaz | Na čo slúži |
+|--------|-------------|
+| `kubectl get` | Vypíše zdroje |
+| `kubectl describe` | Zobrazí podrobnosti o zdroji |
+| `kubectl create` | Vytvorí zdroj |
+| `kubectl apply` | Vytvorí alebo aktualizuje zdroj zo súboru |
+| `kubectl delete` | Zmaže zdroj |
+| `kubectl logs` | Zobrazí logy containera |
+| `kubectl exec` | Spustí príkaz v containeri |
+| `kubectl explain` | Zobrazí dokumentáciu k zdroju |
+| `kubectl scale` | Zmení počet replík |
+| `kubectl rollout` | Spravuje deployments (status, history, undo) |
 
-Now that you know the essential `kubectl` commands, let's put them to use and run your first Pod!
+Teraz, keď poznáte základné príkazy `kubectl`, poďme ich použiť a spustiť váš
+prvý Pod!

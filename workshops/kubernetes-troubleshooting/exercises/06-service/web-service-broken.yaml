@@ -1,18 +1,18 @@
 # =============================================================
-# web-service-broken.yaml — a Service that selects nothing
+# web-service-broken.yaml — Service, ktorá nevyberie nič
 # =============================================================
-# The Pods are labelled app=web. This Service looks for
-# app=webapp. One letter, and the Service has zero backends.
+# Pody majú label app=web. Táto Service hľadá app=webapp. Jedno
+# písmeno a Service nemá žiadny backend.
 #
-# Kubernetes will not warn you. An empty selection is a legal
-# state — maybe the Pods haven't been created yet. So the Service
-# sits there, accepting connections and routing them nowhere.
+# Kubernetes vás nevaruje. Prázdny výber je legitímny stav — Pody
+# možno ešte nevznikli. Takže Service tam len tak sedí, prijíma
+# spojenia a smeruje ich do prázdna.
 #
-# The one command that exposes it:
+# Jediný príkaz, ktorý to odhalí:
 #
 #     kubectl get endpoints web-service
 #
-# YOUR FIX: change "webapp" to "web" below.
+# VAŠA OPRAVA: nižšie zmeňte "webapp" na "web".
 #
 # Docs: https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/
 # =============================================================
@@ -24,7 +24,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    # <-- Wrong. The Pods carry app=web.
+    # <-- Zle. Pody nesú app=web.
     app: webapp
   ports:
   - port: 80

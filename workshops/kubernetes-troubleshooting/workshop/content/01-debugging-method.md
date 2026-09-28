@@ -1,52 +1,53 @@
 ---
-title: A Method That Works
+title: Metóda, ktorá funguje
 ---
 
-# Level 1: A Method That Works
+# Úroveň 1: Metóda, ktorá funguje
 
-Before touching anything broken, let's agree on the method. Almost every Pod
-problem is solved by the same four steps, in this order:
+Než sa dotkneme čohokoľvek rozbitého, dohodnime sa na metóde. Takmer každý
+problém s Podom vyrieši rovnaká štvorica krokov, v tomto poradí:
 
-| Step | Command | Answers |
-|------|---------|---------|
-| **1. Status** | `kubectl get pods` | What state is it in? How many restarts? |
-| **2. Description** | `kubectl describe pod <name>` | Why did Kubernetes make that decision? |
-| **3. Events** | `kubectl get events --sort-by=.lastTimestamp` | What happened, in what order? |
-| **4. Logs** | `kubectl logs <name>` | What did the *application* say? |
+| Krok | Príkaz | Odpovedá na |
+|------|--------|-------------|
+| **1. Stav** | `kubectl get pods` | V akom je stave? Koľko reštartov? |
+| **2. Popis** | `kubectl describe pod <názov>` | Prečo sa Kubernetes rozhodol takto? |
+| **3. Udalosti** | `kubectl get events --sort-by=.lastTimestamp` | Čo sa dialo a v akom poradí? |
+| **4. Logy** | `kubectl logs <názov>` | Čo povedala *samotná aplikácia*? |
 
-The single most common mistake is jumping straight to step 4. If a container
-never started, it has **no logs** — and you'll stare at an empty output
-wondering what went wrong. Steps 1–3 tell you whether logs even exist yet.
+Najčastejšia chyba je skočiť rovno na krok 4. Ak container nikdy nenaštartoval,
+**nemá žiadne logy** — a vy budete civieť na prázdny výstup a rozmýšľať, čo je
+zle. Kroky 1–3 vám povedia, či logy vôbec existujú.
 
-> **Docs**: [Debug Pods](https://kubernetes.io/docs/tasks/debug/debug-application/debug-pods/)
+> **Dokumentácia**: [Debug Pods](https://kubernetes.io/docs/tasks/debug/debug-application/debug-pods/)
 
-## Reading the STATUS Column
+## Čítanie stĺpca STATUS
 
-`kubectl get pods` shows a STATUS that already narrows the problem down a lot:
+`kubectl get pods` ukazuje STATUS, ktorý problém zúži už sám o sebe:
 
-| STATUS | Meaning | Where to look next |
-|--------|---------|--------------------|
-| `Pending` | Not scheduled onto a node yet | `describe` → Events (scheduler) |
-| `ContainerCreating` | Scheduled, kubelet is preparing it | `describe` → Events (kubelet) |
-| `ImagePullBackOff` | The image could not be pulled | `describe` → Events, check image name |
-| `CreateContainerConfigError` | A ConfigMap/Secret reference is wrong | `describe` → Events |
-| `CrashLoopBackOff` | It started, exited, and is being restarted | `logs --previous` |
-| `Running` but `0/1` ready | Readiness probe failing | `describe` → probe config, `logs` |
-| `OOMKilled` | Exceeded its memory limit | `describe` → Last State, raise limit or fix leak |
+| STATUS | Význam | Kam sa pozrieť ďalej |
+|--------|--------|----------------------|
+| `Pending` | Ešte nie je naplánovaný na node | `describe` → Events (scheduler) |
+| `ContainerCreating` | Naplánovaný, kubelet ho pripravuje | `describe` → Events (kubelet) |
+| `ImagePullBackOff` | Image sa nepodarilo stiahnuť | `describe` → Events, skontrolovať názov image |
+| `CreateContainerConfigError` | Zlý odkaz na ConfigMap/Secret | `describe` → Events |
+| `CrashLoopBackOff` | Naštartoval, skončil a reštartuje sa | `logs --previous` |
+| `Running`, ale `0/1` ready | Zlyháva readiness probe | `describe` → konfigurácia probe, `logs` |
+| `OOMKilled` | Prekročil limit pamäte | `describe` → Last State, zvýšiť limit alebo opraviť únik |
 
-Keep this table open. You'll use every row in this workshop.
+Túto tabuľku si nechajte otvorenú. Na workshope použijete každý jej riadok.
 
-## Setting Up
+## Príprava
 
-Copy the broken manifests into your home directory so you can edit them freely:
+Skopírujte si rozbité manifesty do domovského adresára, nech sa dajú voľne
+upravovať:
 
 ```terminal:execute
 command: cp -r ~/exercises ~/broken && ls ~/broken
 ```
 
-## A Healthy Baseline
+## Zdravý východiskový bod
 
-Let's start with something that works, so you know what "normal" looks like.
+Začnime niečím, čo funguje, aby ste vedeli, ako vyzerá „normálne".
 
 ```terminal:execute
 command: kubectl create deployment healthy --image=nginx:1.27 --replicas=1
@@ -56,78 +57,77 @@ command: kubectl create deployment healthy --image=nginx:1.27 --replicas=1
 command: kubectl get pods -l app=healthy
 ```
 
-A healthy Pod reads `1/1  Running  0` — one of one containers ready, running,
-zero restarts. Anything else is a story worth reading.
+Zdravý Pod ukazuje `1/1  Running  0` — jeden z jedného containera pripravený,
+beží, nula reštartov. Čokoľvek iné je príbeh, ktorý stojí za prečítanie.
 
-Look at what `describe` tells you about a working Pod, so the broken ones are
-easier to contrast:
+Pozrite sa, čo o funkčnom Pode hovorí `describe`, nech máte s čím porovnávať tie
+rozbité:
 
 ```terminal:execute
 command: kubectl describe deployment healthy | tail -12
 ```
 
-The **Events** section at the bottom is the part people skip. It's the cluster
-narrating its own decisions in chronological order.
+Sekcia **Events** na konci je tá, ktorú ľudia preskakujú. Je to klaster
+rozprávajúci o vlastných rozhodnutiach, v chronologickom poradí.
 
-## Events Are the Cluster's Diary
+## Udalosti sú denník klastra
 
-Events are separate objects with a short lifetime (about an hour by default).
-List them for the whole namespace, oldest first:
+Udalosti sú samostatné objekty s krátkou životnosťou (predvolene asi hodina).
+Vypíšte ich pre celý namespace, od najstarších:
 
 ```terminal:execute
 command: kubectl get events --sort-by=.lastTimestamp
 ```
 
-This single command is often enough to spot the problem without describing
-anything. Two variants worth remembering:
+Tento jediný príkaz často stačí na odhalenie problému bez toho, aby ste čokoľvek
+popisovali. Dva varianty, ktoré sa oplatí pamätať:
 
 ```terminal:execute
 command: kubectl get events --field-selector type=Warning
 ```
 
-Warnings only — the signal, without the noise of every successful pull and
-schedule.
+Len varovania — signál bez šumu z každého úspešného stiahnutia a naplánovania.
 
-## Four Commands to Keep Handy
+## Štyri príkazy, ktoré sa oplatí mať poruke
 
 ```terminal:execute
 command: kubectl get pods -o wide
 ```
 
-`-o wide` adds the node and Pod IP — useful when only *some* replicas misbehave.
+`-o wide` pridá node a IP Podu — užitočné, keď zlobí len časť replík.
 
 ```terminal:execute
 command: kubectl describe pod -l app=healthy | grep -A10 Events:
 ```
 
-Jump straight to the Events section of a Pod.
+Skok rovno na sekciu Events konkrétneho Podu.
 
 ```terminal:execute
 command: kubectl logs -l app=healthy --tail=20
 ```
 
-Logs by label, so you don't need the generated Pod name.
+Logy podľa labelu, takže nepotrebujete vygenerovaný názov Podu.
 
 ```terminal:execute
 command: kubectl exec deploy/healthy -- nginx -v
 ```
 
-Run a command *inside* the container — the last resort when the cluster looks
-fine but the app disagrees.
+Spustenie príkazu *vnútri* containera — posledná záchrana, keď klaster vyzerá
+v poriadku, ale aplikácia s tým nesúhlasí.
 
-## Clean Up
+## Upratanie
 
 ```terminal:execute
 command: kubectl delete deployment healthy
 ```
 
-## Summary
+## Zhrnutie
 
-In this chapter you learned:
-- The order that works: **status → describe → events → logs**
-- A container that never started has **no logs** — don't start there
-- The STATUS column already narrows the cause to a handful of options
-- `kubectl get events --sort-by=.lastTimestamp` is the fastest first look
-- `--field-selector type=Warning` filters events down to the problems
+V tejto kapitole ste sa naučili:
+- Poradie, ktoré funguje: **stav → describe → udalosti → logy**
+- Container, ktorý nikdy nenaštartoval, **nemá logy** — nezačínajte tam
+- Stĺpec STATUS zúži príčinu na hŕstku možností
+- `kubectl get events --sort-by=.lastTimestamp` je najrýchlejší prvý pohľad
+- `--field-selector type=Warning` odfiltruje udalosti na samotné problémy
 
-Now let's apply it. In the next chapter, a Pod that never starts at all.
+Poďme to použiť. V ďalšej kapitole Pod, ktorý vôbec nenaštartuje.

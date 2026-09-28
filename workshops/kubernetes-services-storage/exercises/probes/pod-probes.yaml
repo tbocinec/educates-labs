@@ -1,15 +1,15 @@
 # =============================================================
-# pod-probes.yaml — Pod with liveness and readiness probes
+# pod-probes.yaml — Pod s liveness a readiness probe
 # =============================================================
-# Probes let Kubernetes monitor your application's health:
+# Probes umožňujú Kubernetes sledovať zdravie vašej aplikácie:
 #
-#   - Liveness probe: "Is the container still alive?"
-#     If it fails → Kubernetes restarts the container.
+#   - Liveness probe: "Žije container ešte?"
+#     Pri zlyhaní → Kubernetes container reštartuje.
 #
-#   - Readiness probe: "Is the container ready to serve traffic?"
-#     If it fails → Kubernetes removes the Pod from Service endpoints.
+#   - Readiness probe: "Je container pripravený obsluhovať?"
+#     Pri zlyhaní → Kubernetes ho vyradí z endpointov Service.
 #
-# This Pod runs Nginx with both probes configured.
+# Tento Pod beží na Nginxe a má nastavené obe probes.
 #
 # Docs: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 # =============================================================

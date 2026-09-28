@@ -1,42 +1,51 @@
-# Kubernetes Services, Secrets & Storage Workshop
+# Workshop: Kubernetes — Services, Secrets a úložisko
 
-A hands-on follow-up workshop covering Kubernetes networking, sensitive data management, persistent storage, health checks, and batch workloads.
+Nadväzujúci praktický workshop o sieťovaní v Kubernetes, práci s citlivými
+údajmi, trvalom úložisku, kontrolách zdravia a dávkových úlohách.
 
-## Duration
+## Dĺžka
 
-~90 minutes
+~105 minút
 
-## Prerequisites
+## Predpoklady
 
-- Completion of the **Kubernetes Fundamentals** workshop (or equivalent knowledge of kubectl, Pods, Deployments, ConfigMaps)
+- Absolvovanie workshopu **Základy Kubernetes** (alebo rovnocenná znalosť
+  kubectl, Podov, Deploymentov, škálovania, rolling updates a ConfigMáp)
 
-## Topics Covered
+## Obsah
 
-### Level 1 — Networking
-- Pod networking model and cluster DNS
-- Services (ClusterIP) — exposing and discovering applications
+### Úroveň 1 — Organizácia a prepojenie
+- Labels a selektory do hĺbky (rovnosť, množinové, `kubectl label`)
+- Namespaces
+- Sieťový model Podov a DNS klastra
+- Services (ClusterIP) — sprístupnenie a objavovanie aplikácií
 
-### Level 2 — Configuration & Secrets
-- Secrets — managing sensitive data (env vars, volume mounts)
-- Comparison with ConfigMaps
+### Úroveň 2 — Konfigurácia a Secrets
+- Secrets — práca s citlivými údajmi (premenné prostredia, volume mount)
+- Porovnanie s ConfigMapami
 
-### Level 3 — Storage
-- PersistentVolumeClaims (PVCs) — request and mount persistent storage
-- Data persistence across Pod restarts
+### Úroveň 3 — Úložisko
+- PersistentVolumeClaims (PVC) — požiadavka o trvalé úložisko a jeho mountovanie
+- Pretrvanie dát naprieč reštartmi Podov
 
-### Level 4 — Reliability & Batch
-- Liveness and readiness probes — automatic health checks
-- Jobs and CronJobs — one-off and scheduled batch workloads
+### Úroveň 4 — Spoľahlivosť a dávkové úlohy
+- Liveness a readiness probes — automatické kontroly zdravia
+- Jobs a CronJobs — jednorazové a plánované dávkové úlohy
 
-## Features
+## Vlastnosti
 
-- Kubernetes Dashboard enabled for visual cluster management
-- Pre-built exercise YAML files with inline comments
-- Integrated code editor for viewing and editing manifests
-- Split terminal for running multiple commands
+- Webové UI na vizuálnu správu klastra
+- Pripravené cvičné YAML súbory s komentármi
+- Integrovaný editor kódu na prezeranie a úpravu manifestov
+- Rozdelený terminál na paralelné spúšťanie príkazov
 
-## Official Documentation Links
+## Jazyk
 
+Workshop je v slovenčine, technické pojmy a príkazy sú ponechané v angličtine.
+
+## Odkazy na oficiálnu dokumentáciu
+
+- [Labels and Selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
 - [Services](https://kubernetes.io/docs/concepts/services-networking/service/)
 - [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)
 - [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)

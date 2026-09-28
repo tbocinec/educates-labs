@@ -3,7 +3,7 @@ pathways:
 
   paths:
     workshop:
-      title: "Kubernetes Troubleshooting"
+      title: "Kubernetes: Troubleshooting"
       duration: 60m
 
       steps:
@@ -17,22 +17,22 @@ pathways:
 
 modules:
 - name: 00-workshop-overview
-  title: Workshop Overview
+  title: Prehľad workshopu
 
 - name: 01-debugging-method
-  title: A Method That Works
+  title: Metóda, ktorá funguje
 
 - name: 02-pod-wont-start
-  title: The Pod Never Starts
+  title: Pod nikdy nenaštartuje
 
 - name: 03-pod-keeps-dying
-  title: The Pod Starts, Then Dies
+  title: Pod naštartuje a zomrie
 
 - name: 04-pod-stays-pending
-  title: The Pod Stays Pending
+  title: Pod ostáva v Pending
 
 - name: 05-app-unreachable
-  title: The App Is Unreachable
+  title: Aplikácia je nedostupná
 
 - name: 99-workshop-summary
-  title: Workshop Summary
+  title: Zhrnutie workshopu

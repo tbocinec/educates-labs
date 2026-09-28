@@ -1,14 +1,14 @@
 # =============================================================
-# pod-bad-key.yaml — a Pod that fails on configuration
+# pod-bad-key.yaml — Pod, ktorý padne na konfigurácii
 # =============================================================
-# The image pulls fine. The ConfigMap exists. And the Pod still
-# never starts, with status CreateContainerConfigError.
+# Image sa stiahne v poriadku. ConfigMap existuje. A Pod aj tak
+# nikdy nenaštartuje, so stavom CreateContainerConfigError.
 #
-# The kubelet resolves every ConfigMap and Secret reference
-# BEFORE starting the container. If a key is missing, there is
-# nothing to start — and therefore no logs to read.
+# Kubelet rozlišuje každý odkaz na ConfigMap a Secret EŠTE PRED
+# spustením containera. Keď kľúč chýba, nie je čo spustiť — a teda
+# ani žiadne logy na čítanie.
 #
-# YOUR FIX: the ConfigMap defines "app_mode", not "mode".
+# VAŠA OPRAVA: ConfigMap definuje "app_mode", nie "mode".
 #
 # Docs: https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
 # =============================================================
@@ -28,7 +28,7 @@ spec:
       valueFrom:
         configMapKeyRef:
           name: app-settings
-          # <-- Wrong key. The ConfigMap has "app_mode".
+          # <-- Zlý kľúč. ConfigMap obsahuje "app_mode".
           key: mode
     resources:
       requests:

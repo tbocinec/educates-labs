@@ -2,199 +2,211 @@
 title: ConfigMaps
 ---
 
-# Level 4: ConfigMaps
+# Úroveň 4: ConfigMaps
 
-Applications often need configuration — database URLs, feature flags, log levels, etc. Hard-coding these values in container images is a bad practice because the same image should work in different environments (dev, staging, production).
+Aplikácie potrebujú konfiguráciu — adresy databáz, feature flags, úrovne
+logovania a podobne. Zadrôtovať tieto hodnoty priamo do container image je zlá
+prax, lebo ten istý image by mal fungovať v rôznych prostrediach (dev, staging,
+produkcia).
 
-**ConfigMaps** solve this problem. They store non-sensitive configuration data as key-value pairs, and Pods can consume them as environment variables or mounted files.
+**ConfigMap** tento problém rieši. Uchováva necitlivú konfiguráciu ako dvojice
+kľúč-hodnota a Pody ju vedia konzumovať ako premenné prostredia alebo ako
+namountované súbory.
 
-> **Docs**: [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
+> **Dokumentácia**: [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
 
-## Creating a ConfigMap Imperatively
+## Vytvorenie ConfigMapy imperatívne
 
-Create a ConfigMap from literal key-value pairs:
+Vytvorte ConfigMapu z hodnôt zadaných priamo na príkazovom riadku:
 
 ```terminal:execute
 command: kubectl create configmap simple-config --from-literal=APP_COLOR=red --from-literal=APP_MODE=debug
 ```
 
-View the ConfigMap:
+Zobrazte ConfigMapu:
 
 ```terminal:execute
 command: kubectl get configmap simple-config
 ```
 
-See its full contents:
+Pozrite si jej celý obsah:
 
 ```terminal:execute
 command: kubectl get configmap simple-config -o yaml
 ```
 
-Describe it for a cleaner view:
+Alebo prehľadnejšie cez describe:
 
 ```terminal:execute
 command: kubectl describe configmap simple-config
 ```
 
-## Creating a ConfigMap from YAML
+## Vytvorenie ConfigMapy z YAML
 
-Open the exercise file that defines a ConfigMap in YAML:
+Otvorte cvičný súbor, ktorý definuje ConfigMapu v YAML:
 
 ```editor:open-file
 file: exercises/configmap/configmap.yaml
 ```
 
-Notice the `data` section with three key-value pairs:
+Všimnite si sekciu `data` s tromi dvojicami kľúč-hodnota:
 
 ```editor:select-matching-text
 file: exercises/configmap/configmap.yaml
 text: APP_COLOR: "blue"
 ```
 
-Copy and apply the ConfigMap:
+Skopírujte a aplikujte ConfigMapu:
 
 ```terminal:execute
 command: cp -r ~/exercises/configmap ~/configmap && kubectl apply -f ~/configmap/configmap.yaml
 ```
 
-List all ConfigMaps in your namespace:
+Vypíšte všetky ConfigMapy vo vašom namespace:
 
 ```terminal:execute
 command: kubectl get configmaps
 ```
 
-## Creating a ConfigMap from a File
+## Vytvorenie ConfigMapy zo súboru
 
-You can also create a ConfigMap from a file. Open the properties file:
+ConfigMapu viete vytvoriť aj zo súboru. Otvorte properties súbor:
 
 ```editor:open-file
 file: exercises/configmap/app-config.properties
 ```
 
-This is a typical application configuration file with database settings and logging.
+Je to typický konfiguračný súbor aplikácie s nastaveniami databázy a logovania.
 
-Create a ConfigMap from this file:
+Vytvorte z neho ConfigMapu:
 
 ```terminal:execute
 command: kubectl create configmap file-config --from-file=app-config.properties=/home/eduk8s/exercises/configmap/app-config.properties
 ```
 
-View the result:
+Pozrite si výsledok:
 
 ```terminal:execute
 command: kubectl describe configmap file-config
 ```
 
-Notice how the entire file content is stored as a single key (`app-config.properties`), with the file content as the value.
+Všimnite si, že celý obsah súboru je uložený pod jedným kľúčom
+(`app-config.properties`), ktorého hodnotou je obsah súboru.
 
-## Using ConfigMap as Environment Variables
+## ConfigMap ako premenné prostredia
 
-Now let's create a Pod that consumes the `app-config` ConfigMap as environment variables.
+Poďme vytvoriť Pod, ktorý ConfigMapu `app-config` skonzumuje ako premenné
+prostredia.
 
-Open the exercise file:
+Otvorte cvičný súbor:
 
 ```editor:open-file
 file: exercises/configmap/pod-configmap-env.yaml
 ```
 
-Notice the `envFrom` section:
+Všimnite si sekciu `envFrom`:
 
 ```editor:select-matching-text
 file: exercises/configmap/pod-configmap-env.yaml
 text: envFrom:
 ```
 
-The `envFrom` with `configMapRef` loads **all** key-value pairs from the ConfigMap as environment variables in the Pod.
+`envFrom` s `configMapRef` načíta **všetky** dvojice kľúč-hodnota z ConfigMapy
+ako premenné prostredia v Pode.
 
-Apply the Pod:
+Aplikujte Pod:
 
 ```terminal:execute
 command: kubectl apply -f ~/configmap/pod-configmap-env.yaml
 ```
 
-Wait for the Pod to start, then check the logs:
+Počkajte, kým Pod nabehne, a pozrite si logy:
 
 ```terminal:execute
 command: kubectl wait --for=condition=Ready pod/configmap-env-demo --timeout=60s && kubectl logs configmap-env-demo
 ```
 
-You should see the environment variables printed:
+Mali by ste vidieť vypísané premenné prostredia:
 ```
 APP_COLOR=blue
 APP_MODE=production
 LOG_LEVEL=INFO
 ```
 
-Verify by executing a command inside the Pod:
+Overte to aj spustením príkazu vnútri Podu:
 
 ```terminal:execute
 command: kubectl exec configmap-env-demo -- env | grep -E "APP_|LOG_"
 ```
 
-## Using ConfigMap as a Mounted Volume
+## ConfigMap ako namountovaný volume
 
-Instead of environment variables, you can mount a ConfigMap as files in a volume. This is ideal for configuration files.
+Namiesto premenných prostredia sa dá ConfigMap namountovať ako súbory vo volume.
+To je ideálne pre konfiguračné súbory.
 
-Open the exercise file:
+Otvorte cvičný súbor:
 
 ```editor:open-file
 file: exercises/configmap/pod-configmap-volume.yaml
 ```
 
-Notice the `volumes` and `volumeMounts` sections:
+Všimnite si sekcie `volumes` a `volumeMounts`:
 
 ```editor:select-matching-text
 file: exercises/configmap/pod-configmap-volume.yaml
 text: mountPath: /etc/config
 ```
 
-The ConfigMap `file-config` will be mounted at `/etc/config/` in the container. Each key becomes a file.
+ConfigMap `file-config` sa v containeri namountuje do `/etc/config/`. Z každého
+kľúča vznikne samostatný súbor.
 
-Apply the Pod:
+Aplikujte Pod:
 
 ```terminal:execute
 command: kubectl apply -f ~/configmap/pod-configmap-volume.yaml
 ```
 
-Wait for the Pod and check its logs:
+Počkajte na Pod a pozrite si jeho logy:
 
 ```terminal:execute
 command: kubectl wait --for=condition=Ready pod/configmap-volume-demo --timeout=60s && kubectl logs configmap-volume-demo
 ```
 
-You should see the listing of `/etc/config/` and the content of the configuration file.
+Mali by ste vidieť výpis `/etc/config/` a obsah konfiguračného súboru.
 
-Verify by listing the mounted files:
+Overte to výpisom namountovaných súborov:
 
 ```terminal:execute
 command: kubectl exec configmap-volume-demo -- ls -la /etc/config/
 ```
 
-Read the mounted configuration file:
+Prečítajte namountovaný konfiguračný súbor:
 
 ```terminal:execute
 command: kubectl exec configmap-volume-demo -- cat /etc/config/app-config.properties
 ```
 
-## Updating ConfigMaps
+## Aktualizácia ConfigMáp
 
-ConfigMaps can be updated, and Pods using volume mounts will eventually receive the updated values (within a few minutes). However, Pods using environment variables will **not** see changes — they must be restarted.
+ConfigMapy sa dajú meniť a Pody, ktoré ich majú namountované ako volume, novú
+hodnotu po čase (v rámci niekoľkých minút) dostanú. Pody, ktoré ich používajú ako
+premenné prostredia, však zmenu **neuvidia** — treba ich reštartovať.
 
-Update the ConfigMap:
+Zmeňte ConfigMapu:
 
 ```terminal:execute
 command: kubectl patch configmap app-config -p '{"data":{"APP_COLOR":"green"}}'
 ```
 
-Verify the change:
+Overte zmenu:
 
 ```terminal:execute
 command: kubectl get configmap app-config -o yaml | grep APP_COLOR
 ```
 
-## Cleanup
+## Upratanie
 
-Remove the ConfigMaps and Pods:
+Odstráňte ConfigMapy a Pody:
 
 ```terminal:execute
 command: kubectl delete pod configmap-env-demo configmap-volume-demo
@@ -204,22 +216,23 @@ command: kubectl delete pod configmap-env-demo configmap-volume-demo
 command: kubectl delete configmap simple-config app-config file-config
 ```
 
-Verify:
+Overte:
 
 ```terminal:execute
 command: kubectl get pods,configmaps
 ```
 
-## Summary
+## Zhrnutie
 
-In this chapter you learned:
-- **ConfigMaps** store non-sensitive configuration as key-value pairs
-- `kubectl create configmap --from-literal` — create from command line values
-- `kubectl create configmap --from-file` — create from a file
-- ConfigMaps can be defined in YAML and applied with `kubectl apply -f`
-- Pods consume ConfigMaps as:
-  - **Environment variables** (`envFrom` / `configMapRef`)
-  - **Mounted files** (`volumes` / `volumeMounts`)
-- Volume-mounted ConfigMaps can be updated live; env-var ConfigMaps require Pod restart
+V tejto kapitole ste sa naučili:
+- **ConfigMap** uchováva necitlivú konfiguráciu ako dvojice kľúč-hodnota
+- `kubectl create configmap --from-literal` — vytvorenie z hodnôt na príkazovom riadku
+- `kubectl create configmap --from-file` — vytvorenie zo súboru
+- ConfigMapy sa dajú definovať v YAML a aplikovať cez `kubectl apply -f`
+- Pody ich konzumujú ako:
+  - **Premenné prostredia** (`envFrom` / `configMapRef`)
+  - **Namountované súbory** (`volumes` / `volumeMounts`)
+- ConfigMapy namountované ako volume sa aktualizujú za behu; tie cez premenné prostredia vyžadujú reštart Podu
 
-Next, let's learn about **Labels, Selectors, and Namespaces** — key concepts for organizing resources!
+Posledný bod je dôležitejší, než vyzerá, a nasledujúca kapitola vám to dá pocítiť.
+Poďme všetko spojiť dokopy na reálnej aplikácii.

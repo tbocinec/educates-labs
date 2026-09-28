@@ -1,40 +1,56 @@
 ---
-title: Workshop Overview
+title: Prehľad workshopu
 ---
 
-# Kubernetes Fundamentals
+# Základy Kubernetes
 
-Welcome to this hands-on workshop on **Kubernetes fundamentals**! You will learn how to work with the core building blocks of Kubernetes — from running your first Pod to managing application updates with Deployments.
+Vitajte! Toto je váš **prvý kontakt s Kubernetes**. Nepredpokladáme žiadne
+predchádzajúce skúsenosti — začnete obhliadkou klastra, ručne spustíte jeden Pod
+a postupne sa prepracujete až k prevádzke reálnej aplikácie.
 
-## What You Will Learn
+## Čo sa naučíte
 
-This workshop is organized into four progressive levels:
+Workshop sleduje jeden oblúk: od *čo to vlastne je* až po *viem na tom spustiť
+a aktualizovať aplikáciu*.
 
-| Level | Topic | What You Will Cover |
-|-------|-------|-------------------|
-| **1 — Getting Started** | Architecture & kubectl | Kubernetes components, cluster exploration, kubectl commands |
-| **2 — Pods** | Running workloads | Creating Pods imperatively and declaratively with YAML |
-| **3 — Deployments** | Managing applications | Deployments, scaling, rolling updates, rollbacks |
-| **4 — Configuration** | Config & organization | ConfigMaps, Labels, Selectors, Namespaces |
+| Úroveň | Téma | Čo preberieme |
+|--------|------|---------------|
+| **1 — Začíname** | Architektúra a kubectl | Z čoho sa klaster skladá, ako ho preskúmať cez `kubectl` |
+| **2 — Pody** | Prvý workload | Spustenie Podu ručne, potom deklaratívne cez YAML |
+| **3 — Deployments** | Ako to spustiť poriadne | Deployments, škálovanie, rolling updates, rollbacks |
+| **4 — Konfigurácia** | Konfigurácia mimo image | ConfigMap ako premenné prostredia aj ako súbory |
+| **5 — Scenár** | Všetko dokopy | Nasadenie reálnej aplikácie, škálovanie, self-healing, update |
 
-## Workshop Environment
+Každá úroveň stavia na predchádzajúcej a posledná je jeden súvislý scenár, ktorý
+použije všetky naraz.
 
-Your workshop environment provides:
+## Predpoklady
 
-- **Two terminals** (split layout) — run commands side by side
-- **Code editor** — view and edit YAML manifests
-- **Headlamp** — a web UI for visual cluster monitoring (Headlamp tab)
-- **Pre-built exercise files** — YAML manifests in the `exercises/` directory
+Okrem terminálu žiadne. Ak ste pracovali s Dockerom, bude vám to povedomé, ale
+ani to nie je podmienka.
 
-The terminals are already configured with `kubectl` and have access to your dedicated Kubernetes namespace: `{{ session_namespace }}`.
+## Prostredie workshopu
 
-## Time Estimate
+Vaše prostredie obsahuje:
 
-This workshop takes approximately **90 minutes** to complete.
+- **Dva terminály** (rozdelený layout) — príkazy môžete púšťať vedľa seba
+- **Editor kódu** — na prezeranie a úpravu YAML manifestov
+- **Headlamp** — webové UI na vizuálny prehľad klastra (záložka Headlamp)
+- **Pripravené cvičné súbory** — YAML manifesty v adresári `exercises/`
 
-## Official Kubernetes Documentation
+Terminály majú nakonfigurovaný `kubectl` a prístup do vášho vlastného namespace:
+`{{ session_namespace }}`.
+
+## Časový odhad
+
+Workshop trvá približne **90 minút**.
+
+## Oficiálna dokumentácia Kubernetes
 
 - [Kubernetes Documentation](https://kubernetes.io/docs/home/)
+- [Pods](https://kubernetes.io/docs/concepts/workloads/pods/)
+- [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+- [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
 - [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
 
-Let's get started!
+Poďme na to!

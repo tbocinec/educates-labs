@@ -1,12 +1,12 @@
 # =============================================================
-# pod-liveness-fail.yaml — Pod with a failing liveness probe
+# pod-liveness-fail.yaml — Pod so zlyhávajúcou liveness probe
 # =============================================================
-# This Pod starts healthy but becomes unhealthy after 15 seconds
-# (the /tmp/healthy file is removed). The liveness probe checks
-# for this file — when it's gone, the probe fails and Kubernetes
-# restarts the container.
+# Tento Pod naštartuje zdravý, ale po 15 sekundách sa stane
+# nezdravým (zmaže sa súbor /tmp/healthy). Liveness probe tento
+# súbor kontroluje — keď zmizne, probe zlyhá a Kubernetes
+# container reštartuje.
 #
-# This demonstrates automatic self-healing via liveness probes.
+# Ukazuje to automatický self-healing cez liveness probes.
 # =============================================================
 
 apiVersion: v1

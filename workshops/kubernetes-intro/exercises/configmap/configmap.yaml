@@ -1,11 +1,11 @@
 # =============================================================
-# configmap.yaml — A ConfigMap defined in YAML
+# configmap.yaml — ConfigMap definovaná v YAML
 # =============================================================
-# ConfigMaps store non-sensitive configuration data as key-value
-# pairs. They can be consumed by Pods as:
-#   - Environment variables
-#   - Command-line arguments
-#   - Configuration files in a mounted volume
+# ConfigMap uchováva necitlivú konfiguráciu ako dvojice
+# kľúč-hodnota. Pody ju vedia konzumovať ako:
+#   - premenné prostredia
+#   - argumenty príkazového riadku
+#   - konfiguračné súbory v namountovanom volume
 # =============================================================
 
 apiVersion: v1

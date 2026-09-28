@@ -1,15 +1,14 @@
 # =============================================================
-# web-deployment.yaml — a perfectly healthy application
+# web-deployment.yaml — úplne zdravá aplikácia
 # =============================================================
-# There is nothing wrong with this file. Both replicas will run,
-# stay ready, and never restart.
+# Na tomto súbore nie je nič zlé. Obe repliky nabehnú, ostanú
+# pripravené a nikdy sa nereštartujú.
 #
-# It is here so you can see that "kubectl get pods" looking
-# perfect tells you NOTHING about whether the Service in front of
-# it works.
+# Je tu preto, aby ste videli, že dokonale vyzerajúci "kubectl get
+# pods" nehovorí NIČ o tom, či Service pred ním funguje.
 #
-# Note the label the Pods carry: app=web. Remember it when you
-# read web-service-broken.yaml.
+# Všimnite si label, ktorý Pody nesú: app=web. Zapamätajte si ho,
+# keď budete čítať web-service-broken.yaml.
 #
 # Docs: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 # =============================================================
@@ -34,7 +33,7 @@ spec:
       - name: nginx
         image: nginx:1.27
         ports:
-        # <-- The container listens on 80. Remember this too.
+        # <-- Container počúva na porte 80. Toto si tiež zapamätajte.
         - containerPort: 80
         resources:
           requests:

@@ -1,9 +1,9 @@
 # =============================================================
-# pod-with-pvc.yaml — Pod mounting a PersistentVolumeClaim
+# pod-with-pvc.yaml — Pod mountujúci PersistentVolumeClaim
 # =============================================================
-# This Pod writes data to /data (backed by the PVC).
-# If the Pod is deleted and recreated, the data persists
-# because it's stored on the PersistentVolume, not in the container.
+# Tento Pod zapisuje dáta do /data (podložené cez PVC).
+# Keď Pod zmažete a vytvoríte nanovo, dáta ostanú, lebo sú
+# uložené na PersistentVolume, nie v containeri.
 # =============================================================
 
 apiVersion: v1

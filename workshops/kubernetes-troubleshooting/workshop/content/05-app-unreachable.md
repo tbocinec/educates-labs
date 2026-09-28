@@ -1,31 +1,30 @@
 ---
-title: The App Is Unreachable
+title: Aplikácia je nedostupná
 ---
 
-# Level 5: The App Is Unreachable
+# Úroveň 5: Aplikácia je nedostupná
 
-Symptom: every Pod is `1/1 Running`. No restarts, no errors, no warnings. And
-the application still doesn't answer.
+Príznak: každý Pod je `1/1 Running`. Žiadne reštarty, žiadne chyby, žiadne
+varovania. A aplikácia aj tak neodpovedá.
 
-This is the most frustrating category, because `kubectl get pods` looks perfect.
-The failure is in the wiring between the Service and the Pods — and it has its
-own diagnostic command.
+Toto je najfrustrujúcejšia kategória, lebo `kubectl get pods` vyzerá dokonale.
+Porucha je v prepojení medzi Service a Podmi — a má vlastný diagnostický príkaz.
 
-## The One Command for Service Problems
+## Jeden príkaz na problémy so Service
 
-A Service doesn't route to Pods directly. It selects them by label, and the
-result is an **EndpointSlice**: the list of Pod IPs actually behind the Service.
+Service nesmeruje na Pody priamo. Vyberá ich podľa labelu a výsledkom je
+**EndpointSlice**: zoznam IP adries Podov, ktoré za Service naozaj stoja.
 
 ```
-Service  --(label selector)-->  Pods  --(their IPs)-->  Endpoints
+Service  --(label selektor)-->  Pody  --(ich IP)-->  Endpoints
 ```
 
-If `Endpoints` is empty, the Service is a dead end no matter how healthy the
-Pods are. That makes `kubectl get endpoints` the first thing to run.
+Ak sú `Endpoints` prázdne, Service je slepá ulička bez ohľadu na to, aké zdravé
+sú Pody. Preto je `kubectl get endpoints` prvá vec, ktorú treba spustiť.
 
-> **Docs**: [Debug Services](https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/)
+> **Dokumentácia**: [Debug Services](https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/)
 
-## Scenario 7: The Service With No Endpoints
+## Scenár 7: Service bez endpointov
 
 ```editor:open-file
 file: broken/06-service/web-deployment.yaml
@@ -39,70 +38,70 @@ file: broken/06-service/web-service-broken.yaml
 command: kubectl apply -f ~/broken/06-service/web-deployment.yaml -f ~/broken/06-service/web-service-broken.yaml
 ```
 
-### Observe
+### Pozorovanie
 
-Everything looks healthy:
+Všetko vyzerá zdravo:
 
 ```terminal:execute
 command: kubectl get pods,svc -l app=web
 ```
 
-Now try to actually reach it. Start a throwaway client Pod:
+Teraz sa tam skúste naozaj dostať. Spustite jednorazový klientský Pod:
 
 ```terminal:execute
 command: kubectl run client --image=curlimages/curl:8.11.1 --restart=Never --rm -it --command -- curl -s -m 5 http://web-service
 ```
 
-It hangs and then fails. Nothing in the Pod list hinted at this.
+Zasekne sa a zlyhá. Vo výpise Podov to nič nenaznačovalo.
 
-### Diagnose
+### Diagnostika
 
 ```terminal:execute
 command: kubectl get endpoints web-service
 ```
 
-`<none>`. The Service has no backends — that's your answer.
+`<none>`. Service nemá žiadny backend — a to je vaša odpoveď.
 
-> **You'll see a deprecation warning** about `v1 Endpoints` on Kubernetes 1.33+.
-> Ignore it here — the command still works and is shorter to type. The modern
-> equivalent is `kubectl get endpointslices -l kubernetes.io/service-name=web-service`.
+> **Uvidíte varovanie o zastaranosti** `v1 Endpoints` na Kubernetes 1.33+. Tu ho
+> ignorujte — príkaz funguje a píše sa kratšie. Moderný ekvivalent je
+> `kubectl get endpointslices -l kubernetes.io/service-name=web-service`.
 
-Now find out why. Compare what the Service is looking for:
+Teraz zistite prečo. Porovnajte, čo Service hľadá:
 
 ```terminal:execute
 command: kubectl get service web-service -o jsonpath='selector={.spec.selector}{"\n"}'
 ```
 
-…with the labels the Pods actually carry:
+…s labelmi, ktoré Pody naozaj nesú:
 
 ```terminal:execute
 command: kubectl get pods --show-labels -l app=web
 ```
 
-The Service selects `app=webapp`. The Pods are labelled `app=web`. One letter.
+Service vyberá `app=webapp`. Pody majú `app=web`. Jedno písmeno.
 
-`describe` says the same thing in words:
+`describe` hovorí to isté slovami:
 
 ```terminal:execute
 command: kubectl describe service web-service | grep -E "Selector|Endpoints"
 ```
 
-### Root Cause
+### Príčina
 
-Label selector mismatch. This is the single most common Service bug, and it
-produces **zero** warnings — an empty selection is a perfectly legal state as far
-as Kubernetes is concerned.
+Nesúlad label selektora. Je to úplne najčastejšia chyba pri Service a
+neprodukuje **žiadne** varovanie — prázdny výber je z pohľadu Kubernetes úplne
+legitímny stav.
 
-### Fix and Verify
+### Oprava a overenie
 
-Fix the selector in the manifest:
+Opravte selektor v manifeste:
 
 ```editor:select-matching-text
 file: broken/06-service/web-service-broken.yaml
 text: "app: webapp"
 ```
 
-Change `webapp` to `web`, save, and re-apply:
+Zmeňte `webapp` na `web`, uložte a aplikujte znova:
 
 ```terminal:execute
 command: kubectl apply -f ~/broken/06-service/web-service-broken.yaml
@@ -112,7 +111,7 @@ command: kubectl apply -f ~/broken/06-service/web-service-broken.yaml
 command: kubectl get endpoints web-service
 ```
 
-Two Pod IPs now. Try again:
+Teraz tam sú dve IP adresy Podov. Skúste to znova:
 
 ```terminal:execute
 command: kubectl run client --image=curlimages/curl:8.11.1 --restart=Never --rm -it --command -- curl -s -m 5 -o /dev/null -w "HTTP %{http_code}\n" http://web-service
@@ -120,10 +119,10 @@ command: kubectl run client --image=curlimages/curl:8.11.1 --restart=Never --rm 
 
 `HTTP 200`.
 
-## Scenario 8: Endpoints Exist, Traffic Still Fails
+## Scenár 8: Endpointy sú, prevádzka aj tak zlyháva
 
-A subtler variant: the selector is right, so endpoints appear — but requests are
-still refused.
+Jemnejší variant: selektor je správny, takže endpointy sa objavia — a požiadavky
+aj tak končia odmietnutím.
 
 ```terminal:execute
 command: kubectl apply -f ~/broken/06-service/web-service-badport.yaml
@@ -133,45 +132,44 @@ command: kubectl apply -f ~/broken/06-service/web-service-badport.yaml
 command: kubectl get endpoints web-badport
 ```
 
-Endpoints are there. And yet:
+Endpointy tam sú. A predsa:
 
 ```terminal:execute
 command: kubectl run client --image=curlimages/curl:8.11.1 --restart=Never --rm -it --command -- curl -s -m 5 http://web-badport
 ```
 
-Connection refused.
+Spojenie odmietnuté.
 
-### Diagnose
+### Diagnostika
 
-When endpoints exist but traffic fails, the problem has moved one level down: the
-**port**. Check what the Service forwards to:
+Keď endpointy existujú, ale prevádzka zlyháva, problém sa posunul o úroveň
+nižšie: na **port**. Pozrite sa, kam Service preposiela:
 
 ```terminal:execute
 command: kubectl get service web-badport -o jsonpath='port={.spec.ports[0].port} targetPort={.spec.ports[0].targetPort}{"\n"}'
 ```
 
-And what the container actually listens on:
+A na čom container naozaj počúva:
 
 ```terminal:execute
 command: kubectl get deployment web -o jsonpath='containerPort={.spec.template.spec.containers[0].ports[0].containerPort}{"\n"}'
 ```
 
-The Service forwards to port `8080`; nginx listens on `80`.
+Service preposiela na port `8080`, nginx počúva na `80`.
 
-Prove it by talking to the Pod directly, bypassing the Service:
+Dokážte si to komunikáciou priamo s Podom, mimo Service:
 
 ```terminal:execute
 command: kubectl run client --image=curlimages/curl:8.11.1 --restart=Never --rm -it --command -- curl -s -m 5 -o /dev/null -w "direct to pod: HTTP %{http_code}\n" http://$(kubectl get endpoints web-service -o jsonpath='{.subsets[0].addresses[0].ip}')
 ```
 
-The Pod answers fine on port 80. The Service is pointing at the wrong door.
+Pod na porte 80 odpovedá bez problémov. Service len klope na zlé dvere.
 
-> **`port` vs `targetPort`.** `port` is what clients call on the Service.
-> `targetPort` is the container port traffic is forwarded to. They are allowed
-> to differ — which is exactly why this mistake is easy to make and invisible in
-> the Pod list.
+> **`port` vs. `targetPort`.** `port` je to, na čo volajú klienti Service.
+> `targetPort` je port containera, kam sa prevádzka preposiela. Smú sa líšiť —
+> a práve preto sa táto chyba robí ľahko a vo výpise Podov nie je vidieť.
 
-### Fix and Verify
+### Oprava a overenie
 
 ```terminal:execute
 command: kubectl patch service web-badport -p '{"spec":{"ports":[{"port":80,"targetPort":80}]}}'
@@ -181,30 +179,30 @@ command: kubectl patch service web-badport -p '{"spec":{"ports":[{"port":80,"tar
 command: kubectl run client --image=curlimages/curl:8.11.1 --restart=Never --rm -it --command -- curl -s -m 5 -o /dev/null -w "HTTP %{http_code}\n" http://web-badport
 ```
 
-## A Checklist for "It Doesn't Answer"
+## Kontrolný zoznam pre „neodpovedá to"
 
-Work down this list — each step rules out a layer:
+Prejdite tento zoznam — každý krok vylúči jednu vrstvu:
 
-1. `kubectl get endpoints <svc>` — empty? → selector mismatch
-2. Endpoints present? → compare `targetPort` with the container's port
-3. Port right? → is the Pod `READY`? A failing readiness probe removes it from endpoints
-4. Still failing? → `kubectl exec` into a client Pod and test the Pod IP directly
-5. Pod IP works, Service doesn't? → check the Service name and namespace in your DNS lookup
+1. `kubectl get endpoints <svc>` — prázdne? → nesúlad selektora
+2. Endpointy sú? → porovnajte `targetPort` s portom containera
+3. Port sedí? → je Pod `READY`? Zlyhávajúca readiness probe ho vyradí z endpointov
+4. Stále zle? → cez `kubectl exec` v klientskom Pode otestujte priamo IP Podu
+5. IP Podu funguje, Service nie? → skontrolujte názov Service a namespace v DNS dopyte
 
-## Clean Up
+## Upratanie
 
 ```terminal:execute
 command: kubectl delete -f ~/broken/06-service/ --ignore-not-found
 ```
 
-## Summary
+## Zhrnutie
 
-In this chapter you learned:
-- Healthy Pods tell you nothing about whether the Service works
-- `kubectl get endpoints` is the first command for any connectivity problem
-- Empty endpoints = **label selector mismatch** — legal, silent, and very common
-- Endpoints present but refused = wrong **`targetPort`**
-- A failing readiness probe also empties endpoints, without changing Pod status to anything alarming
-- Test the Pod IP directly to prove whether the problem is the app or the wiring
+V tejto kapitole ste sa naučili:
+- Zdravé Pody nehovoria nič o tom, či Service funguje
+- `kubectl get endpoints` je prvý príkaz pri akomkoľvek probléme s dostupnosťou
+- Prázdne endpointy = **nesúlad label selektora** — legitímne, tiché a veľmi časté
+- Endpointy sú, ale spojenie je odmietnuté = zlý **`targetPort`**
+- Endpointy vyprázdni aj zlyhávajúca readiness probe, bez toho, aby sa stav Podu zmenil na niečo alarmujúce
+- Otestujte IP Podu priamo, aby ste rozlíšili chybu aplikácie od chyby prepojenia
 
-One chapter left — the summary, and a cheat sheet worth keeping.
+Ostáva posledná kapitola — zhrnutie a ťahák, ktorý sa oplatí si nechať.

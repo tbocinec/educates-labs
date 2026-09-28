@@ -1,17 +1,17 @@
 # =============================================================
-# pod-too-big.yaml — rejected before it exists
+# pod-too-big.yaml — odmietnutý skôr, než vznikol
 # =============================================================
-# This one never becomes a Pod at all. "kubectl apply" returns an
-# error and nothing is created.
+# Z tohto sa Pod vôbec nestane. "kubectl apply" vráti chybu a nič
+# nevznikne.
 #
-# Your namespace has a LimitRange capping a single Pod at 8Gi of
-# memory, and a ResourceQuota capping the namespace total. This
-# manifest asks for 32Gi, so admission refuses it outright.
+# Váš namespace má LimitRange obmedzujúci jeden Pod na 8Gi pamäte
+# a ResourceQuota obmedzujúcu súčet za celý namespace. Tento
+# manifest si pýta 32Gi, takže ho admission rovno odmietne.
 #
-# The lesson: if apply printed an error, do not go looking for a
-# Pod to describe. The error text IS the diagnosis.
+# Poučenie: keď apply vypísal chybu, nehľadajte Pod na popísanie.
+# Text chyby JE tou diagnózou.
 #
-# Inspect the rules with:
+# Pravidlá si pozriete cez:
 #     kubectl describe limitrange
 #     kubectl describe resourcequota
 #
@@ -33,6 +33,6 @@ spec:
         memory: 16Gi
         cpu: 1
       limits:
-        # <-- Far above what this namespace permits.
+        # <-- Ďaleko nad tým, čo tento namespace dovoľuje.
         memory: 32Gi
         cpu: 2

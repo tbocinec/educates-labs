@@ -1,15 +1,16 @@
 # =============================================================
-# hello-app-values.yaml — values for the chart you scaffolded
+# hello-app-values.yaml — values pre chart, ktorý ste vygenerovali
 # =============================================================
-# "helm create" generates a chart that runs nginx. These values
-# point it at podinfo instead and size it for the namespace quota.
+# "helm create" vygeneruje chart, ktorý spúšťa nginx. Tieto values
+# ho nasmerujú na podinfo a nastavia mu veľkosť podľa kvóty
+# namespace.
 #
-# The key names come from the scaffold's own values.yaml — open
-# it side by side to see which knobs exist:
+# Názvy kľúčov pochádzajú z values.yaml samotnej kostry — otvorte
+# si ho vedľa a pozrite sa, ktoré gombíky existujú:
 #
 #     ~/hello-app/values.yaml
 #
-# Apply with:
+# Aplikujete cez:
 #     helm install hello ~/hello-app -f ~/exercises/hello-app-values.yaml
 #
 # Docs: https://helm.sh/docs/chart_template_guide/values_files/
@@ -22,17 +23,18 @@ image:
   pullPolicy: IfNotPresent
   tag: "6.15.0"
 
-# The scaffold's Service defaults to port 80. Podinfo listens on
-# 9898, so this has to move.
+# Service v kostre má predvolene port 80. Podinfo počúva na 9898,
+# takže sa to musí posunúť.
 #
-# Note that the scaffold templates the CONTAINER port from this
-# same value:
+# Všimnite si, že kostra šablónuje z tej istej hodnoty aj port
+# CONTAINERA:
 #
 #     containerPort: {{ .Values.service.port }}
 #
-# One value, two places. Check for yourself in
-# ~/hello-app/templates/deployment.yaml — assuming a chart has a
-# separate containerPort knob is a common way to waste ten minutes.
+# Jedna hodnota, dve miesta. Overte si to sami v
+# ~/hello-app/templates/deployment.yaml — predpoklad, že chart má
+# samostatný gombík containerPort, je bežný spôsob, ako stratiť
+# desať minút.
 service:
   type: ClusterIP
   port: 9898
@@ -45,8 +47,8 @@ resources:
     cpu: 200m
     memory: 192Mi
 
-# The scaffold's probes hit "/" — podinfo answers there, so the
-# defaults work unchanged.
+# Probes v kostre mieria na "/" — podinfo tam odpovedá, takže
+# predvolené hodnoty fungujú bez zmeny.
 
 ingress:
   enabled: false
