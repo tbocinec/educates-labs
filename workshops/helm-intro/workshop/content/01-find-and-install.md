@@ -77,12 +77,30 @@ command: helm list
 A ten istý pohľad z pohľadu Kubernetes:
 
 ```terminal:execute
-command: kubectl get deploy,svc,pods -l app.kubernetes.io/managed-by=Helm
+command: kubectl get deploy,svc -l app.kubernetes.io/managed-by=Helm
 ```
 
 > **Filtrujte podľa `managed-by=Helm`, nie podľa názvu chartu.** Helm dáva
 > objektom predponu podľa názvu releasu — váš Deployment sa volá
 > `my-app-podinfo`, nie `podinfo`.
+
+Pody v tom výpise ale nie sú. Skúste to:
+
+```terminal:execute
+command: kubectl get pods -l app.kubernetes.io/managed-by=Helm
+```
+
+Nič. **Pody totiž nevytvára Helm** — vytvára ich ReplicaSet zo šablóny
+v Deploymente, takže nesú labels z tej šablóny, nie Helmove. Filtrujte ich podľa
+názvu:
+
+```terminal:execute
+command: kubectl get pods -l app.kubernetes.io/name=my-app-podinfo
+```
+
+Je to drobnosť, ktorá mätie prekvapivo často: `managed-by=Helm` funguje na
+objekty, ktoré Helm sám vytvoril (Deployment, Service, Secret, ConfigMap), nie na
+to, čo z nich následne vzniklo.
 
 Stav releasu:
 
@@ -135,7 +153,7 @@ V tejto kapitole ste sa naučili:
 - `helm repo add` a `helm repo update` — sprístupnenie chartov
 - `helm show values` — verejné API chartu, čítajte ho ako prvé
 - `helm install --wait` — inštalácia, ktorá počká na pripravenosť
-- Objekty majú predponu podľa releasu a label `managed-by=Helm`
+- Objekty majú predponu podľa releasu a label `managed-by=Helm` — ale Pody nie, tie vyrába ReplicaSet
 - `helm uninstall` upratuje po sebe
 
 Ďalej: ako chart prinútiť robiť to, čo chcete vy.

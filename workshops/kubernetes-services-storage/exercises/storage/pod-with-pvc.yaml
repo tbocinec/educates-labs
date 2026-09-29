@@ -9,7 +9,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: storage-writer
+  name: writer-pod
   labels:
     app: storage-demo
 spec:

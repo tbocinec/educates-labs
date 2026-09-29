@@ -33,7 +33,7 @@ pripravené — a tie pripravené nikdy nebudú.
 Pozrite si škody:
 
 ```terminal:execute
-command: kubectl get pods -l app.kubernetes.io/managed-by=Helm
+command: kubectl get pods -l app.kubernetes.io/name=my-app-podinfo
 ```
 
 `ImagePullBackOff`. A release:
@@ -58,7 +58,7 @@ command: helm rollback my-app --wait
 Bez čísla revízie sa Helm vráti o jednu späť. Overte:
 
 ```terminal:execute
-command: kubectl get pods -l app.kubernetes.io/managed-by=Helm
+command: kubectl get pods -l app.kubernetes.io/name=my-app-podinfo
 ```
 
 ```terminal:execute
@@ -108,5 +108,5 @@ V tejto kapitole ste sa naučili:
 - Rollback históriu **dopĺňa**, nikdy nič nemaže
 - Rollback obnoví aj **values** danej revízie, nielen images
 
-Tým končí prvá časť — vedeli by ste teraz nasadiť a prevádzkovať cudzí chart.
-Druhá časť je o tom, ako si napísať vlastný.
+Zatiaľ ste pracovali s hračkou. V ďalšej kapitole nasadíte reálnu aplikáciu,
+do ktorej sa aj prihlásite.

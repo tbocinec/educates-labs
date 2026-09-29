@@ -12,7 +12,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: liveness-fail-demo
+  name: liveness-fail
   labels:
     app: liveness-demo
 spec:

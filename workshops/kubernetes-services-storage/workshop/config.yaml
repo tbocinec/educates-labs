@@ -1,3 +1,5 @@
+renderer: markdown
+
 pathways:
   default: workshop
 

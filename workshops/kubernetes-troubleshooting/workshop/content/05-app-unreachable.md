@@ -160,7 +160,8 @@ Service preposiela na port `8080`, nginx počúva na `80`.
 Dokážte si to komunikáciou priamo s Podom, mimo Service:
 
 ```terminal:execute
-command: kubectl run client --image=curlimages/curl:8.11.1 --restart=Never --rm -it --command -- curl -s -m 5 -o /dev/null -w "direct to pod: HTTP %{http_code}\n" http://$(kubectl get endpoints web-service -o jsonpath='{.subsets[0].addresses[0].ip}')
+command: |
+  kubectl run client --image=curlimages/curl:8.11.1 --restart=Never --rm -it --command -- curl -s -m 5 -o /dev/null -w "direct to pod: HTTP %{http_code}\n" http://$(kubectl get endpoints web-service -o jsonpath='{.subsets[0].addresses[0].ip}')
 ```
 
 Pod na porte 80 odpovedá bez problémov. Service len klope na zlé dvere.

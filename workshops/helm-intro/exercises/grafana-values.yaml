@@ -1,0 +1,43 @@
+# =============================================================
+# grafana-values.yaml — values pre oficiálny chart Grafany
+# =============================================================
+# Chart Grafany je oproti podinfu poriadny balík: vie vytvoriť
+# desiatky objektov. Tu ho nastavujeme tak, aby sa zmestil do
+# vášho namespace a do jeho kvóty.
+#
+# Kľúčové je 'rbac.create: false'. Chart totiž predvolene vytvára
+# ClusterRole a ClusterRoleBinding, čo sú CLUSTER-SCOPED objekty —
+# a na tie ako administrátor jedného namespace práva nemáte.
+# Inštalácia by skončila chybou 'Forbidden'.
+#
+# Skúste si to: nainštalujte chart bez tohto súboru a pozrite sa,
+# čo Helm povie.
+#
+# Docs: https://github.com/grafana/helm-charts/tree/main/charts/grafana
+# =============================================================
+
+# Nevytvárať ClusterRole ani ClusterRoleBinding (cluster-scoped).
+rbac:
+  create: false
+
+# Testovací Pod chartu tu nepotrebujeme.
+testFramework:
+  enabled: false
+
+# Bez trvalého úložiska — dáta žijú v Pode. Pre workshop to stačí
+# a ušetrí to jedno PVC.
+persistence:
+  enabled: false
+
+# Zmestiť sa do kvóty namespace.
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# Meno administrátora. Heslo si chart vygeneruje sám a uloží ho
+# do Secretu — vytiahnete si ho v ďalšom kroku.
+adminUser: admin

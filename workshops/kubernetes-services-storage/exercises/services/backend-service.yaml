@@ -6,8 +6,8 @@
 # Service je dostupná len v rámci klastra.
 #
 # Ostatné Pody sa na ňu dostanú cez:
-#   - http://backend-svc:5678          (rovnaký namespace)
-#   - http://backend-svc.<ns>.svc.cluster.local:5678  (iný namespace)
+#   - http://backend-svc:9898          (rovnaký namespace)
+#   - http://backend-svc.<ns>.svc.cluster.local:9898  (iný namespace)
 #
 # Docs: https://kubernetes.io/docs/concepts/services-networking/service/
 # =============================================================
@@ -22,5 +22,5 @@ spec:
     app: backend
   ports:
   - protocol: TCP
-    port: 5678
-    targetPort: 5678
+    port: 9898
+    targetPort: 9898

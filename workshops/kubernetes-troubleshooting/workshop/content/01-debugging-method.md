@@ -97,7 +97,8 @@ command: kubectl get pods -o wide
 `-o wide` pridá node a IP Podu — užitočné, keď zlobí len časť replík.
 
 ```terminal:execute
-command: kubectl describe pod -l app=healthy | grep -A10 Events:
+command: |
+  kubectl describe pod -l app=healthy | grep -A10 Events:
 ```
 
 Skok rovno na sekciu Events konkrétneho Podu.

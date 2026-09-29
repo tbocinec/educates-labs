@@ -81,7 +81,7 @@ Všimnite si zmenený image:
 
 ```editor:select-matching-text
 file: exercises/deployment/deployment-v2.yaml
-text: image: nginx:1.27
+text: 'image: nginx:1.27'
 ```
 
 Tento súbor obsahuje `nginx:1.27` (ktorý sme už aplikovali). V reálnom

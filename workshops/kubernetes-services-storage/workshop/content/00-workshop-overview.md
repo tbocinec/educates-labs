@@ -7,19 +7,29 @@ title: Prehľad workshopu
 Vitajte na praktickom workshope! Toto je **pokračovanie** workshopu *Základy
 Kubernetes*, ktorý pokrýval kubectl, Pody, Deployments a ConfigMapy.
 
-Tu sa naučíte, ako aplikácie v Kubernetes **prepojiť**, **zabezpečiť** a ako im
-zachovať **dáta**.
+Tam ste sa naučili aplikáciu **spustiť**. Tu sa naučíte všetko ostatné, čo
+potrebuje, aby sa dala prevádzkovať: ako ju **nájsť a prepojiť**, ako jej podať
+**citlivé údaje**, ako jej **zachovať dáta**, ako Kubernetes sleduje jej
+**zdravie** a ako spúšťať **dávkové úlohy**.
 
 ## Čo sa naučíte
 
-Workshop je rozdelený do štyroch postupných úrovní:
+Workshop má sedem kapitol rozdelených do štyroch úrovní.
 
-| Úroveň | Téma | Čo preberieme |
-|--------|------|---------------|
-| **1 — Organizácia a prepojenie** | Labels, DNS a Services | Labels a selektory do hĺbky, namespaces, sieťovanie Podov, ClusterIP Services |
-| **2 — Secrets** | Citlivé údaje | Vytváranie Secrets, konzumácia ako env premenné aj ako súbory |
-| **3 — Úložisko** | Trvalé dáta | PersistentVolumeClaims, dáta prežívajúce reštart Podu |
-| **4 — Spoľahlivosť** | Probes a Jobs | Liveness/readiness kontroly, Jobs, CronJobs |
+| Úroveň | Kapitola | Čo preberieme |
+|--------|----------|---------------|
+| **1 — Organizácia a prepojenie** | Labels, selektory a namespaces | Labels, selektory na rovnosť aj množinové, `kubectl label`, namespaces a práca naprieč nimi |
+| | Sieťovanie Podov a DNS | Sieťový model, IP adresy Podov a ich pominuteľnosť, DNS klastra |
+| | Services | Typy Services, vytvorenie imperatívne aj z YAML, endpointy, DNS formáty, rozklad záťaže, vyradenie Podu zmenou labelu |
+| **2 — Secrets** | Secrets | Porovnanie s ConfigMap, vytvorenie imperatívne aj cez `stringData`, konzumácia ako premenné prostredia aj ako súbory, správanie pri zmene |
+| **3 — Úložisko** | Trvalé úložisko | PV, PVC a StorageClass, prístupové režimy, dôkaz, že dáta prežijú Pod, reclaim policy |
+| **4 — Spoľahlivosť** | Liveness a readiness probes | Tri druhy probes, metódy HTTP/TCP/exec, zlyhávajúca probe naživo, časové parametre |
+| | Jobs a CronJobs | Jobs do dokončenia, `completions` a `parallelism`, `backoffLimit`, CronJobs, cron formát, pozastavenie a obnovenie |
+
+> **Názov workshopu je užší než jeho obsah.** Okrem Services, Secretov a
+> úložiska sa tu naučíte aj labels a namespaces, kontroly zdravia a dávkové
+> úlohy. Je to zámer — sú to veci, ktoré pri prevádzke aplikácie potrebujete
+> spolu.
 
 Úroveň 1 začína labelmi a selektormi zámerne. Service si nájde svoje Pody podľa
 label selektora a podľa ničoho iného — takže práve selektor je to, vďaka čomu
@@ -41,10 +51,11 @@ Vaše prostredie obsahuje:
 
 - **Dva terminály** (rozdelený layout) — príkazy môžete púšťať vedľa seba
 - **Editor kódu** — na prezeranie a úpravu YAML manifestov
-- **Kubernetes Dashboard** — vizuálny prehľad klastra (záložka Console)
+- **Headlamp** — webové UI na vizuálny prehľad klastra (záložka Headlamp)
 - **Pripravené cvičné súbory** — YAML manifesty v `~/exercises/`
 
-Váš vlastný namespace je `{{ session_namespace }}`.
+Pracujete vo vlastnom namespace — jeho názov zistíte cez
+`kubectl config view --minify -o jsonpath='{..namespace}'`.
 
 ## Oficiálna dokumentácia Kubernetes
 

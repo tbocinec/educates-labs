@@ -1,9 +1,12 @@
 # =============================================================
 # backend-deployment.yaml — backend, ktorý vracia svoj hostname
 # =============================================================
-# Tento Deployment vytvorí jednoduchý HTTP server postavený na
-# hashicorp/http-echo. Každý Pod odpovedá vlastným názvom, takže
-# pri prístupe cez Service je rozklad záťaže pekne vidieť.
+# Tento Deployment spustí tri repliky aplikácie podinfo. Na
+# endpointe /api/info každá vráti okrem iného svoj "hostname",
+# čo je názov Podu, ktorý požiadavku obslúžil.
+#
+# Práve vďaka tomu uvidíte rozklad záťaže: keď rovnakú požiadavku
+# pošlete cez Service viackrát, hostname sa bude meniť.
 # =============================================================
 
 apiVersion: apps/v1
@@ -23,17 +26,15 @@ spec:
         app: backend
     spec:
       containers:
-      - name: echo
-        image: hashicorp/http-echo:0.2.3
-        args:
-        - "-text=Hello from backend"
-        - "-listen=:5678"
+      - name: podinfo
+        image: ghcr.io/stefanprodan/podinfo:6.15.0
         ports:
-        - containerPort: 5678
+        - name: http
+          containerPort: 9898
         resources:
           requests:
             cpu: 50m
-            memory: 32Mi
-          limits:
-            cpu: 100m
             memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 192Mi

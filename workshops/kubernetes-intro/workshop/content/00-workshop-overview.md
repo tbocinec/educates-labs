@@ -38,8 +38,7 @@ Vaše prostredie obsahuje:
 - **Headlamp** — webové UI na vizuálny prehľad klastra (záložka Headlamp)
 - **Pripravené cvičné súbory** — YAML manifesty v adresári `exercises/`
 
-Terminály majú nakonfigurovaný `kubectl` a prístup do vášho vlastného namespace:
-`{{ session_namespace }}`.
+Terminály majú nakonfigurovaný `kubectl` a prístup do vášho vlastného namespace.
 
 ## Časový odhad
 

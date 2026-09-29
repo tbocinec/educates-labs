@@ -98,7 +98,7 @@ Prejdite si kľúčové sekcie:
 
 ```editor:select-matching-text
 file: exercises/deployment/deployment.yaml
-text: replicas: 3
+text: 'replicas: 3'
 ```
 
 - `replicas: 3` — bežať budú 3 identické Pody

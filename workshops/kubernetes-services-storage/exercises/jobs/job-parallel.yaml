@@ -11,7 +11,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: parallel-worker
+  name: parallel-job
 spec:
   completions: 4
   parallelism: 2

@@ -150,7 +150,7 @@ Bežné predvolené namespaces:
 - `kube-system` — systémové komponenty (API server, etcd a podobne)
 - `kube-public` — verejne čitateľné zdroje
 
-Váš workshopový namespace je `{{ session_namespace }}`. Všetky príkazy `kubectl`
+Svoj workshopový namespace vidíte v príkaze nižšie. Všetky príkazy `kubectl`
 na tomto workshope idú predvolene do neho.
 
 ### Práca naprieč namespaces

@@ -43,7 +43,7 @@ všetky ostatné.
 Najrýchlejšia cesta k Service je `kubectl expose`:
 
 ```terminal:execute
-command: kubectl expose deployment backend --name=backend-quick --port=5678 --target-port=5678
+command: kubectl expose deployment backend --name=backend-quick --port=9898 --target-port=9898
 ```
 
 Pozrite si Service:
@@ -59,7 +59,8 @@ Všimnite si:
 Otestujte ju z klientského Podu:
 
 ```terminal:execute
-command: kubectl exec client -- wget -qO- http://backend-quick:5678
+command: |
+  kubectl exec client -- wget -qO- http://backend-quick:9898/api/info | grep -o '"hostname": "[^"]*"'
 ```
 
 Funguje! Service sa rozlíši cez DNS klastra a nasmeruje požiadavku na jeden z
@@ -83,13 +84,13 @@ Kľúčové polia:
 
 ```editor:select-matching-text
 file: exercises/services/backend-service.yaml
-text: type: ClusterIP
+text: 'type: ClusterIP'
 ```
 
 - `type: ClusterIP` — dostupná len v rámci klastra
 - `selector.app: backend` — vyberá Pody s labelom `app=backend`
-- `port: 5678` — port, na ktorom Service počúva
-- `targetPort: 5678` — port na cieľových Podoch
+- `port: 9898` — port, na ktorom Service počúva
+- `targetPort: 9898` — port na cieľových Podoch
 
 Aplikujte Service:
 
@@ -119,7 +120,8 @@ command: kubectl get endpoints backend-svc
 Z klientského Podu otestujte prístup cez názov Service:
 
 ```terminal:execute
-command: kubectl exec client -- wget -qO- http://backend-svc:5678
+command: |
+  kubectl exec client -- wget -qO- http://backend-svc:9898/api/info | grep -o '"hostname": "[^"]*"'
 ```
 
 Názov funguje preto, lebo DNS v Kubernetes rozloží `backend-svc` na ClusterIP
@@ -132,26 +134,50 @@ Na Service sa dá dostať viacerými DNS formátmi:
 | Formát | Príklad |
 |--------|---------|
 | `<service>` | `backend-svc` (rovnaký namespace) |
-| `<service>.<namespace>` | `backend-svc.{{ session_namespace }}` |
-| `<service>.<namespace>.svc.cluster.local` | `backend-svc.{{ session_namespace }}.svc.cluster.local` |
+| `<service>.<namespace>` | `backend-svc.<váš-namespace>` |
+| `<service>.<namespace>.svc.cluster.local` | `backend-svc.<váš-namespace>.svc.cluster.local` |
 
 Otestujte plne kvalifikovaný názov:
 
 ```terminal:execute
-command: kubectl exec client -- wget -qO- http://backend-svc.{{ session_namespace }}.svc.cluster.local:5678
+command: |
+  NS=$(kubectl config view --minify -o jsonpath='{..namespace}') && kubectl exec client -- wget -qO- http://backend-svc.$NS.svc.cluster.local:9898/api/info | grep -o '"hostname": "[^"]*"'
 ```
 
 ## Load balancing naživo
 
-Spustite viac požiadaviek a všimnite si, že odpovede prichádzajú od rôznych
-replík:
+Toto je tá časť, kvôli ktorej sme si za backend zvolili podinfo: na endpointe
+`/api/info` každý Pod vráti okrem iného aj **svoj vlastný hostname**, čo je
+presne názov Podu, ktorý požiadavku obslúžil.
+
+Najprv si pripomeňte, ako sa tie tri Pody volajú:
 
 ```terminal:execute
-command: for i in 1 2 3 4 5 6; do kubectl exec client -- wget -qO- http://backend-svc:5678; done
+command: kubectl get pods -l app=backend
 ```
 
-Service rozdeľuje požiadavky medzi všetky backend Pody — ide o automatický
-**round-robin load balancing**.
+Teraz pošlite šesť požiadaviek za sebou a sledujte iba hostname v odpovedi:
+
+```terminal:execute
+command: |
+  for i in 1 2 3 4 5 6; do kubectl exec client -- wget -qO- http://backend-svc:9898/api/info | grep -o '"hostname": "[^"]*"'; done
+```
+
+Názvy sa striedajú — každá požiadavka skončila na inom Pode. Presne to robí
+Service: jedna adresa, za ňou tri Pody.
+
+Porovnajte to s prístupom priamo na jeden Pod, kde sa hostname nemení:
+
+```terminal:execute
+command: |
+  BACKEND_IP=$(kubectl get pods -l app=backend -o jsonpath='{.items[0].status.podIP}') && for i in 1 2 3; do kubectl exec client -- wget -qO- http://$BACKEND_IP:9898/api/info | grep -o '"hostname": "[^"]*"'; done
+```
+
+> **Nie je to presné striedanie dokola.** `kube-proxy` v režime iptables vyberá
+> cieľový Pod pre každé nové spojenie **náhodne** s rovnakou pravdepodobnosťou.
+> Pri šiestich požiadavkách preto pokojne môžete uvidieť jeden Pod dvakrát a iný
+> ani raz — dôležité je, že sa názvy menia. Ak by ste chceli rovnomernejšie
+> rozloženie, spustite ten cyklus na viac opakovaní.
 
 ## Services a labels — to spojenie
 

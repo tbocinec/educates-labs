@@ -99,7 +99,13 @@ command: kubectl get pod liveness-fail -w
 session: 2
 ```
 
-Počkajte asi 30–40 sekúnd. Mali by ste vidieť, ako rastie počítadlo `RESTARTS`!
+Počkajte asi **minútu**. Mali by ste vidieť, ako narastie počítadlo `RESTARTS`
+na 1.
+
+> **Prečo to trvá tak dlho?** Aplikácia zmaže súbor po 15 sekundách, probe beží
+> každých 5 sekúnd a `failureThreshold: 2` znamená, že Kubernetes potrebuje dve
+> zlyhania po sebe. K tomu treba prirátať čas na stiahnutie image a naplánovanie
+> Podu. Prvý reštart preto reálne uvidíte okolo 60. sekundy.
 
 Keď uvidíte aspoň jeden reštart, sledovanie zastavte:
 

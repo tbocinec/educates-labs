@@ -24,20 +24,21 @@ Najčastejšia práca: niekto už chart napísal a vy ho chcete nasadiť.
 | **1 — Nájsť a nainštalovať** | Repozitáre, hľadanie chartov, `helm install` |
 | **2 — Zmena values** | `--set`, values súbory, `--dry-run` |
 | **3 — Návrat po zlom nasadení** | História revízií, `helm rollback` |
+| **4 — Reálna aplikácia** | Grafana: cluster-scoped objekty, heslo v Secrete, prihlásenie cez záložku |
 
 ### Časť 2 — Tvorba vlastného chartu
 
 | Úroveň | Čo preberieme |
 |--------|---------------|
-| **4 — Vlastný chart** | `helm create`, šablóny, `lint`, `test`, `package` |
+| **5 — Vlastný chart** | `helm create`, šablóny, `lint`, `test`, `package` |
 
 ### Voliteľné
 
 | Úroveň | Čo preberieme |
 |--------|---------------|
-| **5 — Čo Helm ešte vie** | Prehľad pokročilých tém s odkazmi, bez cvičení |
+| **6 — Čo Helm ešte vie** | Prehľad pokročilých tém s odkazmi, bez cvičení |
 
-Piata úroveň je naozaj **voliteľná** — workshop je hotový po štvrtej. Je to
+Šiesta úroveň je naozaj **voliteľná** — workshop je hotový po piatej. Je to
 rozcestník na to, keď neskôr narazíte na závislosti, hooks, GitOps alebo OCI
 registry.
 
@@ -57,9 +58,11 @@ Vaše prostredie obsahuje:
 - **Dva terminály** (rozdelený layout) — príkazy môžete púšťať vedľa seba
 - **Editor kódu** — na čítanie a úpravu chartov a values súborov
 - **Headlamp** — uvidíte, čo Helm vo vašom namespace naozaj vytvoril
+- **Grafana** — záložka na aplikáciu, ktorú si v úrovni 4 sami nasadíte (dovtedy hlási chybu)
 - **Helm už nainštalovaný** — netreba nič pripravovať
 
-Váš vlastný namespace je `{{ session_namespace }}`.
+Pracujete vo vlastnom namespace — jeho názov zistíte cez
+`kubectl config view --minify -o jsonpath='{..namespace}'`.
 
 Overte si verziu, s ktorou pracujete:
 
@@ -88,7 +91,7 @@ pokazený chart.
 
 ## Časový odhad
 
-Časti 1 a 2 trvajú spolu približne **45 minút**. Voliteľná piata úroveň je
+Časti 1 a 2 trvajú spolu približne **55 minút**. Voliteľná piata úroveň je
 čítanie na ďalších ~10 minút.
 
 Poďme niečo nainštalovať!

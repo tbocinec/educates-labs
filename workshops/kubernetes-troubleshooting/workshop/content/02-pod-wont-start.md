@@ -56,7 +56,8 @@ command: kubectl logs web-server
 Nič — nie je odkiaľ logy čítať, container neexistuje. Teraz poriadne:
 
 ```terminal:execute
-command: kubectl describe pod web-server | grep -A8 Events:
+command: |
+  kubectl describe pod web-server | grep -A8 Events:
 ```
 
 Prečítajte si udalosť `Failed`. Pomenúva image a hovorí, že manifest je neznámy
@@ -143,7 +144,8 @@ až k zostaveniu konfigurácie containera a tam to vzdal.
 ### Diagnostika
 
 ```terminal:execute
-command: kubectl describe pod config-app | grep -A8 Events:
+command: |
+  kubectl describe pod config-app | grep -A8 Events:
 ```
 
 Udalosť je príjemne konkrétna: `couldn't find key mode in ConfigMap`.

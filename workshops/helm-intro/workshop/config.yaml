@@ -1,18 +1,21 @@
+renderer: markdown
+
 pathways:
   default: workshop
 
   paths:
     workshop:
       title: "Základy Helmu"
-      duration: 45m
+      duration: 55m
 
       steps:
       - 00-workshop-overview
       - 01-find-and-install
       - 02-values
       - 03-upgrade-rollback
-      - 04-your-own-chart
-      - 05-advanced-optional
+      - 04-real-app
+      - 05-your-own-chart
+      - 06-advanced-optional
       - 99-workshop-summary
 
 modules:
@@ -28,10 +31,13 @@ modules:
 - name: 03-upgrade-rollback
   title: "Časť 1 · Návrat po zlom nasadení"
 
-- name: 04-your-own-chart
+- name: 04-real-app
+  title: "Časť 1 · Reálna aplikácia (Grafana)"
+
+- name: 05-your-own-chart
   title: "Časť 2 · Vlastný chart"
 
-- name: 05-advanced-optional
+- name: 06-advanced-optional
   title: "Voliteľné · Čo Helm ešte vie"
 
 - name: 99-workshop-summary

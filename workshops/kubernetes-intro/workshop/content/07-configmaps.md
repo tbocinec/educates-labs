@@ -53,7 +53,7 @@ Všimnite si sekciu `data` s tromi dvojicami kľúč-hodnota:
 
 ```editor:select-matching-text
 file: exercises/configmap/configmap.yaml
-text: APP_COLOR: "blue"
+text: 'APP_COLOR: "blue"'
 ```
 
 Skopírujte a aplikujte ConfigMapu:
@@ -108,7 +108,7 @@ Všimnite si sekciu `envFrom`:
 
 ```editor:select-matching-text
 file: exercises/configmap/pod-configmap-env.yaml
-text: envFrom:
+text: 'envFrom:'
 ```
 
 `envFrom` s `configMapRef` načíta **všetky** dvojice kľúč-hodnota z ConfigMapy
@@ -154,7 +154,7 @@ Všimnite si sekcie `volumes` a `volumeMounts`:
 
 ```editor:select-matching-text
 file: exercises/configmap/pod-configmap-volume.yaml
-text: mountPath: /etc/config
+text: 'mountPath: /etc/config'
 ```
 
 ConfigMap `file-config` sa v containeri namountuje do `/etc/config/`. Z každého

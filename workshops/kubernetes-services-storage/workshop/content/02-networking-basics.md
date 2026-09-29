@@ -66,16 +66,19 @@ Teraz sa z klientského Podu skúsme dostať na backend Pod **priamo cez IP**.
 Najprv si zistite IP jedného backend Podu:
 
 ```terminal:execute
-command: BACKEND_IP=$(kubectl get pods -l app=backend -o jsonpath='{.items[0].status.podIP}') && echo "Backend Pod IP: $BACKEND_IP"
+command: |
+  BACKEND_IP=$(kubectl get pods -l app=backend -o jsonpath='{.items[0].status.podIP}') && echo "Backend Pod IP: $BACKEND_IP"
 ```
 
 Otestujte spojenie z klientského Podu:
 
 ```terminal:execute
-command: BACKEND_IP=$(kubectl get pods -l app=backend -o jsonpath='{.items[0].status.podIP}') && kubectl exec client -- wget -qO- http://$BACKEND_IP:5678
+command: |
+  BACKEND_IP=$(kubectl get pods -l app=backend -o jsonpath='{.items[0].status.podIP}') && kubectl exec client -- wget -qO- http://$BACKEND_IP:9898/api/info | grep -o '"hostname": "[^"]*"'
 ```
 
-Funguje! Pody na seba priamo dosiahnu cez IP adresu.
+Funguje! Pody na seba priamo dosiahnu cez IP adresu — a v odpovedi vidíte
+hostname toho Podu, ktorý ju obslúžil.
 
 ## Problém s IP adresami Podov
 
@@ -114,7 +117,7 @@ command: kubectl exec client -- cat /etc/resolv.conf
 
 Všimnite si riadok `nameserver` ukazujúci na DNS službu klastra a domény v
 `search`. Práve vďaka nim môžete používať krátke názvy (napríklad `backend-svc`)
-namiesto plného (`backend-svc.{{ session_namespace }}.svc.cluster.local`).
+namiesto plného (`backend-svc.<váš-namespace>.svc.cluster.local`).
 
 > **Dokumentácia**: [DNS for Services and Pods](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/)
 

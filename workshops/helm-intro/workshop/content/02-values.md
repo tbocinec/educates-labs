@@ -30,7 +30,7 @@ command: helm upgrade my-app podinfo/podinfo --set replicaCount=3 --wait
 ```
 
 ```terminal:execute
-command: kubectl get pods -l app.kubernetes.io/managed-by=Helm
+command: kubectl get pods -l app.kubernetes.io/name=my-app-podinfo
 ```
 
 Tri repliky. Pozrite sa, čo Helm považuje za prebité:
@@ -83,7 +83,7 @@ command: helm upgrade my-app podinfo/podinfo -f ~/exercises/podinfo-values.yaml 
 Nič sa nezmenilo — Helm len ukázal, čo by spravil. Overte si to:
 
 ```terminal:execute
-command: kubectl get pods -l app.kubernetes.io/managed-by=Helm --no-headers | wc -l
+command: kubectl get pods -l app.kubernetes.io/name=my-app-podinfo --no-headers | wc -l
 ```
 
 Stále dve repliky z values súboru. `--dry-run=client` je najužitočnejší návyk

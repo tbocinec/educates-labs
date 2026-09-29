@@ -6,7 +6,7 @@ napísať vlastný.
 
 ## Dĺžka
 
-~45 minút (plus ~10 minút voliteľného čítania)
+~55 minút (plus ~10 minút voliteľného čítania)
 
 ## Predpoklady
 
@@ -33,16 +33,21 @@ Najčastejšia práca: chart už niekto napísal a vy ho nasadzujete.
 - História revízií
 - Zámerne rozbitý release a `helm rollback`
 
+**Úroveň 4 — Reálna aplikácia (Grafana)**
+- Prečo reálne charty narážajú na `Forbidden` (cluster-scoped objekty)
+- `helm show chart` a `helm template | grep kind:` ako kontrola pred inštaláciou
+- Heslo administrátora zo Secretu a prihlásenie cez vlastnú záložku v lište
+
 ### Časť 2 — Tvorba vlastného chartu
 
-**Úroveň 4 — Vlastný chart**
+**Úroveň 5 — Vlastný chart**
 - `helm create`, štruktúra chartu, syntax šablón
 - `helm lint` a `helm template` ako kontrola pred nasadením
 - Inštalácia z adresára, `helm test`, `helm package`
 
 ### Voliteľné
 
-**Úroveň 5 — Čo Helm ešte vie**
+**Úroveň 6 — Čo Helm ešte vie**
 
 Bez cvičení, samé odkazy. `--atomic` a pripínanie verzií v CI, závislosti a
 subcharty, hooks, library charts, šablónovací jazyk, OCI registry, podpisovanie,
@@ -63,7 +68,8 @@ ani webhooky, ktoré by boli odmietnuté.
 ## Vlastnosti
 
 - Helm je už v image workshopu — žiadny inštalačný krok
-- Používa [podinfo](https://github.com/stefanprodan/podinfo), malú demo aplikáciu
+- Používa [podinfo](https://github.com/stefanprodan/podinfo) ako ľahkú demo aplikáciu
+- V úrovni 4 inštaluje oficiálny chart **Grafany**, dostupnej cez záložku v lište
 - Komentované values súbory, ktoré študenti aplikujú a upravujú
 - Webové UI Headlamp na prehľad toho, čo Helm vytvoril
 

@@ -16,7 +16,7 @@ späť — a potom si napísali vlastný. 🎉
 - **Chart** = balíček, **release** = jedna jeho inštalácia, **repozitár** = index
 - Ten istý chart sa dá nainštalovať viackrát pod rôznymi názvami releasov
 - `helm show values` je verejné API chartu — čítajte ho ako prvé
-- Objekty majú predponu podľa releasu a label `managed-by=Helm`
+- Objekty majú predponu podľa releasu a label `managed-by=Helm`; Pody ten label nemajú, lebo ich vytvára ReplicaSet
 
 ```
 helm repo add <názov> <url>
@@ -62,11 +62,24 @@ helm rollback <release>            # o jednu späť
 helm rollback <release> <revízia>  # na konkrétnu
 ```
 
+## Úroveň 4: Reálna aplikácia — Grafana
+
+- Reálne charty často chcú **cluster-scoped objekty** (ClusterRole, CRD) — to je najčastejší dôvod chyby `Forbidden`
+- `helm template ... | grep '^kind:'` ukáže, čo chart vytvorí, **pred** inštaláciou
+- `helm show chart` prezradí verziu aj to, či je chart ešte udržiavaný
+- Vygenerované heslá končia v **Secretoch**, nie vo výstupe príkazu
+
+```
+helm show chart <chart>
+helm template g <chart> -f values.yaml | grep '^kind:'
+kubectl get secret <názov> -o jsonpath='{.data.admin-password}' | base64 -d
+```
+
 ---
 
 # Časť 2 — Tvorba vlastného chartu
 
-## Úroveň 4: Vlastný chart
+## Úroveň 5: Vlastný chart
 
 - `helm create` vygeneruje kompletný chart
 - `values.yaml` je rovnako dokumentácia ako konfigurácia
@@ -107,7 +120,7 @@ to zvyčajne práve toto — chart je v poriadku, vaša rola nie je dosť širok
 
 ## Čo ďalej
 
-Voliteľná **úroveň 5** je rozcestník na pokročilé témy: `--atomic` a pripínanie
+Voliteľná **úroveň 6** je rozcestník na pokročilé témy: `--atomic` a pripínanie
 verzií v CI, závislosti a subcharty, hooks, library charts, OCI registry,
 Helmfile a GitOps, a práca s citlivými údajmi. Sú to samé odkazy — zabehnite tam,
 keď na niektorú z tých vecí narazíte.

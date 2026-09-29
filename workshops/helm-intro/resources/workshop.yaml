@@ -4,10 +4,10 @@ metadata:
   name: "helm-intro"
 spec:
   title: "Základy Helmu"
-  description: "Praktický úvod do Helmu v dvoch častiach — najprv používanie hotových chartov (repozitáre, inštalácia, values, rollback), potom tvorba vlastného chartu. Voliteľná posledná úroveň je rozcestník na pokročilé témy."
+  description: "Praktický úvod do Helmu v dvoch častiach — najprv používanie hotových chartov (repozitáre, inštalácia, values, rollback), potom inštalácia reálnej aplikácie (Grafana) s prihlásením cez vlastnú záložku, potom tvorba vlastného chartu. Voliteľná posledná úroveň je rozcestník na pokročilé témy."
   url: https://github.com/tbocinec/educates-labs
   difficulty: beginner
-  duration: 45m
+  duration: 55m
   publish:
     image: "$(image_repository)/helm-intro-files:$(workshop_version)"
     files:
@@ -55,9 +55,17 @@ spec:
     - name: headlamp
       host: headlamp.$(session_namespace).svc.$(cluster_domain)
       port: 4466
+    # Záložka pre Grafanu, ktorú si účastník nainštaluje Helmom v úrovni 4.
+    # Kým Service 'grafana' neexistuje, záložka hlási chybu — to je v poriadku
+    # a obsah na to upozorňuje.
+    - name: grafana
+      host: grafana.$(session_namespace).svc.$(cluster_domain)
+      port: 80
     dashboards:
     - name: Headlamp
       url: "$(ingress_protocol)://$(session_namespace)-headlamp.$(ingress_domain)"
+    - name: Grafana
+      url: "$(ingress_protocol)://$(session_namespace)-grafana.$(ingress_domain)"
     objects:
     - apiVersion: rbac.authorization.k8s.io/v1
       kind: ClusterRole

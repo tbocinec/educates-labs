@@ -41,7 +41,8 @@ Vaše prostredie obsahuje:
 - **Headlamp** — webové UI, kde sú udalosti a logy na jeden klik
 - **Pripravené rozbité manifesty** — v `~/exercises/`
 
-Váš vlastný namespace je `{{ session_namespace }}`.
+Pracujete vo vlastnom namespace — jeho názov zistíte cez
+`kubectl config view --minify -o jsonpath='{..namespace}'`.
 
 ## Ako každý scenár prebieha
 

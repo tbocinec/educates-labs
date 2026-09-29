@@ -21,13 +21,13 @@ alebo reštartuje. Pre databázy, logy a akúkoľvek stavovú aplikáciu potrebu
 | **StorageClass** | Určuje, ako sa úložisko dynamicky vytvára | Správca klastra |
 
 Typický postup:
-1. Vytvoríte **PVC** s požiadavkou na konkrétne úložisko (napr. „potrebujem 100Mi")
+1. Vytvoríte **PVC** s požiadavkou na konkrétne úložisko (napr. „potrebujem 1Gi")
 2. Kubernetes **dynamicky vytvorí** PV, ktorý požiadavke vyhovuje
 3. PVC **namountujete** vo svojom Pode
 4. Úložisko pretrvá, aj keď Pod zmažete
 
 ```
-Vy → PVC ("potrebujem 100Mi") → StorageClass → PV (skutočné úložisko)
+Vy → PVC ("potrebujem 1Gi") → StorageClass → PV (skutočné úložisko)
                                                   ↓
                                            Pod (namountované v /data)
 ```
@@ -52,7 +52,12 @@ file: exercises/storage/pvc.yaml
 
 Kľúčové polia:
 - `accessModes: [ReadWriteOnce]` — volume sa dá pripojiť na čítanie aj zápis z **jedného** nodu
-- `resources.requests.storage: 100Mi` — žiadame 100 MiB úložiska
+- `resources.requests.storage: 1Gi` — žiadame 1 GiB úložiska
+
+> **Prečo práve 1Gi?** Váš namespace má `LimitRange`, ktorý určuje **minimálnu**
+> veľkosť jedného PVC na 1Gi. Menšia požiadavka by bola odmietnutá pri admission
+> s hláškou `minimum storage usage per PersistentVolumeClaim is 1Gi`. Pravidlá
+> namespace si pozriete cez `kubectl describe limitrange`.
 
 Bežné prístupové režimy:
 
@@ -74,12 +79,36 @@ Skontrolujte stav PVC:
 command: kubectl get pvc my-data
 ```
 
-Stav by mal byť `Bound` — teda úložisko bolo pridelené. Viete si pozrieť aj PV,
-ktorý vznikol:
+Stav je `Pending` — a **tak to má byť**. Nie je to chyba a nemá zmysel čakať, kým
+sa to zmení samo.
+
+### Prečo Pending?
+
+Pozrite sa na StorageClass, ktorá sa použije:
+
+```terminal:execute
+command: kubectl get storageclass -o custom-columns=NAME:.metadata.name,PROVISIONER:.provisioner,BINDING:.volumeBindingMode
+```
+
+V stĺpci `BINDING` je **`WaitForFirstConsumer`**. Znamená to, že úložisko sa
+nevytvorí v okamihu, keď oň požiadate, ale až keď sa objaví **prvý Pod**, ktorý
+ho chce pripojiť.
+
+Dôvod je praktický: až podľa Podu vie Kubernetes povedať, na ktorý node úložisko
+patrí. Keby zväzok vznikol skôr, mohol by skončiť na nodee, kam sa Pod nikdy
+nenaplánuje — a Pod by potom ostal navždy v `Pending`.
+
+> **Druhý režim sa volá `Immediate`** a vytvorí zväzok hneď. Používa sa pri
+> sieťovom úložisku, ktoré je dostupné zo všetkých nodov. Predvolené triedy
+> v kind aj v AKS sú `WaitForFirstConsumer`.
+
+Zatiaľ teda neexistuje ani žiadny PV:
 
 ```terminal:execute
 command: kubectl get pv
 ```
+
+Prázdno. V ďalšom kroku vytvoríte Pod — a potom sa sem vrátime.
 
 ## Použitie PVC v Pode
 
@@ -107,8 +136,29 @@ command: kubectl apply -f ~/storage/pod-with-pvc.yaml
 ```
 
 ```terminal:execute
-command: kubectl wait --for=condition=Ready pod/writer-pod --timeout=60s
+command: kubectl wait --for=condition=Ready pod/writer-pod --timeout=120s
 ```
+
+### A teraz späť k tomu PVC
+
+Spomeňte si, že pred chvíľou bolo `Pending`. Pozrite sa naň znova:
+
+```terminal:execute
+command: kubectl get pvc my-data
+```
+
+Teraz je **`Bound`**. Objavil sa prvý konzument — writer-pod — a až tým sa
+spustilo vytvorenie zväzku.
+
+A existuje aj PV, ktorý predtým nebol:
+
+```terminal:execute
+command: kubectl get pv
+```
+
+Všimnite si, že PV ste nevytvárali. Vyrobil ho **provisioner** StorageClass
+automaticky, presne na mieru vašej požiadavke. To je dynamické vytváranie
+úložiska.
 
 Chvíľu počkajte, nech sa niečo zapíše, a pozrite si súbor:
 

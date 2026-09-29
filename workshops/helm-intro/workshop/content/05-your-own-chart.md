@@ -2,7 +2,7 @@
 title: Vlastný chart
 ---
 
-# Úroveň 4: Vlastný chart
+# Úroveň 5: Vlastný chart
 
 # ČASŤ 2 — Tvorba vlastného chartu
 
@@ -151,7 +151,8 @@ Pod neho pridajte riadok (pozor na odsadenie — o dve medzery hlbšie než
 Vykreslite a overte, že je zmena platná, než ju aplikujete:
 
 ```terminal:execute
-command: helm template hello ~/hello-app -f ~/exercises/hello-app-values.yaml | grep -B2 -A2 "workshop: helm-intro"
+command: |
+  helm template hello ~/hello-app -f ~/exercises/hello-app-values.yaml | grep -B2 -A2 "workshop: helm-intro"
 ```
 
 Teraz ju aplikujte:

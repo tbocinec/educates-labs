@@ -35,7 +35,8 @@ command: kubectl get pod picky-app -o wide
 ### Diagnostika
 
 ```terminal:execute
-command: kubectl describe pod picky-app | grep -A8 Events:
+command: |
+  kubectl describe pod picky-app | grep -A8 Events:
 ```
 
 Scheduler hlási `FailedScheduling` a — čo je kľúčové — spočíta nody, ktoré
